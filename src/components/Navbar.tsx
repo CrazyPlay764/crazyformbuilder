@@ -39,7 +39,7 @@ const Navbar = () => {
                 <div className="absolute inset-0 bg-primary/30 blur-xl rounded-full animate-glow-pulse" />
               </div>
               <span className="text-xl font-orbitron font-bold gradient-text">
-                CrazyForums
+                FormBuilder
               </span>
             </a>
 

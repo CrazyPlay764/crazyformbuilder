@@ -1,35 +1,35 @@
-import { MessageSquare, Zap, Shield, Globe, Users, TrendingUp } from 'lucide-react';
+import { MousePointer2, Palette, Type, Calendar, Upload, Users } from 'lucide-react';
 
 const features = [
   {
-    icon: MessageSquare,
-    title: 'Rich Discussions',
-    description: 'Threaded conversations with markdown support, media embeds, and real-time updates.',
+    icon: MousePointer2,
+    title: 'Drag & Drop Builder',
+    description: 'Intuitive drag and drop interface to create forms in minutes without any coding.',
   },
   {
-    icon: Zap,
-    title: 'Instant Notifications',
-    description: 'Never miss a reply with real-time push notifications across all your devices.',
+    icon: Palette,
+    title: 'Custom Design',
+    description: 'Change colors, fonts, and styles to match your brand with our design customization tools.',
   },
   {
-    icon: Shield,
-    title: 'Safe & Moderated',
-    description: 'AI-powered moderation and community guidelines keep discussions healthy and respectful.',
+    icon: Type,
+    title: 'Advanced Field Types',
+    description: 'Text, email, number, textarea, checkboxes, date pickers, file uploads, dropdowns, and more.',
   },
   {
-    icon: Globe,
-    title: 'Global Community',
-    description: 'Connect with passionate people from 150+ countries in your favorite topics.',
+    icon: Calendar,
+    title: 'Date & File Fields',
+    description: 'Built-in date pickers and file upload fields for collecting any type of data.',
+  },
+  {
+    icon: Upload,
+    title: 'Save & Export',
+    description: 'Save your forms to the cloud and access them from anywhere, anytime.',
   },
   {
     icon: Users,
-    title: 'Private Groups',
-    description: 'Create invite-only communities for your team, friends, or exclusive memberships.',
-  },
-  {
-    icon: TrendingUp,
-    title: 'Trending Topics',
-    description: 'Discover what\'s hot with personalized recommendations and trending discussions.',
+    title: 'Team Collaboration',
+    description: 'Invite team members to edit forms together with role-based permissions.',
   },
 ];
 
@@ -47,11 +47,11 @@ const Features = () => {
             Powerful Features
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-orbitron font-bold mb-6">
-            <span className="text-foreground">Built for </span>
-            <span className="gradient-text">Community</span>
+            <span className="text-foreground">Powerful </span>
+            <span className="gradient-text">Features</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-inter font-light">
-            Everything you need to connect, engage, and grow with your favorite communities.
+            Everything you need to create, customize, and manage beautiful forms.
           </p>
         </div>
 
