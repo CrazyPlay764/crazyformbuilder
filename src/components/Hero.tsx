@@ -19,21 +19,21 @@ const Hero = () => {
           <div className="animate-fade-up">
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border-primary/30 text-sm font-inter text-muted-foreground mb-8">
               <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-              Introducing DETA AI Platform
+              Welcome to CrazyForums
             </span>
           </div>
 
           {/* Main Headline */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-orbitron font-bold leading-tight mb-6 animate-fade-up-delayed">
-            <span className="text-foreground">The Future of</span>
+            <span className="text-foreground">Where Ideas</span>
             <br />
-            <span className="gradient-text glow-text">Intelligent AI</span>
+            <span className="gradient-text glow-text">Come Alive</span>
           </h1>
 
           {/* Subheadline */}
           <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 font-inter font-light animate-fade-up-delayed-2">
-            Harness the power of next-generation artificial intelligence. 
-            Build, deploy, and scale AI solutions with unprecedented speed and precision.
+            Join the ultimate community for passionate discussions. 
+            Connect, share, and discover with millions of members worldwide.
           </p>
 
           {/* CTA Buttons */}
@@ -51,9 +51,9 @@ const Hero = () => {
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-20 animate-fade-up-delayed-2">
             {[
-              { value: '10M+', label: 'API Requests/Day' },
-              { value: '99.9%', label: 'Uptime SLA' },
-              { value: '<50ms', label: 'Response Time' },
+              { value: '5M+', label: 'Active Members' },
+              { value: '100K+', label: 'Daily Posts' },
+              { value: '50K+', label: 'Communities' },
               { value: '150+', label: 'Countries' },
             ].map((stat, index) => (
               <div key={index} className="text-center">

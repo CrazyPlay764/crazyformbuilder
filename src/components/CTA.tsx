@@ -19,17 +19,17 @@ const CTA = () => {
             <div className="relative z-10">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 text-sm font-inter text-primary mb-8">
                 <Sparkles className="w-4 h-4" />
-                Start your AI journey today
+                Join the conversation today
               </div>
 
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-orbitron font-bold mb-6">
-                <span className="text-foreground">Ready to Transform</span>
+                <span className="text-foreground">Ready to Join</span>
                 <br />
-                <span className="gradient-text glow-text">Your Business?</span>
+                <span className="gradient-text glow-text">The Community?</span>
               </h2>
 
               <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-10 font-inter font-light">
-                Join thousands of companies already leveraging DETA AI to build the next generation of intelligent applications.
+                Join millions of members already connecting on CrazyForums to share ideas and build lasting relationships.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
