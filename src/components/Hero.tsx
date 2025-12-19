@@ -38,13 +38,17 @@ const Hero = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up-delayed-2">
-            <Button variant="glow" size="xl" className="w-full sm:w-auto">
-              Start Building Free
-              <ArrowRight className="w-5 h-5" />
+            <Button variant="glow" size="xl" className="w-full sm:w-auto" asChild>
+              <a href="/auth">
+                Start Building Free
+                <ArrowRight className="w-5 h-5" />
+              </a>
             </Button>
-            <Button variant="glow-outline" size="xl" className="w-full sm:w-auto">
-              <Play className="w-5 h-5" />
-              Watch Demo
+            <Button variant="glow-outline" size="xl" className="w-full sm:w-auto" asChild>
+              <a href="#features">
+                <Play className="w-5 h-5" />
+                Learn More
+              </a>
             </Button>
           </div>
 
