@@ -1,35 +1,35 @@
-import { Brain, Zap, Shield, Globe, Cpu, BarChart3 } from 'lucide-react';
+import { MessageSquare, Zap, Shield, Globe, Users, TrendingUp } from 'lucide-react';
 
 const features = [
   {
-    icon: Brain,
-    title: 'Advanced Neural Networks',
-    description: 'State-of-the-art deep learning models trained on billions of parameters for unmatched accuracy.',
+    icon: MessageSquare,
+    title: 'Rich Discussions',
+    description: 'Threaded conversations with markdown support, media embeds, and real-time updates.',
   },
   {
     icon: Zap,
-    title: 'Lightning Fast',
-    description: 'Optimized inference engines delivering sub-50ms response times at massive scale.',
+    title: 'Instant Notifications',
+    description: 'Never miss a reply with real-time push notifications across all your devices.',
   },
   {
     icon: Shield,
-    title: 'Enterprise Security',
-    description: 'SOC 2 Type II certified with end-to-end encryption and comprehensive audit logging.',
+    title: 'Safe & Moderated',
+    description: 'AI-powered moderation and community guidelines keep discussions healthy and respectful.',
   },
   {
     icon: Globe,
-    title: 'Global Infrastructure',
-    description: 'Distributed across 50+ data centers worldwide for low-latency access everywhere.',
+    title: 'Global Community',
+    description: 'Connect with passionate people from 150+ countries in your favorite topics.',
   },
   {
-    icon: Cpu,
-    title: 'Custom Model Training',
-    description: 'Fine-tune models on your proprietary data with our intuitive training platform.',
+    icon: Users,
+    title: 'Private Groups',
+    description: 'Create invite-only communities for your team, friends, or exclusive memberships.',
   },
   {
-    icon: BarChart3,
-    title: 'Real-time Analytics',
-    description: 'Comprehensive dashboards and insights to monitor and optimize your AI operations.',
+    icon: TrendingUp,
+    title: 'Trending Topics',
+    description: 'Discover what\'s hot with personalized recommendations and trending discussions.',
   },
 ];
 
@@ -48,10 +48,10 @@ const Features = () => {
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-orbitron font-bold mb-6">
             <span className="text-foreground">Built for </span>
-            <span className="gradient-text">Excellence</span>
+            <span className="gradient-text">Community</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-inter font-light">
-            Everything you need to build, deploy, and scale intelligent AI applications.
+            Everything you need to connect, engage, and grow with your favorite communities.
           </p>
         </div>
 

@@ -19,11 +19,11 @@ const Footer = () => {
             <a href="#" className="flex items-center gap-2 mb-4">
               <Sparkles className="w-7 h-7 text-primary" />
               <span className="text-lg font-orbitron font-bold gradient-text">
-                DETA AI
+                CrazyForums
               </span>
             </a>
             <p className="text-sm text-muted-foreground font-inter font-light mb-6 max-w-xs">
-              Building the future of intelligent AI solutions for businesses worldwide.
+              The ultimate community platform for passionate discussions and meaningful connections.
             </p>
             <div className="flex items-center gap-4">
               {[Twitter, Github, Linkedin].map((Icon, index) => (
@@ -63,7 +63,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground font-inter">
-            © 2024 DETA AI. All rights reserved.
+            © 2024 CrazyForums. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-inter">
