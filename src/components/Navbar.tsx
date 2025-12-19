@@ -34,15 +34,18 @@ const Navbar = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <a href="#" className="flex items-center gap-2 group">
+            <button 
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="flex items-center gap-2 group"
+            >
               <div className="relative">
-                <Sparkles className="w-8 h-8 text-primary transition-all duration-300 group-hover:scale-110" />
+                <Sparkles className="w-8 h-8 text-primary transition-all duration-300 group-hover:scale-110 group-active:scale-90 group-active:rotate-12" />
                 <div className="absolute inset-0 bg-primary/30 blur-xl rounded-full animate-glow-pulse" />
               </div>
-              <span className="text-xl font-orbitron font-bold gradient-text">
+              <span className="text-xl font-orbitron font-bold gradient-text transition-all duration-300 group-active:scale-95">
                 FormBuilder
               </span>
-            </a>
+            </button>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8">
