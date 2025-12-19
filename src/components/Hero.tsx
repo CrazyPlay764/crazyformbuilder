@@ -19,21 +19,21 @@ const Hero = () => {
           <div className="animate-fade-up">
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border-primary/30 text-sm font-inter text-muted-foreground mb-8">
               <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-              Welcome to CrazyForums
+              Drag & Drop Form Builder
             </span>
           </div>
 
           {/* Main Headline */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-orbitron font-bold leading-tight mb-6 animate-fade-up-delayed">
-            <span className="text-foreground">Where Ideas</span>
+            <span className="text-foreground">Build Beautiful</span>
             <br />
-            <span className="gradient-text glow-text">Come Alive</span>
+            <span className="gradient-text glow-text">Forms Easily</span>
           </h1>
 
           {/* Subheadline */}
           <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 font-inter font-light animate-fade-up-delayed-2">
-            Join the ultimate community for passionate discussions. 
-            Connect, share, and discover with millions of members worldwide.
+            Create stunning forms with our drag & drop builder. 
+            Customize designs, add fields, and share with your team in seconds.
           </p>
 
           {/* CTA Buttons */}
@@ -47,7 +47,7 @@ const Hero = () => {
             <Button variant="glow-outline" size="xl" className="w-full sm:w-auto" asChild>
               <a href="#features">
                 <Play className="w-5 h-5" />
-                Learn More
+                See Features
               </a>
             </Button>
           </div>
@@ -55,10 +55,10 @@ const Hero = () => {
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-20 animate-fade-up-delayed-2">
             {[
-              { value: '5M+', label: 'Active Members' },
-              { value: '100K+', label: 'Daily Posts' },
-              { value: '50K+', label: 'Communities' },
-              { value: '150+', label: 'Countries' },
+              { value: '10+', label: 'Field Types' },
+              { value: '100%', label: 'Customizable' },
+              { value: 'Free', label: 'To Start' },
+              { value: 'Team', label: 'Collaboration' },
             ].map((stat, index) => (
               <div key={index} className="text-center">
                 <div className="text-2xl sm:text-3xl font-orbitron font-bold text-foreground mb-1">

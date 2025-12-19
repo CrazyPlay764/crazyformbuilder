@@ -79,16 +79,16 @@ const Auth = () => {
 
       <div className="w-full max-w-md relative z-10">
         <div className="glass glow-border rounded-2xl p-8">
-          <div className="flex items-center justify-center gap-2 mb-8">
+        <div className="flex items-center justify-center gap-2 mb-8">
             <Sparkles className="w-8 h-8 text-primary" />
-            <span className="text-2xl font-orbitron font-bold gradient-text">CrazyForums</span>
+            <span className="text-2xl font-orbitron font-bold gradient-text">FormBuilder</span>
           </div>
 
           <h1 className="text-2xl font-orbitron font-bold text-center text-foreground mb-2">
             {isLogin ? 'Welcome Back' : 'Create Account'}
           </h1>
           <p className="text-muted-foreground text-center mb-8 font-inter">
-            {isLogin ? 'Sign in to continue to Form Builder' : 'Sign up to start building forms'}
+            {isLogin ? 'Sign in to continue building forms' : 'Sign up to start building forms'}
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
