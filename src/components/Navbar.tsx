@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -8,6 +8,8 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, loading } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,6 +25,14 @@ const Navbar = () => {
     { name: 'Contact', href: '#contact' },
   ];
 
+  const handleLogoClick = () => {
+    if (location.pathname === '/') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      navigate('/');
+    }
+  };
+
   return (
     <>
       <nav
@@ -36,7 +46,7 @@ const Navbar = () => {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <button 
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              onClick={handleLogoClick}
               className="flex items-center gap-2 group cursor-pointer"
             >
               <div className="relative">
