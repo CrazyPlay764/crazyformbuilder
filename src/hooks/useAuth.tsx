@@ -21,6 +21,7 @@ interface AuthContextType {
   resetPassword: (email: string) => Promise<{ error: Error | null }>;
   updatePassword: (newPassword: string) => Promise<{ error: Error | null }>;
   checkDisplayNameAvailable: (displayName: string) => Promise<boolean>;
+  deleteAccount: () => Promise<{ error: Error | null }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -180,8 +181,37 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return { error };
   };
 
+  const deleteAccount = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        return { error: new Error('Not authenticated') };
+      }
+
+      const response = await supabase.functions.invoke('delete-account', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      });
+
+      if (response.error) {
+        return { error: new Error(response.error.message || 'Failed to delete account') };
+      }
+
+      // Sign out after successful deletion
+      await supabase.auth.signOut();
+      setUser(null);
+      setSession(null);
+      setProfile(null);
+
+      return { error: null };
+    } catch (err) {
+      return { error: err instanceof Error ? err : new Error('Failed to delete account') };
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, session, profile, loading, signUp, signIn, signOut, updateDisplayName, resetPassword, updatePassword, checkDisplayNameAvailable }}>
+    <AuthContext.Provider value={{ user, session, profile, loading, signUp, signIn, signOut, updateDisplayName, resetPassword, updatePassword, checkDisplayNameAvailable, deleteAccount }}>
       {children}
     </AuthContext.Provider>
   );

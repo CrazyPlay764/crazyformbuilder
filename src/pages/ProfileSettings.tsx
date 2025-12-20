@@ -5,11 +5,22 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Loader2, Check, X, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, Loader2, Check, X, Eye, EyeOff, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 const ProfileSettings = () => {
-  const { user, profile, loading, updateDisplayName, updatePassword, checkDisplayNameAvailable } = useAuth();
+  const { user, profile, loading, updateDisplayName, updatePassword, checkDisplayNameAvailable, deleteAccount } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   
@@ -23,6 +34,10 @@ const ProfileSettings = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmittingPassword, setIsSubmittingPassword] = useState(false);
+
+  // Delete account state
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState('');
 
   useEffect(() => {
     if (!loading && !user) {
@@ -314,6 +329,93 @@ const ProfileSettings = () => {
                 )}
               </Button>
             </form>
+          </CardContent>
+        </Card>
+
+        <Card className="border-destructive/50">
+          <CardHeader>
+            <CardTitle className="text-destructive flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5" />
+              Delete Account
+            </CardTitle>
+            <CardDescription>
+              Permanently delete your account and all associated data. This action cannot be undone.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" className="w-full">
+                  Delete My Account
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription className="space-y-3">
+                    <p>
+                      This action cannot be undone. This will permanently delete your account
+                      and remove all your data from our servers, including:
+                    </p>
+                    <ul className="list-disc list-inside text-sm space-y-1">
+                      <li>All your forms</li>
+                      <li>All form responses</li>
+                      <li>Your profile information</li>
+                    </ul>
+                    <div className="pt-2">
+                      <Label htmlFor="deleteConfirm" className="text-foreground">
+                        Type <span className="font-semibold">DELETE</span> to confirm
+                      </Label>
+                      <Input
+                        id="deleteConfirm"
+                        value={deleteConfirmText}
+                        onChange={(e) => setDeleteConfirmText(e.target.value)}
+                        placeholder="DELETE"
+                        className="mt-2"
+                      />
+                    </div>
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel onClick={() => setDeleteConfirmText('')}>
+                    Cancel
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    disabled={deleteConfirmText !== 'DELETE' || isDeleting}
+                    onClick={async (e) => {
+                      e.preventDefault();
+                      setIsDeleting(true);
+                      const { error } = await deleteAccount();
+                      setIsDeleting(false);
+                      
+                      if (error) {
+                        toast({
+                          title: "Deletion failed",
+                          description: error.message,
+                          variant: "destructive",
+                        });
+                      } else {
+                        toast({
+                          title: "Account deleted",
+                          description: "Your account has been permanently deleted.",
+                        });
+                        navigate('/');
+                      }
+                    }}
+                    className="bg-destructive hover:bg-destructive/90"
+                  >
+                    {isDeleting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Deleting...
+                      </>
+                    ) : (
+                      'Delete Account'
+                    )}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </CardContent>
         </Card>
       </div>
