@@ -17,6 +17,8 @@ const FormPreview = () => {
   const [fields, setFields] = useState<FormField[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [formClosed, setFormClosed] = useState(false);
+  const [closedMessage, setClosedMessage] = useState<string>('');
   const [submitted, setSubmitted] = useState(false);
   const [formValues, setFormValues] = useState<Record<string, string | boolean | string[]>>({});
 
@@ -40,8 +42,16 @@ const FormPreview = () => {
     }
 
 const settings = typeof formData.settings === 'object' && formData.settings !== null
-      ? formData.settings as { backgroundColor: string; fontFamily: string; primaryColor: string; logoUrl?: string; submitButtonText?: string; successMessage?: string }
+      ? formData.settings as { backgroundColor: string; fontFamily: string; primaryColor: string; logoUrl?: string; submitButtonText?: string; successMessage?: string; closedFormMessage?: string }
       : { backgroundColor: '#1a1a2e', fontFamily: 'Inter', primaryColor: '#8b5cf6' };
+
+    // Check if form is closed (not published)
+    if (!formData.is_published) {
+      setFormClosed(true);
+      setClosedMessage(settings.closedFormMessage || 'This form is currently closed.');
+      setLoading(false);
+      return;
+    }
 
     setForm({ ...formData, settings, is_published: formData.is_published ?? false });
 
@@ -211,12 +221,29 @@ const settings = typeof formData.settings === 'object' && formData.settings !== 
     );
   }
 
+  if (formClosed) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center space-y-4">
+          <h1 className="text-2xl font-orbitron font-bold text-foreground">Form Closed</h1>
+          <p className="text-muted-foreground">{closedMessage}</p>
+          <div className="flex gap-4 justify-center">
+            <Button variant="outline" onClick={() => navigate('/')}>
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Go Home
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (notFound || !form) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center space-y-4">
           <h1 className="text-2xl font-orbitron font-bold text-foreground">Form Not Found</h1>
-          <p className="text-muted-foreground">This form doesn't exist or is not published yet.</p>
+          <p className="text-muted-foreground">This form doesn't exist.</p>
           <div className="flex gap-4 justify-center">
             <Button variant="outline" onClick={() => navigate('/')}>
               <ArrowLeft className="w-4 h-4 mr-2" />

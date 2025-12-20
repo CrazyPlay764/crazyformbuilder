@@ -13,8 +13,9 @@ interface FormSettingsProps {
     logoUrl?: string;
     submitButtonText?: string;
     successMessage?: string;
+    closedFormMessage?: string;
   };
-  onUpdate: (settings: { backgroundColor: string; fontFamily: string; primaryColor: string; logoUrl?: string; submitButtonText?: string; successMessage?: string }) => void;
+  onUpdate: (settings: { backgroundColor: string; fontFamily: string; primaryColor: string; logoUrl?: string; submitButtonText?: string; successMessage?: string; closedFormMessage?: string }) => void;
   title: string;
   onTitleChange: (title: string) => void;
   description: string;
@@ -166,6 +167,17 @@ const FormSettings = ({ settings, onUpdate, title, onTitleChange, description, o
             className="bg-background/50 border-border/50 min-h-[80px]"
           />
           <p className="text-xs text-muted-foreground">Message shown after form submission</p>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-foreground">Closed Form Message</Label>
+          <Textarea
+            value={settings.closedFormMessage || ''}
+            onChange={(e) => onUpdate({ ...settings, closedFormMessage: e.target.value })}
+            placeholder="This form is currently closed."
+            className="bg-background/50 border-border/50 min-h-[80px]"
+          />
+          <p className="text-xs text-muted-foreground">Message shown when the form is unpublished</p>
         </div>
       </div>
     </div>
