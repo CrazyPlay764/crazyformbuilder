@@ -211,10 +211,13 @@ const FormBuilder = () => {
             <Button variant="ghost" size="icon" onClick={() => navigate('/dashboard')}>
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-6 h-6 text-primary" />
-              <span className="font-orbitron font-semibold text-foreground">{form.title}</span>
-            </div>
+            <button 
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2 group"
+            >
+              <Sparkles className="w-6 h-6 text-primary transition-all duration-300 group-hover:scale-110" />
+              <span className="font-orbitron font-semibold text-foreground group-hover:text-primary transition-colors">{form.title}</span>
+            </button>
           </div>
           <div className="flex items-center gap-2">
             <Button 

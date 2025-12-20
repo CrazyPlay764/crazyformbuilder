@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { Plus, FileText, Trash2, Edit, Users, LogOut, Sparkles } from 'lucide-react';
+import { Plus, FileText, Trash2, Edit, LogOut, Sparkles, Pencil, Check, X } from 'lucide-react';
 
 interface Form {
   id: string;
@@ -15,10 +16,12 @@ interface Form {
 }
 
 const Dashboard = () => {
-  const { user, signOut, loading: authLoading } = useAuth();
+  const { user, profile, signOut, updateDisplayName, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [forms, setForms] = useState<Form[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editingName, setEditingName] = useState(false);
+  const [newDisplayName, setNewDisplayName] = useState('');
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -31,6 +34,12 @@ const Dashboard = () => {
       fetchForms();
     }
   }, [user]);
+
+  useEffect(() => {
+    if (profile?.display_name) {
+      setNewDisplayName(profile.display_name);
+    }
+  }, [profile]);
 
   const fetchForms = async () => {
     const { data, error } = await supabase
@@ -76,6 +85,21 @@ const Dashboard = () => {
     navigate('/');
   };
 
+  const handleSaveDisplayName = async () => {
+    if (!newDisplayName.trim()) {
+      toast.error('Name cannot be empty');
+      return;
+    }
+    
+    const { error } = await updateDisplayName(newDisplayName.trim());
+    if (error) {
+      toast.error('Failed to update name');
+    } else {
+      toast.success('Name updated!');
+      setEditingName(false);
+    }
+  };
+
   if (authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -83,6 +107,8 @@ const Dashboard = () => {
       </div>
     );
   }
+
+  const displayName = profile?.display_name || user?.email;
 
   return (
     <div className="min-h-screen bg-background">
@@ -93,12 +119,37 @@ const Dashboard = () => {
 
       <header className="glass-strong sticky top-0 z-50 border-b border-border/50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-7 h-7 text-primary" />
+          <button 
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 group"
+          >
+            <Sparkles className="w-7 h-7 text-primary transition-all duration-300 group-hover:scale-110" />
             <span className="text-xl font-orbitron font-bold gradient-text">Form Builder</span>
-          </div>
+          </button>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground font-inter">{user?.email}</span>
+            {editingName ? (
+              <div className="flex items-center gap-2">
+                <Input
+                  value={newDisplayName}
+                  onChange={(e) => setNewDisplayName(e.target.value)}
+                  className="w-40 h-8 text-sm bg-background/50 border-border/50"
+                  autoFocus
+                />
+                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleSaveDisplayName}>
+                  <Check className="w-4 h-4 text-green-500" />
+                </Button>
+                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setEditingName(false)}>
+                  <X className="w-4 h-4 text-destructive" />
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground font-inter">{displayName}</span>
+                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setEditingName(true)}>
+                  <Pencil className="w-3 h-3 text-muted-foreground" />
+                </Button>
+              </div>
+            )}
             <Button variant="ghost" size="sm" onClick={handleSignOut}>
               <LogOut className="w-4 h-4 mr-2" />
               Sign Out
