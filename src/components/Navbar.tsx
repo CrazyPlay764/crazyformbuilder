@@ -37,13 +37,13 @@ const Navbar = () => {
             {/* Logo */}
             <button 
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="flex items-center gap-2 group"
+              className="flex items-center gap-2 group cursor-pointer"
             >
               <div className="relative">
-                <Sparkles className="w-8 h-8 text-primary transition-all duration-300 group-hover:scale-110 group-active:scale-90 group-active:rotate-12" />
-                <div className="absolute inset-0 bg-primary/30 blur-xl rounded-full animate-glow-pulse" />
+                <Sparkles className="w-8 h-8 text-primary transition-all duration-300 group-hover:scale-110 group-hover:text-primary group-active:scale-90 group-active:rotate-12" />
+                <div className="absolute inset-0 bg-primary/30 blur-xl rounded-full animate-glow-pulse opacity-50 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
-              <span className="text-xl font-orbitron font-bold gradient-text transition-all duration-300 group-active:scale-95">
+              <span className="text-xl font-orbitron font-bold gradient-text transition-all duration-300 group-hover:scale-105 group-active:scale-95">
                 FormBuilder
               </span>
             </button>
@@ -57,7 +57,7 @@ const Navbar = () => {
                     const element = document.querySelector(link.href);
                     element?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="text-muted-foreground hover:text-foreground transition-colors duration-300 text-sm font-inter relative group"
+                  className="text-muted-foreground hover:text-foreground transition-all duration-300 text-sm font-inter relative group cursor-pointer hover:scale-105"
                 >
                   {link.name}
                   <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full" />
@@ -130,7 +130,7 @@ const Navbar = () => {
                   element?.scrollIntoView({ behavior: 'smooth' });
                   setIsMobileMenuOpen(false);
                 }}
-                className="text-lg text-muted-foreground hover:text-foreground transition-all duration-300 font-inter animate-fade-up text-left"
+                className="text-lg text-muted-foreground hover:text-foreground hover:translate-x-2 transition-all duration-300 font-inter animate-fade-up text-left cursor-pointer"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 {link.name}
