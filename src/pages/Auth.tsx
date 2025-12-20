@@ -5,20 +5,27 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Sparkles, Mail, Lock, ArrowLeft } from 'lucide-react';
+import { Sparkles, Mail, Lock, ArrowLeft, User } from 'lucide-react';
 import { z } from 'zod';
 
-const authSchema = z.object({
+const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
+});
+
+const signupSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+  displayName: z.string().min(2, 'Name must be at least 2 characters'),
 });
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [displayName, setDisplayName] = useState('');
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [errors, setErrors] = useState<{ email?: string; password?: string; displayName?: string }>({});
   const { signIn, signUp, user } = useAuth();
   const navigate = useNavigate();
 
@@ -32,20 +39,19 @@ const Auth = () => {
     e.preventDefault();
     setErrors({});
 
-    const validation = authSchema.safeParse({ email, password });
-    if (!validation.success) {
-      const fieldErrors: { email?: string; password?: string } = {};
-      validation.error.errors.forEach((err) => {
-        if (err.path[0] === 'email') fieldErrors.email = err.message;
-        if (err.path[0] === 'password') fieldErrors.password = err.message;
-      });
-      setErrors(fieldErrors);
-      return;
-    }
-
-    setLoading(true);
-
     if (isLogin) {
+      const validation = loginSchema.safeParse({ email, password });
+      if (!validation.success) {
+        const fieldErrors: { email?: string; password?: string } = {};
+        validation.error.errors.forEach((err) => {
+          if (err.path[0] === 'email') fieldErrors.email = err.message;
+          if (err.path[0] === 'password') fieldErrors.password = err.message;
+        });
+        setErrors(fieldErrors);
+        return;
+      }
+
+      setLoading(true);
       const { error } = await signIn(email, password);
       if (error) {
         toast.error(error.message || 'Failed to sign in');
@@ -54,7 +60,20 @@ const Auth = () => {
         navigate('/dashboard');
       }
     } else {
-      const { error } = await signUp(email, password);
+      const validation = signupSchema.safeParse({ email, password, displayName });
+      if (!validation.success) {
+        const fieldErrors: { email?: string; password?: string; displayName?: string } = {};
+        validation.error.errors.forEach((err) => {
+          if (err.path[0] === 'email') fieldErrors.email = err.message;
+          if (err.path[0] === 'password') fieldErrors.password = err.message;
+          if (err.path[0] === 'displayName') fieldErrors.displayName = err.message;
+        });
+        setErrors(fieldErrors);
+        return;
+      }
+
+      setLoading(true);
+      const { error } = await signUp(email, password, displayName);
       if (error) {
         if (error.message.includes('already registered')) {
           toast.error('This email is already registered. Please sign in instead.');
@@ -97,6 +116,24 @@ const Auth = () => {
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {!isLogin && (
+              <div className="space-y-2">
+                <Label htmlFor="displayName" className="text-foreground">Your Name</Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Input
+                    id="displayName"
+                    type="text"
+                    placeholder="John Doe"
+                    value={displayName}
+                    onChange={(e) => setDisplayName(e.target.value)}
+                    className="pl-10 bg-background/50 border-border/50 focus:border-primary"
+                  />
+                </div>
+                {errors.displayName && <p className="text-destructive text-sm">{errors.displayName}</p>}
+              </div>
+            )}
+
             <div className="space-y-2">
               <Label htmlFor="email" className="text-foreground">Email</Label>
               <div className="relative">
@@ -142,7 +179,10 @@ const Auth = () => {
           <p className="text-center text-muted-foreground mt-6 font-inter">
             {isLogin ? "Don't have an account? " : 'Already have an account? '}
             <button
-              onClick={() => setIsLogin(!isLogin)}
+              onClick={() => {
+                setIsLogin(!isLogin);
+                setErrors({});
+              }}
               className="text-primary hover:underline font-medium"
             >
               {isLogin ? 'Sign Up' : 'Sign In'}
