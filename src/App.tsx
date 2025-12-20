@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import FormBuilder from "./pages/FormBuilder";
 import NotFound from "./pages/NotFound";
 
+// Force rebuild
 const queryClient = new QueryClient();
 
 const App = () => (
