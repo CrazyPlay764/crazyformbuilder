@@ -5,7 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { Plus, FileText, Trash2, Edit, LogOut, Sparkles, Pencil, Check, X, Eye, EyeOff } from 'lucide-react';
+import { Plus, FileText, Trash2, Edit, LogOut, Sparkles, Pencil, Check, X, Eye, EyeOff, Settings } from 'lucide-react';
 
 interface Form {
   id: string;
@@ -151,6 +151,10 @@ const Dashboard = () => {
                 </Button>
               </div>
             )}
+            <Button variant="ghost" size="sm" onClick={() => navigate('/settings')}>
+              <Settings className="w-4 h-4 mr-2" />
+              Settings
+            </Button>
             <Button variant="ghost" size="sm" onClick={handleSignOut}>
               <LogOut className="w-4 h-4 mr-2" />
               Sign Out

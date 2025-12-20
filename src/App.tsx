@@ -8,6 +8,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import FormBuilder from "./pages/FormBuilder";
 import FormPreview from "./pages/FormPreview";
+import ProfileSettings from "./pages/ProfileSettings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/builder/:id" element={<FormBuilder />} />
           <Route path="/form/:id" element={<FormPreview />} />
+          <Route path="/settings" element={<ProfileSettings />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
