@@ -22,6 +22,8 @@ export interface Form {
     fontFamily: string;
     primaryColor: string;
     logoUrl?: string;
+    submitButtonText?: string;
+    successMessage?: string;
   };
   created_at: string;
   updated_at: string;

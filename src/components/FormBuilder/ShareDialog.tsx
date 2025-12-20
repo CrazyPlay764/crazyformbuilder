@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { UserPlus, Trash2, Mail } from 'lucide-react';
+import { UserPlus, Trash2, Mail, Copy, Check, Link as LinkIcon } from 'lucide-react';
 import { z } from 'zod';
 
 interface Collaborator {
@@ -31,6 +31,20 @@ const ShareDialog = ({ open, onOpenChange, formId, userId }: ShareDialogProps) =
   const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
   const [loading, setLoading] = useState(false);
   const [emailError, setEmailError] = useState('');
+  const [copied, setCopied] = useState(false);
+
+  const formUrl = `${window.location.origin}/form/${formId}`;
+
+  const copyFormLink = async () => {
+    try {
+      await navigator.clipboard.writeText(formUrl);
+      setCopied(true);
+      toast.success('Form link copied to clipboard!');
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast.error('Failed to copy link');
+    }
+  };
 
   useEffect(() => {
     if (open) {
@@ -105,7 +119,33 @@ const ShareDialog = ({ open, onOpenChange, formId, userId }: ShareDialogProps) =
         </DialogHeader>
 
         <div className="space-y-6">
-          <div className="space-y-4">
+          {/* Copy Link Section */}
+          <div className="space-y-2">
+            <Label className="text-foreground flex items-center gap-2">
+              <LinkIcon className="w-4 h-4" />
+              Form Link
+            </Label>
+            <div className="flex gap-2">
+              <Input
+                value={formUrl}
+                readOnly
+                className="bg-background/50 border-border/50 text-sm"
+              />
+              <Button 
+                variant="outline" 
+                onClick={copyFormLink}
+                className="shrink-0"
+              >
+                {copied ? (
+                  <Check className="w-4 h-4 text-green-500" />
+                ) : (
+                  <Copy className="w-4 h-4" />
+                )}
+              </Button>
+            </div>
+          </div>
+
+          <div className="border-t border-border/30 pt-4 space-y-4">
             <div className="space-y-2">
               <Label className="text-foreground">Invite by email</Label>
               <div className="flex gap-2">
