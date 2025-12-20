@@ -8,7 +8,8 @@ import {
   Upload, 
   ChevronDown, 
   Circle,
-  ListChecks
+  ListChecks,
+  LayoutList
 } from 'lucide-react';
 
 interface FieldType {
@@ -18,6 +19,7 @@ interface FieldType {
 }
 
 const fieldTypes: FieldType[] = [
+  { type: 'section', label: 'Section', icon: <LayoutList className="w-5 h-5" /> },
   { type: 'text', label: 'Text Input', icon: <Type className="w-5 h-5" /> },
   { type: 'email', label: 'Email', icon: <Mail className="w-5 h-5" /> },
   { type: 'number', label: 'Number', icon: <Hash className="w-5 h-5" /> },
