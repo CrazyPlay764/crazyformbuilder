@@ -81,15 +81,50 @@ const settings = typeof formData.settings === 'object' && formData.settings !== 
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form values:', formValues);
-    setSubmitted(true);
-  };
+    
+    if (!form || !id) return;
 
-  const handleResetForm = () => {
-    setSubmitted(false);
-    setFormValues({});
+    try {
+      // Create the response record
+      const { data: responseData, error: responseError } = await supabase
+        .from('form_responses')
+        .insert({ form_id: id })
+        .select()
+        .single();
+
+      if (responseError) {
+        console.error('Error submitting form:', responseError);
+        toast.error('Failed to submit form');
+        return;
+      }
+
+      // Insert all field values
+      const responseValues = fields.map((field) => ({
+        response_id: responseData.id,
+        field_id: field.id,
+        field_label: field.label,
+        field_type: field.type,
+        value: Array.isArray(formValues[field.id]) 
+          ? (formValues[field.id] as string[]).join(', ')
+          : String(formValues[field.id] ?? ''),
+        position: field.position,
+      }));
+
+      const { error: valuesError } = await supabase
+        .from('form_response_values')
+        .insert(responseValues);
+
+      if (valuesError) {
+        console.error('Error saving response values:', valuesError);
+      }
+
+      setSubmitted(true);
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('Failed to submit form');
+    }
   };
 
   const renderField = (field: FormField) => {

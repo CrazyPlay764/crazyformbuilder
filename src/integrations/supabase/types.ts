@@ -102,6 +102,83 @@ export type Database = {
           },
         ]
       }
+      form_response_values: {
+        Row: {
+          created_at: string
+          field_id: string
+          field_label: string
+          field_type: string
+          id: string
+          position: number
+          response_id: string
+          value: string | null
+        }
+        Insert: {
+          created_at?: string
+          field_id: string
+          field_label: string
+          field_type: string
+          id?: string
+          position?: number
+          response_id: string
+          value?: string | null
+        }
+        Update: {
+          created_at?: string
+          field_id?: string
+          field_label?: string
+          field_type?: string
+          id?: string
+          position?: number
+          response_id?: string
+          value?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "form_response_values_field_id_fkey"
+            columns: ["field_id"]
+            isOneToOne: false
+            referencedRelation: "form_fields"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "form_response_values_response_id_fkey"
+            columns: ["response_id"]
+            isOneToOne: false
+            referencedRelation: "form_responses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      form_responses: {
+        Row: {
+          form_id: string
+          id: string
+          respondent_email: string | null
+          submitted_at: string
+        }
+        Insert: {
+          form_id: string
+          id?: string
+          respondent_email?: string | null
+          submitted_at?: string
+        }
+        Update: {
+          form_id?: string
+          id?: string
+          respondent_email?: string | null
+          submitted_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "form_responses_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "forms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       forms: {
         Row: {
           created_at: string
