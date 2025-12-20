@@ -5,17 +5,24 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Loader2, Check, X } from 'lucide-react';
+import { ArrowLeft, Loader2, Check, X, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const ProfileSettings = () => {
-  const { user, profile, loading, updateDisplayName, checkDisplayNameAvailable } = useAuth();
+  const { user, profile, loading, updateDisplayName, updatePassword, checkDisplayNameAvailable } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   
   const [displayName, setDisplayName] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmittingName, setIsSubmittingName] = useState(false);
   const [nameStatus, setNameStatus] = useState<'idle' | 'checking' | 'available' | 'taken'>('idle');
+
+  // Password state
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSubmittingPassword, setIsSubmittingPassword] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -50,7 +57,7 @@ const ProfileSettings = () => {
     return () => clearTimeout(timer);
   }, [displayName, checkDisplayNameAvailable, profile?.display_name]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmitName = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!displayName || displayName.length < 3) {
@@ -71,9 +78,9 @@ const ProfileSettings = () => {
       return;
     }
 
-    setIsSubmitting(true);
+    setIsSubmittingName(true);
     const { error } = await updateDisplayName(displayName);
-    setIsSubmitting(false);
+    setIsSubmittingName(false);
 
     if (error) {
       toast({
@@ -87,6 +94,47 @@ const ProfileSettings = () => {
         description: "Your display name has been updated successfully.",
       });
       setNameStatus('idle');
+    }
+  };
+
+  const handleSubmitPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (newPassword.length < 6) {
+      toast({
+        title: "Password too short",
+        description: "Password must be at least 6 characters.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast({
+        title: "Passwords don't match",
+        description: "Please make sure both passwords match.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmittingPassword(true);
+    const { error } = await updatePassword(newPassword);
+    setIsSubmittingPassword(false);
+
+    if (error) {
+      toast({
+        title: "Update failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Password updated",
+        description: "Your password has been changed successfully.",
+      });
+      setNewPassword('');
+      setConfirmPassword('');
     }
   };
 
@@ -118,7 +166,7 @@ const ProfileSettings = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmitName} className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -169,16 +217,100 @@ const ProfileSettings = () => {
 
               <Button
                 type="submit"
-                disabled={isSubmitting || nameStatus === 'taken' || nameStatus === 'checking'}
+                disabled={isSubmittingName || nameStatus === 'taken' || nameStatus === 'checking'}
                 className="w-full"
               >
-                {isSubmitting ? (
+                {isSubmittingName ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                     Saving...
                   </>
                 ) : (
-                  'Save Changes'
+                  'Save Display Name'
+                )}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Change Password</CardTitle>
+            <CardDescription>
+              Update your password to keep your account secure
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmitPassword} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="newPassword">New Password</Label>
+                <div className="relative">
+                  <Input
+                    id="newPassword"
+                    type={showNewPassword ? 'text' : 'password'}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Enter new password"
+                    minLength={6}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                  >
+                    {showNewPassword ? (
+                      <EyeOff className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </Button>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Confirm new password"
+                    minLength={6}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </Button>
+                </div>
+                {confirmPassword && newPassword !== confirmPassword && (
+                  <p className="text-sm text-destructive">Passwords don't match</p>
+                )}
+              </div>
+
+              <Button
+                type="submit"
+                disabled={isSubmittingPassword || !newPassword || newPassword !== confirmPassword}
+                className="w-full"
+              >
+                {isSubmittingPassword ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Updating...
+                  </>
+                ) : (
+                  'Update Password'
                 )}
               </Button>
             </form>
