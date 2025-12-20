@@ -284,7 +284,7 @@ const settings = typeof formData.settings === 'object' && formData.settings !== 
           {submitted ? (
             <div className="text-center py-12 space-y-6">
               <div className="flex justify-center">
-                <CheckCircle className="w-16 h-16 text-green-500" />
+                <CheckCircle className="w-16 h-16 text-primary" />
               </div>
               <h2 className="text-2xl font-orbitron font-bold text-foreground">
                 {form.settings.successMessage || 'Thank you! Your form has been submitted successfully.'}
