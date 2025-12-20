@@ -16,6 +16,7 @@ export interface Form {
   user_id: string;
   title: string;
   description?: string | null;
+  is_published?: boolean;
   settings: {
     backgroundColor: string;
     fontFamily: string;

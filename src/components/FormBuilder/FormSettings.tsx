@@ -1,5 +1,6 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { X, ImageIcon } from 'lucide-react';
@@ -14,6 +15,8 @@ interface FormSettingsProps {
   onUpdate: (settings: { backgroundColor: string; fontFamily: string; primaryColor: string; logoUrl?: string }) => void;
   title: string;
   onTitleChange: (title: string) => void;
+  description: string;
+  onDescriptionChange: (description: string) => void;
 }
 
 const fonts = [
@@ -26,7 +29,7 @@ const fonts = [
   { value: 'Verdana', label: 'Verdana' },
 ];
 
-const FormSettings = ({ settings, onUpdate, title, onTitleChange }: FormSettingsProps) => {
+const FormSettings = ({ settings, onUpdate, title, onTitleChange, description, onDescriptionChange }: FormSettingsProps) => {
   return (
     <div className="glass rounded-xl p-4 h-fit sticky top-24">
       <h3 className="text-lg font-orbitron font-semibold text-foreground mb-4">Form Design</h3>
@@ -38,6 +41,16 @@ const FormSettings = ({ settings, onUpdate, title, onTitleChange }: FormSettings
             value={title}
             onChange={(e) => onTitleChange(e.target.value)}
             className="bg-background/50 border-border/50"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-foreground">Description</Label>
+          <Textarea
+            value={description}
+            onChange={(e) => onDescriptionChange(e.target.value)}
+            placeholder="Describe your form..."
+            className="bg-background/50 border-border/50 min-h-[80px]"
           />
         </div>
 

@@ -1,10 +1,10 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { ArrowLeft, Save, Share2, Sparkles, Palette, Settings } from 'lucide-react';
+import { ArrowLeft, Save, Share2, Sparkles, Palette, Settings, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import FieldPalette from '@/components/FormBuilder/FieldPalette';
 import FormCanvas from '@/components/FormBuilder/FormCanvas';
 import FieldSettings from '@/components/FormBuilder/FieldSettings';
@@ -24,7 +24,9 @@ const FormBuilder = () => {
   const [shareOpen, setShareOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [draggedFieldType, setDraggedFieldType] = useState<{ type: string; label: string } | null>(null);
+  const initialFormRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -54,7 +56,9 @@ const FormBuilder = () => {
         ? data.settings as { backgroundColor: string; fontFamily: string; primaryColor: string; logoUrl?: string }
         : { backgroundColor: '#1a1a2e', fontFamily: 'Inter', primaryColor: '#8b5cf6' };
       
-      setForm({ ...data, settings });
+      const formData = { ...data, settings, is_published: data.is_published ?? false };
+      setForm(formData);
+      initialFormRef.current = JSON.stringify(formData);
     }
     setLoading(false);
   };
@@ -169,7 +173,9 @@ const FormBuilder = () => {
       .from('forms')
       .update({
         title: form.title,
+        description: form.description,
         settings: form.settings,
+        is_published: form.is_published,
       })
       .eq('id', form.id);
 
@@ -177,19 +183,41 @@ const FormBuilder = () => {
       toast.error('Failed to save form');
     } else {
       toast.success('Form saved');
+      initialFormRef.current = JSON.stringify(form);
+      setHasUnsavedChanges(false);
     }
     setSaving(false);
   };
 
+  const togglePublish = () => {
+    if (form) {
+      const newForm = { ...form, is_published: !form.is_published };
+      setForm(newForm);
+      setHasUnsavedChanges(JSON.stringify(newForm) !== initialFormRef.current);
+    }
+  };
+
   const updateFormSettings = (settings: { backgroundColor: string; fontFamily: string; primaryColor: string; logoUrl?: string }) => {
     if (form) {
-      setForm({ ...form, settings });
+      const newForm = { ...form, settings };
+      setForm(newForm);
+      setHasUnsavedChanges(JSON.stringify(newForm) !== initialFormRef.current);
     }
   };
 
   const updateFormTitle = (title: string) => {
     if (form) {
-      setForm({ ...form, title });
+      const newForm = { ...form, title };
+      setForm(newForm);
+      setHasUnsavedChanges(JSON.stringify(newForm) !== initialFormRef.current);
+    }
+  };
+
+  const updateFormDescription = (description: string) => {
+    if (form) {
+      const newForm = { ...form, description };
+      setForm(newForm);
+      setHasUnsavedChanges(JSON.stringify(newForm) !== initialFormRef.current);
     }
   };
 
@@ -231,13 +259,38 @@ const FormBuilder = () => {
               <Palette className="w-4 h-4 mr-2" />
               Design
             </Button>
+            <Button 
+              variant={form.is_published ? 'default' : 'outline'} 
+              size="sm"
+              onClick={togglePublish}
+              className={form.is_published ? 'bg-green-600 hover:bg-green-700' : ''}
+            >
+              {form.is_published ? (
+                <>
+                  <Eye className="w-4 h-4 mr-2" />
+                  Open
+                </>
+              ) : (
+                <>
+                  <EyeOff className="w-4 h-4 mr-2" />
+                  Closed
+                </>
+              )}
+            </Button>
             <Button variant="ghost" size="sm" onClick={() => setShareOpen(true)}>
               <Share2 className="w-4 h-4 mr-2" />
               Share
             </Button>
-            <Button variant="glow" size="sm" onClick={handleSave} disabled={saving}>
+            <Button 
+              variant="glow" 
+              size="sm" 
+              onClick={handleSave} 
+              disabled={saving}
+              className={hasUnsavedChanges ? 'ring-2 ring-amber-500 ring-offset-2 ring-offset-background' : ''}
+            >
+              {hasUnsavedChanges && <AlertCircle className="w-4 h-4 mr-2 text-amber-500" />}
               <Save className="w-4 h-4 mr-2" />
-              {saving ? 'Saving...' : 'Save'}
+              {saving ? 'Saving...' : hasUnsavedChanges ? 'Save*' : 'Save'}
             </Button>
           </div>
         </div>
@@ -270,6 +323,8 @@ const FormBuilder = () => {
                 onUpdate={updateFormSettings}
                 title={form.title}
                 onTitleChange={updateFormTitle}
+                description={form.description || ''}
+                onDescriptionChange={updateFormDescription}
               />
             ) : selectedField ? (
               <FieldSettings field={selectedField} onUpdate={handleUpdateField} />

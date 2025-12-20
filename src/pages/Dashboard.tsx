@@ -5,12 +5,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { Plus, FileText, Trash2, Edit, LogOut, Sparkles, Pencil, Check, X } from 'lucide-react';
+import { Plus, FileText, Trash2, Edit, LogOut, Sparkles, Pencil, Check, X, Eye, EyeOff } from 'lucide-react';
 
 interface Form {
   id: string;
   title: string;
   description: string | null;
+  is_published: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -206,12 +207,27 @@ const Dashboard = () => {
                 <h3 className="text-lg font-orbitron font-semibold text-foreground mb-2">
                   {form.title}
                 </h3>
-                <p className="text-sm text-muted-foreground font-inter mb-4">
+                <p className="text-sm text-muted-foreground font-inter mb-3">
                   {form.description || 'No description'}
                 </p>
-                <p className="text-xs text-muted-foreground font-inter">
-                  Updated {new Date(form.updated_at).toLocaleDateString()}
-                </p>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    {form.is_published ? (
+                      <span className="flex items-center gap-1 text-xs text-green-500">
+                        <Eye className="w-3 h-3" />
+                        Open
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <EyeOff className="w-3 h-3" />
+                        Closed
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground font-inter">
+                    {new Date(form.updated_at).toLocaleDateString()}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
