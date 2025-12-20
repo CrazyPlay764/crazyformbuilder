@@ -289,14 +289,6 @@ const settings = typeof formData.settings === 'object' && formData.settings !== 
               <h2 className="text-2xl font-orbitron font-bold text-foreground">
                 {form.settings.successMessage || 'Thank you! Your form has been submitted successfully.'}
               </h2>
-              <Button 
-                onClick={handleResetForm}
-                variant="outline"
-                className="mt-4"
-              >
-                <RotateCcw className="w-4 h-4 mr-2" />
-                Submit Another Response
-              </Button>
             </div>
           ) : fields.length === 0 ? (
             <div className="text-center py-12">
