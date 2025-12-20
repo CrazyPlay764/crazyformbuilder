@@ -4,11 +4,12 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { ArrowLeft, Save, Share2, Sparkles, Palette, Eye, EyeOff, AlertCircle, Play } from 'lucide-react';
+import { ArrowLeft, Save, Share2, Sparkles, Palette, Eye, EyeOff, AlertCircle, Play, MessageSquare } from 'lucide-react';
 import FieldPalette from '@/components/FormBuilder/FieldPalette';
 import FormCanvas from '@/components/FormBuilder/FormCanvas';
 import FieldSettings from '@/components/FormBuilder/FieldSettings';
 import FormSettings from '@/components/FormBuilder/FormSettings';
+import FormResponses from '@/components/FormBuilder/FormResponses';
 import ShareDialog from '@/components/FormBuilder/ShareDialog';
 import { FormField, Form } from '@/types/form';
 
@@ -21,6 +22,7 @@ const FormBuilder = () => {
   const [fields, setFields] = useState<FormField[]>([]);
   const [selectedField, setSelectedField] = useState<FormField | null>(null);
   const [showFormSettings, setShowFormSettings] = useState(false);
+  const [showResponses, setShowResponses] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -261,11 +263,24 @@ const FormBuilder = () => {
               size="sm"
               onClick={() => {
                 setShowFormSettings(!showFormSettings);
+                setShowResponses(false);
                 setSelectedField(null);
               }}
             >
               <Palette className="w-4 h-4 mr-2" />
               Design
+            </Button>
+            <Button 
+              variant={showResponses ? 'glow' : 'ghost'} 
+              size="sm"
+              onClick={() => {
+                setShowResponses(!showResponses);
+                setShowFormSettings(false);
+                setSelectedField(null);
+              }}
+            >
+              <MessageSquare className="w-4 h-4 mr-2" />
+              Responses
             </Button>
             <Button 
               variant={form.is_published ? 'default' : 'outline'} 
@@ -325,7 +340,9 @@ const FormBuilder = () => {
           />
 
           <div className="w-72 shrink-0">
-            {showFormSettings ? (
+            {showResponses ? (
+              <FormResponses formId={form.id} />
+            ) : showFormSettings ? (
               <FormSettings
                 settings={form.settings}
                 onUpdate={updateFormSettings}
