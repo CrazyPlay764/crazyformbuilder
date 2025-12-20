@@ -52,14 +52,17 @@ const Navbar = () => {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8">
               {navLinks.map((link) => (
-                <a
+                <button
                   key={link.name}
-                  href={link.href}
+                  onClick={() => {
+                    const element = document.querySelector(link.href);
+                    element?.scrollIntoView({ behavior: 'smooth' });
+                  }}
                   className="text-muted-foreground hover:text-foreground transition-colors duration-300 text-sm font-inter relative group"
                 >
                   {link.name}
                   <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full" />
-                </a>
+                </button>
               ))}
             </div>
 
@@ -121,15 +124,18 @@ const Navbar = () => {
 
           <div className="flex flex-col gap-6">
             {navLinks.map((link, index) => (
-              <a
+              <button
                 key={link.name}
-                href={link.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-lg text-muted-foreground hover:text-foreground transition-all duration-300 font-inter animate-fade-up"
+                onClick={() => {
+                  const element = document.querySelector(link.href);
+                  element?.scrollIntoView({ behavior: 'smooth' });
+                  setIsMobileMenuOpen(false);
+                }}
+                className="text-lg text-muted-foreground hover:text-foreground transition-all duration-300 font-inter animate-fade-up text-left"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 {link.name}
-              </a>
+              </button>
             ))}
           </div>
 
