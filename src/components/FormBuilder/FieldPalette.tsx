@@ -7,7 +7,8 @@ import {
   Calendar, 
   Upload, 
   ChevronDown, 
-  Circle 
+  Circle,
+  ListChecks
 } from 'lucide-react';
 
 interface FieldType {
@@ -22,6 +23,7 @@ const fieldTypes: FieldType[] = [
   { type: 'number', label: 'Number', icon: <Hash className="w-5 h-5" /> },
   { type: 'textarea', label: 'Text Area', icon: <AlignLeft className="w-5 h-5" /> },
   { type: 'checkbox', label: 'Checkbox', icon: <CheckSquare className="w-5 h-5" /> },
+  { type: 'multiplechoice', label: 'Multiple Choice', icon: <ListChecks className="w-5 h-5" /> },
   { type: 'date', label: 'Date Picker', icon: <Calendar className="w-5 h-5" /> },
   { type: 'file', label: 'File Upload', icon: <Upload className="w-5 h-5" /> },
   { type: 'dropdown', label: 'Dropdown', icon: <ChevronDown className="w-5 h-5" /> },

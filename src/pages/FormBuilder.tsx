@@ -51,7 +51,7 @@ const FormBuilder = () => {
       navigate('/dashboard');
     } else {
       const settings = typeof data.settings === 'object' && data.settings !== null
-        ? data.settings as { backgroundColor: string; fontFamily: string; primaryColor: string }
+        ? data.settings as { backgroundColor: string; fontFamily: string; primaryColor: string; logoUrl?: string }
         : { backgroundColor: '#1a1a2e', fontFamily: 'Inter', primaryColor: '#8b5cf6' };
       
       setForm({ ...data, settings });
@@ -87,6 +87,8 @@ const FormBuilder = () => {
       required: false,
       options: draggedFieldType.type === 'dropdown' || draggedFieldType.type === 'radio' 
         ? ['Option 1', 'Option 2'] 
+        : draggedFieldType.type === 'multiplechoice'
+        ? ['Option 1', 'Option 2', 'Option 3']
         : null,
     };
 
@@ -179,7 +181,7 @@ const FormBuilder = () => {
     setSaving(false);
   };
 
-  const updateFormSettings = (settings: { backgroundColor: string; fontFamily: string; primaryColor: string }) => {
+  const updateFormSettings = (settings: { backgroundColor: string; fontFamily: string; primaryColor: string; logoUrl?: string }) => {
     if (form) {
       setForm({ ...form, settings });
     }

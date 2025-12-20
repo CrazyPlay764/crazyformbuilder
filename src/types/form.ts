@@ -20,6 +20,7 @@ export interface Form {
     backgroundColor: string;
     fontFamily: string;
     primaryColor: string;
+    logoUrl?: string;
   };
   created_at: string;
   updated_at: string;
