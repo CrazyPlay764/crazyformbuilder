@@ -24,6 +24,7 @@ export interface Form {
     logoUrl?: string;
     submitButtonText?: string;
     successMessage?: string;
+    closedFormMessage?: string;
   };
   created_at: string;
   updated_at: string;
