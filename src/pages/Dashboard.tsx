@@ -23,6 +23,12 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [editingName, setEditingName] = useState(false);
   const [newDisplayName, setNewDisplayName] = useState('');
+  const [isExiting, setIsExiting] = useState(false);
+
+  const handleNavigateToSettings = () => {
+    setIsExiting(true);
+    setTimeout(() => navigate('/settings'), 300);
+  };
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -112,7 +118,7 @@ const Dashboard = () => {
   const displayName = profile?.display_name || user?.email;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={`min-h-screen bg-background transition-all duration-300 ${isExiting ? 'opacity-0 translate-x-[-20px]' : 'opacity-100 translate-x-0'}`}>
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[150px]" />
         <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-accent/5 rounded-full blur-[120px]" />
@@ -151,7 +157,7 @@ const Dashboard = () => {
                 </Button>
               </div>
             )}
-            <Button variant="ghost" size="sm" onClick={() => navigate('/settings')}>
+            <Button variant="ghost" size="sm" onClick={handleNavigateToSettings}>
               <Settings className="w-4 h-4 mr-2" />
               Settings
             </Button>
