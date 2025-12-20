@@ -1,4 +1,5 @@
 import { ArrowRight, Sparkles } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 
 const CTA = () => {
@@ -33,11 +34,19 @@ const CTA = () => {
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Button variant="glow" size="xl">
-                  Get Started Free
-                  <ArrowRight className="w-5 h-5" />
+                <Button variant="glow" size="xl" asChild>
+                  <Link to="/auth">
+                    Get Started Free
+                    <ArrowRight className="w-5 h-5" />
+                  </Link>
                 </Button>
-                <Button variant="glass" size="xl">
+                <Button 
+                  variant="glass" 
+                  size="xl"
+                  onClick={() => {
+                    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                >
                   Talk to Sales
                 </Button>
               </div>

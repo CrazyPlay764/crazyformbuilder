@@ -11,6 +11,7 @@ interface FormCanvasProps {
     backgroundColor: string;
     fontFamily: string;
     primaryColor: string;
+    logoUrl?: string;
   };
   onDrop: (e: React.DragEvent) => void;
   onDragOver: (e: React.DragEvent) => void;
@@ -102,6 +103,17 @@ const FormCanvas = ({
             ))}
           </div>
         );
+      case 'multiplechoice':
+        return (
+          <div className="space-y-2">
+            {(Array.isArray(field.options) ? field.options : ['Option 1', 'Option 2', 'Option 3']).map((opt, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <Checkbox disabled />
+                <span className="text-sm text-foreground">{String(opt)}</span>
+              </div>
+            ))}
+          </div>
+        );
       default:
         return <Input className={baseInputClass} disabled />;
     }
@@ -117,8 +129,17 @@ const FormCanvas = ({
       onDrop={onDrop}
       onDragOver={onDragOver}
     >
+      {formSettings.logoUrl && (
+        <div className="mb-6 flex justify-center">
+          <img 
+            src={formSettings.logoUrl} 
+            alt="Form logo" 
+            className="max-h-20 object-contain"
+          />
+        </div>
+      )}
       {fields.length === 0 ? (
-        <div className="h-full flex items-center justify-center border-2 border-dashed border-border/30 rounded-lg">
+        <div className="h-full flex items-center justify-center border-2 border-dashed border-border/30 rounded-lg min-h-[400px]">
           <p className="text-muted-foreground font-inter">Drag and drop fields here</p>
         </div>
       ) : (

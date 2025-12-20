@@ -45,11 +45,16 @@ const Hero = () => {
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </Button>
-            <Button variant="glow-outline" size="xl" className="w-full sm:w-auto" asChild>
-              <a href="#features">
-                <Play className="w-5 h-5" />
-                See Features
-              </a>
+            <Button 
+              variant="glow-outline" 
+              size="xl" 
+              className="w-full sm:w-auto"
+              onClick={() => {
+                document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
+              <Play className="w-5 h-5" />
+              See Features
             </Button>
           </div>
 
