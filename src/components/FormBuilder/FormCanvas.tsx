@@ -114,6 +114,8 @@ const FormCanvas = ({
             ))}
           </div>
         );
+      case 'section':
+        return null;
       default:
         return <Input className={baseInputClass} disabled />;
     }
@@ -152,46 +154,92 @@ const FormCanvas = ({
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => handleFieldDrop(e, index)}
               onClick={() => onSelectField(field)}
-              className={`p-4 rounded-lg border transition-all duration-200 cursor-pointer ${
+              className={`${
+                field.type === 'section' 
+                  ? 'py-2' 
+                  : 'p-4 rounded-lg border bg-background/20'
+              } transition-all duration-200 cursor-pointer ${
                 selectedFieldId === field.id
-                  ? 'border-primary bg-primary/5'
-                  : 'border-border/30 bg-background/20 hover:border-border/50'
+                  ? field.type === 'section' ? 'bg-primary/10' : 'border-primary bg-primary/5'
+                  : field.type === 'section' ? '' : 'border-border/30 hover:border-border/50'
               }`}
             >
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <GripVertical className="w-4 h-4 text-muted-foreground cursor-grab" />
-                  <label className="text-sm font-medium text-foreground">
-                    {field.label}
-                    {field.required && <span className="text-destructive ml-1">*</span>}
-                  </label>
+              {field.type === 'section' ? (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 flex-1">
+                    <GripVertical className="w-4 h-4 text-muted-foreground cursor-grab" />
+                    <div className="flex-1 border-b-2 border-primary/50 pb-2">
+                      <h3 className="text-lg font-semibold text-foreground">
+                        {field.label}
+                      </h3>
+                      {field.placeholder && (
+                        <p className="text-sm text-muted-foreground mt-1">{field.placeholder}</p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex gap-1 ml-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onSelectField(field);
+                      }}
+                    >
+                      <Settings className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDeleteField(field.id);
+                      }}
+                    >
+                      <Trash2 className="w-4 h-4 text-destructive" />
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex gap-1">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSelectField(field);
-                    }}
-                  >
-                    <Settings className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDeleteField(field.id);
-                    }}
-                  >
-                    <Trash2 className="w-4 h-4 text-destructive" />
-                  </Button>
-                </div>
-              </div>
-              {renderField(field)}
+              ) : (
+                <>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <GripVertical className="w-4 h-4 text-muted-foreground cursor-grab" />
+                      <label className="text-sm font-medium text-foreground">
+                        {field.label}
+                        {field.required && <span className="text-destructive ml-1">*</span>}
+                      </label>
+                    </div>
+                    <div className="flex gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onSelectField(field);
+                        }}
+                      >
+                        <Settings className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDeleteField(field.id);
+                        }}
+                      >
+                        <Trash2 className="w-4 h-4 text-destructive" />
+                      </Button>
+                    </div>
+                  </div>
+                  {renderField(field)}
+                </>
+              )}
             </div>
           ))}
         </div>
