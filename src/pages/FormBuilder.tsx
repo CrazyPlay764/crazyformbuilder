@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { ArrowLeft, Save, Share2, Sparkles, Palette, Settings, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Save, Share2, Sparkles, Palette, Eye, EyeOff, AlertCircle, Play } from 'lucide-react';
 import FieldPalette from '@/components/FormBuilder/FieldPalette';
 import FormCanvas from '@/components/FormBuilder/FormCanvas';
 import FieldSettings from '@/components/FormBuilder/FieldSettings';
@@ -248,6 +248,14 @@ const FormBuilder = () => {
             </button>
           </div>
           <div className="flex items-center gap-2">
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => window.open(`/form/${id}`, '_blank')}
+            >
+              <Play className="w-4 h-4 mr-2" />
+              Preview
+            </Button>
             <Button 
               variant={showFormSettings ? 'glow' : 'ghost'} 
               size="sm"
