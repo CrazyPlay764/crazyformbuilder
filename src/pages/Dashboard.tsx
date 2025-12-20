@@ -52,6 +52,7 @@ const Dashboard = () => {
     const { data, error } = await supabase
       .from('forms')
       .select('*')
+      .eq('user_id', user?.id)
       .order('updated_at', { ascending: false });
 
     if (error) {
