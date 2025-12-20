@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ArrowLeft, Send } from 'lucide-react';
+import { ArrowLeft, Send, LogIn } from 'lucide-react';
 import { toast } from 'sonner';
 import { FormField, Form } from '@/types/form';
 
@@ -16,6 +16,7 @@ const FormPreview = () => {
   const [form, setForm] = useState<Form | null>(null);
   const [fields, setFields] = useState<FormField[]>([]);
   const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
   const [formValues, setFormValues] = useState<Record<string, string | boolean | string[]>>({});
 
   useEffect(() => {
@@ -32,8 +33,8 @@ const FormPreview = () => {
       .maybeSingle();
 
     if (formError || !formData) {
-      toast.error('Form not found');
-      navigate('/');
+      setNotFound(true);
+      setLoading(false);
       return;
     }
 
@@ -204,7 +205,28 @@ const FormPreview = () => {
     );
   }
 
-  if (!form) return null;
+  if (notFound || !form) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center space-y-4">
+          <h1 className="text-2xl font-orbitron font-bold text-foreground">Form Not Found</h1>
+          <p className="text-muted-foreground">This form doesn't exist or is not published yet.</p>
+          <div className="flex gap-4 justify-center">
+            <Button variant="outline" onClick={() => navigate('/')}>
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Go Home
+            </Button>
+            <Link to="/auth">
+              <Button variant="glow">
+                <LogIn className="w-4 h-4 mr-2" />
+                Login
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div 
@@ -215,7 +237,7 @@ const FormPreview = () => {
       }}
     >
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <div className="mb-6">
+        <div className="mb-6 flex justify-between items-center">
           <Button 
             variant="ghost" 
             size="sm" 
@@ -225,6 +247,12 @@ const FormPreview = () => {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back
           </Button>
+          <Link to="/auth">
+            <Button variant="ghost" size="sm" className="text-foreground/70 hover:text-foreground">
+              <LogIn className="w-4 h-4 mr-2" />
+              Login
+            </Button>
+          </Link>
         </div>
 
         <div className="bg-background/20 backdrop-blur-sm rounded-2xl p-8 border border-border/30">
