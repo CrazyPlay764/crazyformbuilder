@@ -87,26 +87,26 @@ const settings = typeof formData.settings === 'object' && formData.settings !== 
     if (!form || !id) return;
 
     try {
-      // Create the response record
-      const { data: responseData, error: responseError } = await supabase
+      // Create the response record without selecting it back (anon users can't SELECT due to RLS)
+      const responseId = crypto.randomUUID();
+
+      const { error: responseError } = await supabase
         .from('form_responses')
-        .insert({ form_id: id })
-        .select()
-        .single();
+        .insert({ id: responseId, form_id: id });
 
       if (responseError) {
         console.error('Error submitting form:', responseError);
-        toast.error('Failed to submit form');
+        toast.error(responseError.message || 'Failed to submit form');
         return;
       }
 
       // Insert all field values
       const responseValues = fields.map((field) => ({
-        response_id: responseData.id,
+        response_id: responseId,
         field_id: field.id,
         field_label: field.label,
         field_type: field.type,
-        value: Array.isArray(formValues[field.id]) 
+        value: Array.isArray(formValues[field.id])
           ? (formValues[field.id] as string[]).join(', ')
           : String(formValues[field.id] ?? ''),
         position: field.position,
@@ -118,12 +118,15 @@ const settings = typeof formData.settings === 'object' && formData.settings !== 
 
       if (valuesError) {
         console.error('Error saving response values:', valuesError);
+        toast.error(valuesError.message || 'Failed to submit form');
+        return;
       }
 
       setSubmitted(true);
     } catch (error) {
       console.error('Error:', error);
-      toast.error('Failed to submit form');
+      const message = error instanceof Error ? error.message : undefined;
+      toast.error(message || 'Failed to submit form');
     }
   };
 
