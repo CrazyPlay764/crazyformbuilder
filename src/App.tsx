@@ -8,9 +8,9 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import FormBuilder from "./pages/FormBuilder";
+import FormPreview from "./pages/FormPreview";
 import NotFound from "./pages/NotFound";
 
-// Force rebuild
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -25,6 +25,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/builder/:id" element={<FormBuilder />} />
+            <Route path="/form/:id" element={<FormPreview />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

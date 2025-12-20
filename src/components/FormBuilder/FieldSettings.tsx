@@ -4,7 +4,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Plus, X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface FieldSettingsProps {
   field: FormField;
@@ -13,21 +13,54 @@ interface FieldSettingsProps {
 
 const FieldSettings = ({ field, onUpdate }: FieldSettingsProps) => {
   const [newOption, setNewOption] = useState('');
+  const [localLabel, setLocalLabel] = useState(field.label);
+  const [localPlaceholder, setLocalPlaceholder] = useState(field.placeholder || '');
+  const [localOptions, setLocalOptions] = useState<string[]>([]);
 
-  const getOptions = (): string[] => {
-    return Array.isArray(field.options) ? field.options.map(String) : [];
+  // Sync local state when field changes (e.g., selecting a different field)
+  useEffect(() => {
+    setLocalLabel(field.label);
+    setLocalPlaceholder(field.placeholder || '');
+    setLocalOptions(Array.isArray(field.options) ? field.options.map(String) : []);
+  }, [field.id, field.label, field.placeholder, field.options]);
+
+  const handleLabelBlur = () => {
+    if (localLabel !== field.label) {
+      onUpdate({ ...field, label: localLabel });
+    }
+  };
+
+  const handlePlaceholderBlur = () => {
+    if (localPlaceholder !== (field.placeholder || '')) {
+      onUpdate({ ...field, placeholder: localPlaceholder });
+    }
+  };
+
+  const handleOptionBlur = (index: number) => {
+    const currentOptions = Array.isArray(field.options) ? field.options.map(String) : [];
+    if (localOptions[index] !== currentOptions[index]) {
+      onUpdate({ ...field, options: localOptions });
+    }
   };
 
   const addOption = () => {
     if (!newOption.trim()) return;
-    const options = getOptions();
-    onUpdate({ ...field, options: [...options, newOption.trim()] });
+    const updatedOptions = [...localOptions, newOption.trim()];
+    setLocalOptions(updatedOptions);
+    onUpdate({ ...field, options: updatedOptions });
     setNewOption('');
   };
 
   const removeOption = (index: number) => {
-    const options = getOptions();
-    onUpdate({ ...field, options: options.filter((_, i) => i !== index) });
+    const updatedOptions = localOptions.filter((_, i) => i !== index);
+    setLocalOptions(updatedOptions);
+    onUpdate({ ...field, options: updatedOptions });
+  };
+
+  const handleOptionChange = (index: number, value: string) => {
+    const updatedOptions = [...localOptions];
+    updatedOptions[index] = value;
+    setLocalOptions(updatedOptions);
   };
 
   return (
@@ -38,8 +71,9 @@ const FieldSettings = ({ field, onUpdate }: FieldSettingsProps) => {
         <div className="space-y-2">
           <Label className="text-foreground">Label</Label>
           <Input
-            value={field.label}
-            onChange={(e) => onUpdate({ ...field, label: e.target.value })}
+            value={localLabel}
+            onChange={(e) => setLocalLabel(e.target.value)}
+            onBlur={handleLabelBlur}
             className="bg-background/50 border-border/50"
           />
         </div>
@@ -47,8 +81,9 @@ const FieldSettings = ({ field, onUpdate }: FieldSettingsProps) => {
         <div className="space-y-2">
           <Label className="text-foreground">Placeholder</Label>
           <Input
-            value={field.placeholder || ''}
-            onChange={(e) => onUpdate({ ...field, placeholder: e.target.value })}
+            value={localPlaceholder}
+            onChange={(e) => setLocalPlaceholder(e.target.value)}
+            onBlur={handlePlaceholderBlur}
             className="bg-background/50 border-border/50"
           />
         </div>
@@ -65,15 +100,12 @@ const FieldSettings = ({ field, onUpdate }: FieldSettingsProps) => {
           <div className="space-y-2">
             <Label className="text-foreground">Options</Label>
             <div className="space-y-2">
-              {getOptions().map((option, index) => (
+              {localOptions.map((option, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <Input
                     value={option}
-                    onChange={(e) => {
-                      const options = [...getOptions()];
-                      options[index] = e.target.value;
-                      onUpdate({ ...field, options });
-                    }}
+                    onChange={(e) => handleOptionChange(index, e.target.value)}
+                    onBlur={() => handleOptionBlur(index)}
                     className="bg-background/50 border-border/50"
                   />
                   <Button
