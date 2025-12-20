@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ArrowLeft, Send, LogIn } from 'lucide-react';
+import { ArrowLeft, Send, LogIn, CheckCircle, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import { FormField, Form } from '@/types/form';
 
@@ -17,6 +17,7 @@ const FormPreview = () => {
   const [fields, setFields] = useState<FormField[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [formValues, setFormValues] = useState<Record<string, string | boolean | string[]>>({});
 
   useEffect(() => {
@@ -38,8 +39,8 @@ const FormPreview = () => {
       return;
     }
 
-    const settings = typeof formData.settings === 'object' && formData.settings !== null
-      ? formData.settings as { backgroundColor: string; fontFamily: string; primaryColor: string; logoUrl?: string }
+const settings = typeof formData.settings === 'object' && formData.settings !== null
+      ? formData.settings as { backgroundColor: string; fontFamily: string; primaryColor: string; logoUrl?: string; submitButtonText?: string; successMessage?: string }
       : { backgroundColor: '#1a1a2e', fontFamily: 'Inter', primaryColor: '#8b5cf6' };
 
     setForm({ ...formData, settings, is_published: formData.is_published ?? false });
@@ -72,8 +73,13 @@ const FormPreview = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success('Form submitted successfully! (Preview mode)');
     console.log('Form values:', formValues);
+    setSubmitted(true);
+  };
+
+  const handleResetForm = () => {
+    setSubmitted(false);
+    setFormValues({});
   };
 
   const renderField = (field: FormField) => {
@@ -275,7 +281,24 @@ const FormPreview = () => {
             )}
           </div>
 
-          {fields.length === 0 ? (
+          {submitted ? (
+            <div className="text-center py-12 space-y-6">
+              <div className="flex justify-center">
+                <CheckCircle className="w-16 h-16 text-green-500" />
+              </div>
+              <h2 className="text-2xl font-orbitron font-bold text-foreground">
+                {form.settings.successMessage || 'Thank you! Your form has been submitted successfully.'}
+              </h2>
+              <Button 
+                onClick={handleResetForm}
+                variant="outline"
+                className="mt-4"
+              >
+                <RotateCcw className="w-4 h-4 mr-2" />
+                Submit Another Response
+              </Button>
+            </div>
+          ) : fields.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground">This form has no fields yet.</p>
             </div>
@@ -297,7 +320,7 @@ const FormPreview = () => {
                 style={{ backgroundColor: form.settings.primaryColor }}
               >
                 <Send className="w-4 h-4 mr-2" />
-                Submit
+                {form.settings.submitButtonText || 'Submit'}
               </Button>
             </form>
           )}

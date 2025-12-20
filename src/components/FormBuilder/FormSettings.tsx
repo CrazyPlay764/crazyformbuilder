@@ -11,8 +11,10 @@ interface FormSettingsProps {
     fontFamily: string;
     primaryColor: string;
     logoUrl?: string;
+    submitButtonText?: string;
+    successMessage?: string;
   };
-  onUpdate: (settings: { backgroundColor: string; fontFamily: string; primaryColor: string; logoUrl?: string }) => void;
+  onUpdate: (settings: { backgroundColor: string; fontFamily: string; primaryColor: string; logoUrl?: string; submitButtonText?: string; successMessage?: string }) => void;
   title: string;
   onTitleChange: (title: string) => void;
   description: string;
@@ -142,6 +144,28 @@ const FormSettings = ({ settings, onUpdate, title, onTitleChange, description, o
               </div>
             </div>
           )}
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-foreground">Submit Button Text</Label>
+          <Input
+            value={settings.submitButtonText || ''}
+            onChange={(e) => onUpdate({ ...settings, submitButtonText: e.target.value })}
+            placeholder="Submit"
+            className="bg-background/50 border-border/50"
+          />
+          <p className="text-xs text-muted-foreground">Customize the submit button text (e.g., "שלח" for Hebrew)</p>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-foreground">Success Message</Label>
+          <Textarea
+            value={settings.successMessage || ''}
+            onChange={(e) => onUpdate({ ...settings, successMessage: e.target.value })}
+            placeholder="Thank you! Your form has been submitted successfully."
+            className="bg-background/50 border-border/50 min-h-[80px]"
+          />
+          <p className="text-xs text-muted-foreground">Message shown after form submission</p>
         </div>
       </div>
     </div>
