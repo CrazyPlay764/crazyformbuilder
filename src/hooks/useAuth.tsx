@@ -20,6 +20,7 @@ interface AuthContextType {
   updateDisplayName: (displayName: string) => Promise<{ error: Error | null }>;
   resetPassword: (email: string) => Promise<{ error: Error | null }>;
   updatePassword: (newPassword: string) => Promise<{ error: Error | null }>;
+  checkDisplayNameAvailable: (displayName: string) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -72,7 +73,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
+  const checkDisplayNameAvailable = async (displayName: string): Promise<boolean> => {
+    const { data, error } = await supabase.rpc('is_display_name_taken', { name: displayName });
+    if (error) {
+      console.error('Error checking display name:', error);
+      return false; // Assume taken on error to be safe
+    }
+    return !data; // Return true if NOT taken
+  };
+
   const signUp = async (email: string, password: string, displayName: string) => {
+    // Check if display name is already taken
+    const isAvailable = await checkDisplayNameAvailable(displayName);
+    if (!isAvailable) {
+      return { error: new Error('This name is already taken. Please choose a different name.') };
+    }
+
     const redirectUrl = `${window.location.origin}/`;
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -92,6 +108,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       if (profileError) {
         console.error('Failed to create profile:', profileError);
+        // If profile creation fails due to unique constraint, show friendly error
+        if (profileError.message?.includes('duplicate') || profileError.code === '23505') {
+          return { error: new Error('This name is already taken. Please choose a different name.') };
+        }
       } else {
         setProfile({
           id: '',
@@ -117,6 +137,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const updateDisplayName = async (displayName: string) => {
     if (!user) return { error: new Error('Not authenticated') };
+    
+    // Check if display name is already taken (by someone else)
+    const { data: currentProfile } = await supabase
+      .from('profiles')
+      .select('display_name')
+      .eq('user_id', user.id)
+      .maybeSingle();
+    
+    // Only check availability if the name is different from current
+    if (currentProfile?.display_name?.toLowerCase() !== displayName.toLowerCase()) {
+      const isAvailable = await checkDisplayNameAvailable(displayName);
+      if (!isAvailable) {
+        return { error: new Error('This name is already taken. Please choose a different name.') };
+      }
+    }
     
     const { error } = await supabase
       .from('profiles')
@@ -146,7 +181,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, profile, loading, signUp, signIn, signOut, updateDisplayName, resetPassword, updatePassword }}>
+    <AuthContext.Provider value={{ user, session, profile, loading, signUp, signIn, signOut, updateDisplayName, resetPassword, updatePassword, checkDisplayNameAvailable }}>
       {children}
     </AuthContext.Provider>
   );

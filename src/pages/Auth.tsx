@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Sparkles, Mail, Lock, ArrowLeft, User } from 'lucide-react';
+import { Sparkles, Mail, Lock, ArrowLeft, User, Check, X, Loader2 } from 'lucide-react';
 import { z } from 'zod';
 
 const loginSchema = z.object({
@@ -36,9 +36,11 @@ const Auth = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
+  const [displayNameAvailable, setDisplayNameAvailable] = useState<boolean | null>(null);
+  const [checkingName, setCheckingName] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string; displayName?: string; confirmPassword?: string }>({});
-  const { signIn, signUp, user, resetPassword, updatePassword } = useAuth();
+  const { signIn, signUp, user, resetPassword, updatePassword, checkDisplayNameAvailable } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -54,6 +56,22 @@ const Auth = () => {
     }
   }, [user, navigate, mode]);
 
+  // Debounced display name availability check
+  useEffect(() => {
+    if (mode !== 'signup' || displayName.length < 2) {
+      setDisplayNameAvailable(null);
+      return;
+    }
+
+    const timeoutId = setTimeout(async () => {
+      setCheckingName(true);
+      const isAvailable = await checkDisplayNameAvailable(displayName);
+      setDisplayNameAvailable(isAvailable);
+      setCheckingName(false);
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [displayName, mode, checkDisplayNameAvailable]);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
@@ -211,13 +229,30 @@ const Auth = () => {
                   <Input
                     id="displayName"
                     type="text"
-                    placeholder="John Doe"
+                    placeholder="crazyplay"
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
-                    className="pl-10 bg-background/50 border-border/50 focus:border-primary"
+                    className="pl-10 pr-10 bg-background/50 border-border/50 focus:border-primary"
                   />
+                  {displayName.length >= 2 && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      {checkingName ? (
+                        <Loader2 className="w-5 h-5 text-muted-foreground animate-spin" />
+                      ) : displayNameAvailable === true ? (
+                        <Check className="w-5 h-5 text-green-500" />
+                      ) : displayNameAvailable === false ? (
+                        <X className="w-5 h-5 text-destructive" />
+                      ) : null}
+                    </div>
+                  )}
                 </div>
                 {errors.displayName && <p className="text-destructive text-sm">{errors.displayName}</p>}
+                {displayNameAvailable === false && !errors.displayName && (
+                  <p className="text-destructive text-sm">This name is already taken</p>
+                )}
+                {displayNameAvailable === true && (
+                  <p className="text-green-500 text-sm">This name is available!</p>
+                )}
               </div>
             )}
 
