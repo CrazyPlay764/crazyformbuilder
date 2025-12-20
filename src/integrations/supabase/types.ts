@@ -245,6 +245,7 @@ export type Database = {
     }
     Functions: {
       get_current_user_email: { Args: never; Returns: string }
+      is_display_name_taken: { Args: { name: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
