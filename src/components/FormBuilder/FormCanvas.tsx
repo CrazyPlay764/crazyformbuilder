@@ -12,6 +12,8 @@ interface FormCanvasProps {
     fontFamily: string;
     primaryColor: string;
     logoUrl?: string;
+    gradientDirection?: string;
+    gradientEndColor?: string;
   };
   onDrop: (e: React.DragEvent) => void;
   onDragOver: (e: React.DragEvent) => void;
@@ -19,7 +21,24 @@ interface FormCanvasProps {
   onSelectField: (field: FormField) => void;
   selectedFieldId: string | null;
   onReorderFields: (dragIndex: number, dropIndex: number) => void;
+  previewDevice?: 'desktop' | 'tablet' | 'mobile';
 }
+
+const getGradientStyle = (direction: string, startColor: string, endColor: string): string => {
+  const directionMap: Record<string, string> = {
+    'to-b': 'to bottom',
+    'to-t': 'to top',
+    'to-r': 'to right',
+    'to-l': 'to left',
+    'to-br': 'to bottom right',
+    'to-bl': 'to bottom left',
+    'to-tr': 'to top right',
+    'to-tl': 'to top left',
+  };
+  
+  const cssDirection = directionMap[direction] || 'to bottom';
+  return `linear-gradient(${cssDirection}, ${startColor}, ${endColor})`;
+};
 
 const FormCanvas = ({
   fields,
@@ -30,8 +49,24 @@ const FormCanvas = ({
   onSelectField,
   selectedFieldId,
   onReorderFields,
+  previewDevice = 'desktop',
 }: FormCanvasProps) => {
-  const handleFieldDragStart = (e: React.DragEvent, index: number) => {
+  const deviceWidths = {
+    desktop: 'w-full',
+    tablet: 'max-w-[768px]',
+    mobile: 'max-w-[375px]',
+  };
+
+  const hasGradient = formSettings.gradientDirection && formSettings.gradientDirection !== 'none';
+  const backgroundStyle = hasGradient
+    ? { background: getGradientStyle(formSettings.gradientDirection!, formSettings.backgroundColor, formSettings.gradientEndColor || '#4a1d96') }
+    : { backgroundColor: formSettings.backgroundColor };
+  const handleFieldDragStart = (e: React.DragEvent, index: number, isGripHandle: boolean) => {
+    // Only allow dragging from the grip handle, not touch events on mobile
+    if (!isGripHandle) {
+      e.preventDefault();
+      return;
+    }
     e.dataTransfer.setData('fieldIndex', index.toString());
   };
 
@@ -122,15 +157,16 @@ const FormCanvas = ({
   };
 
   return (
-    <div
-      className="flex-1 rounded-xl p-6 min-h-[600px] transition-all duration-300"
-      style={{ 
-        backgroundColor: formSettings.backgroundColor,
-        fontFamily: formSettings.fontFamily
-      }}
-      onDrop={onDrop}
-      onDragOver={onDragOver}
-    >
+    <div className="flex-1 flex justify-center">
+      <div
+        className={`${deviceWidths[previewDevice]} rounded-xl p-6 min-h-[600px] transition-all duration-300`}
+        style={{ 
+          ...backgroundStyle,
+          fontFamily: formSettings.fontFamily
+        }}
+        onDrop={onDrop}
+        onDragOver={onDragOver}
+      >
       {formSettings.logoUrl && (
         <div className="mb-6 flex justify-center">
           <img 
@@ -149,8 +185,7 @@ const FormCanvas = ({
           {fields.map((field, index) => (
             <div
               key={field.id}
-              draggable
-              onDragStart={(e) => handleFieldDragStart(e, index)}
+              draggable={false}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => handleFieldDrop(e, index)}
               onClick={() => onSelectField(field)}
@@ -167,7 +202,13 @@ const FormCanvas = ({
               {field.type === 'section' ? (
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 flex-1">
-                    <GripVertical className="w-4 h-4 text-muted-foreground cursor-grab" />
+                    <div
+                      draggable
+                      onDragStart={(e) => handleFieldDragStart(e, index, true)}
+                      className="cursor-grab touch-none"
+                    >
+                      <GripVertical className="w-4 h-4 text-muted-foreground" />
+                    </div>
                     <div className="flex-1 border-b-2 border-primary/50 pb-2">
                       <h3 className="text-lg font-semibold text-foreground">
                         {field.label}
@@ -206,7 +247,13 @@ const FormCanvas = ({
                 <>
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <GripVertical className="w-4 h-4 text-muted-foreground cursor-grab" />
+                      <div
+                        draggable
+                        onDragStart={(e) => handleFieldDragStart(e, index, true)}
+                        className="cursor-grab touch-none"
+                      >
+                        <GripVertical className="w-4 h-4 text-muted-foreground" />
+                      </div>
                       <label className="text-sm font-medium text-foreground">
                         {field.label}
                         {field.required && <span className="text-destructive ml-1">*</span>}
@@ -244,6 +291,7 @@ const FormCanvas = ({
           ))}
         </div>
       )}
+      </div>
     </div>
   );
 };

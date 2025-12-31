@@ -42,7 +42,7 @@ const FormPreview = () => {
     }
 
 const settings = typeof formData.settings === 'object' && formData.settings !== null
-      ? formData.settings as { backgroundColor: string; fontFamily: string; primaryColor: string; logoUrl?: string; submitButtonText?: string; successMessage?: string; closedFormMessage?: string }
+      ? formData.settings as { backgroundColor: string; fontFamily: string; primaryColor: string; logoUrl?: string; submitButtonText?: string; successMessage?: string; closedFormMessage?: string; gradientDirection?: string; gradientEndColor?: string }
       : { backgroundColor: '#1a1a2e', fontFamily: 'Inter', primaryColor: '#8b5cf6' };
 
     // Check if form is closed (not published)
@@ -299,11 +299,32 @@ const settings = typeof formData.settings === 'object' && formData.settings !== 
     );
   }
 
+  const getGradientStyle = (direction: string, startColor: string, endColor: string): string => {
+    const directionMap: Record<string, string> = {
+      'to-b': 'to bottom',
+      'to-t': 'to top',
+      'to-r': 'to right',
+      'to-l': 'to left',
+      'to-br': 'to bottom right',
+      'to-bl': 'to bottom left',
+      'to-tr': 'to top right',
+      'to-tl': 'to top left',
+    };
+    
+    const cssDirection = directionMap[direction] || 'to bottom';
+    return `linear-gradient(${cssDirection}, ${startColor}, ${endColor})`;
+  };
+
+  const hasGradient = form.settings.gradientDirection && form.settings.gradientDirection !== 'none';
+  const backgroundStyle = hasGradient
+    ? { background: getGradientStyle(form.settings.gradientDirection!, form.settings.backgroundColor, form.settings.gradientEndColor || '#4a1d96') }
+    : { backgroundColor: form.settings.backgroundColor };
+
   return (
     <div 
       className="min-h-screen"
       style={{ 
-        backgroundColor: form.settings.backgroundColor,
+        ...backgroundStyle,
         fontFamily: form.settings.fontFamily
       }}
     >

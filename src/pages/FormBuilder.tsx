@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { ArrowLeft, Save, Share2, Sparkles, Palette, Eye, EyeOff, AlertCircle, Play, MessageSquare } from 'lucide-react';
+import { ArrowLeft, Save, Share2, Sparkles, Palette, Eye, EyeOff, AlertCircle, Play, MessageSquare, Monitor, Tablet, Smartphone } from 'lucide-react';
 import FieldPalette from '@/components/FormBuilder/FieldPalette';
 import FormCanvas from '@/components/FormBuilder/FormCanvas';
 import FieldSettings from '@/components/FormBuilder/FieldSettings';
@@ -28,6 +28,7 @@ const FormBuilder = () => {
   const [saving, setSaving] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [draggedFieldType, setDraggedFieldType] = useState<{ type: string; label: string } | null>(null);
+  const [previewDevice, setPreviewDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const initialFormRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -199,7 +200,17 @@ const FormBuilder = () => {
     }
   };
 
-  const updateFormSettings = (settings: { backgroundColor: string; fontFamily: string; primaryColor: string; logoUrl?: string }) => {
+  const updateFormSettings = (settings: { 
+    backgroundColor: string; 
+    fontFamily: string; 
+    primaryColor: string; 
+    logoUrl?: string;
+    gradientDirection?: string;
+    gradientEndColor?: string;
+    submitButtonText?: string;
+    successMessage?: string;
+    closedFormMessage?: string;
+  }) => {
     if (form) {
       const newForm = { ...form, settings };
       setForm(newForm);
@@ -250,6 +261,37 @@ const FormBuilder = () => {
             </button>
           </div>
           <div className="flex items-center gap-2">
+            {/* Device Preview Toggle */}
+            <div className="flex items-center border border-border/50 rounded-lg p-0.5 mr-2">
+              <Button
+                variant={previewDevice === 'desktop' ? 'secondary' : 'ghost'}
+                size="icon"
+                className="h-7 w-7"
+                onClick={() => setPreviewDevice('desktop')}
+                title="Desktop view"
+              >
+                <Monitor className="w-4 h-4" />
+              </Button>
+              <Button
+                variant={previewDevice === 'tablet' ? 'secondary' : 'ghost'}
+                size="icon"
+                className="h-7 w-7"
+                onClick={() => setPreviewDevice('tablet')}
+                title="Tablet view"
+              >
+                <Tablet className="w-4 h-4" />
+              </Button>
+              <Button
+                variant={previewDevice === 'mobile' ? 'secondary' : 'ghost'}
+                size="icon"
+                className="h-7 w-7"
+                onClick={() => setPreviewDevice('mobile')}
+                title="Mobile view"
+              >
+                <Smartphone className="w-4 h-4" />
+              </Button>
+            </div>
+            
             <Button 
               variant="ghost" 
               size="sm"
@@ -337,6 +379,7 @@ const FormBuilder = () => {
             }}
             selectedFieldId={selectedField?.id || null}
             onReorderFields={handleReorderFields}
+            previewDevice={previewDevice}
           />
 
           <div className="w-72 shrink-0">
