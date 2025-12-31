@@ -333,7 +333,7 @@ const settings = typeof formData.settings === 'object' && formData.settings !== 
           <Button 
             variant="ghost" 
             size="sm" 
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/')}
             className="text-foreground/70 hover:text-foreground"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
