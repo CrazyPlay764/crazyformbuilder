@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, Send, LogIn, CheckCircle, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import { FormField, Form } from '@/types/form';
@@ -21,6 +22,26 @@ const FormPreview = () => {
   const [closedMessage, setClosedMessage] = useState<string>('');
   const [submitted, setSubmitted] = useState(false);
   const [formValues, setFormValues] = useState<Record<string, string | boolean | string[]>>({});
+
+  // Calculate progress
+  const progressInfo = useMemo(() => {
+    const totalFields = fields.length;
+    if (totalFields === 0) return { completed: 0, total: 0, percentage: 0 };
+    
+    const completedFields = fields.filter((field) => {
+      const value = formValues[field.id];
+      if (value === undefined || value === null) return false;
+      if (typeof value === 'boolean') return value === true;
+      if (Array.isArray(value)) return value.length > 0;
+      return String(value).trim() !== '';
+    }).length;
+
+    return {
+      completed: completedFields,
+      total: totalFields,
+      percentage: Math.round((completedFields / totalFields) * 100),
+    };
+  }, [fields, formValues]);
 
   useEffect(() => {
     if (id) {
@@ -382,6 +403,17 @@ const settings = typeof formData.settings === 'object' && formData.settings !== 
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Progress indicator */}
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Progress</span>
+                  <span className="text-foreground font-medium">
+                    {progressInfo.completed} / {progressInfo.total} completed
+                  </span>
+                </div>
+                <Progress value={progressInfo.percentage} className="h-2" />
+              </div>
+
               {fields.map((field) => (
                 <div key={field.id} className="space-y-2">
                   <label className="text-sm font-medium text-foreground">
