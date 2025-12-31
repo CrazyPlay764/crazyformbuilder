@@ -14,8 +14,10 @@ interface FormSettingsProps {
     submitButtonText?: string;
     successMessage?: string;
     closedFormMessage?: string;
+    gradientDirection?: string;
+    gradientEndColor?: string;
   };
-  onUpdate: (settings: { backgroundColor: string; fontFamily: string; primaryColor: string; logoUrl?: string; submitButtonText?: string; successMessage?: string; closedFormMessage?: string }) => void;
+  onUpdate: (settings: FormSettingsProps['settings']) => void;
   title: string;
   onTitleChange: (title: string) => void;
   description: string;
@@ -30,6 +32,18 @@ const fonts = [
   { value: 'Times New Roman', label: 'Times New Roman' },
   { value: 'Courier New', label: 'Courier New' },
   { value: 'Verdana', label: 'Verdana' },
+];
+
+const gradientDirections = [
+  { value: 'none', label: 'No Gradient' },
+  { value: 'to-b', label: 'Down' },
+  { value: 'to-t', label: 'Up' },
+  { value: 'to-r', label: 'Right' },
+  { value: 'to-l', label: 'Left' },
+  { value: 'to-br', label: 'Diagonal Down-Right' },
+  { value: 'to-bl', label: 'Diagonal Down-Left' },
+  { value: 'to-tr', label: 'Diagonal Up-Right' },
+  { value: 'to-tl', label: 'Diagonal Up-Left' },
 ];
 
 const FormSettings = ({ settings, onUpdate, title, onTitleChange, description, onDescriptionChange }: FormSettingsProps) => {
@@ -73,6 +87,45 @@ const FormSettings = ({ settings, onUpdate, title, onTitleChange, description, o
             />
           </div>
         </div>
+
+        <div className="space-y-2">
+          <Label className="text-foreground">Gradient Direction</Label>
+          <Select
+            value={settings.gradientDirection || 'none'}
+            onValueChange={(value) => onUpdate({ ...settings, gradientDirection: value })}
+          >
+            <SelectTrigger className="bg-background/50 border-border/50">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {gradientDirections.map((dir) => (
+                <SelectItem key={dir.value} value={dir.value}>
+                  {dir.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <p className="text-xs text-muted-foreground">RGB color transition from background to end color</p>
+        </div>
+
+        {settings.gradientDirection && settings.gradientDirection !== 'none' && (
+          <div className="space-y-2">
+            <Label className="text-foreground">Gradient End Color</Label>
+            <div className="flex gap-2">
+              <Input
+                type="color"
+                value={settings.gradientEndColor || '#4a1d96'}
+                onChange={(e) => onUpdate({ ...settings, gradientEndColor: e.target.value })}
+                className="w-12 h-10 p-1 cursor-pointer"
+              />
+              <Input
+                value={settings.gradientEndColor || '#4a1d96'}
+                onChange={(e) => onUpdate({ ...settings, gradientEndColor: e.target.value })}
+                className="bg-background/50 border-border/50"
+              />
+            </div>
+          </div>
+        )}
 
         <div className="space-y-2">
           <Label className="text-foreground">Primary Color</Label>

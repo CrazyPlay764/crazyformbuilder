@@ -25,6 +25,8 @@ export interface Form {
     submitButtonText?: string;
     successMessage?: string;
     closedFormMessage?: string;
+    gradientDirection?: string;
+    gradientEndColor?: string;
   };
   created_at: string;
   updated_at: string;
