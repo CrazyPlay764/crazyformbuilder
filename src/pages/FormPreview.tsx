@@ -23,6 +23,33 @@ const FormPreview = () => {
   const [submitted, setSubmitted] = useState(false);
   const [formValues, setFormValues] = useState<Record<string, string | boolean | string[]>>({});
 
+  const ensureBackendConfig = () => {
+    if (import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY) return true;
+    toast.error(
+      'כדי שהטופס יעבוד ב‑Vercel צריך להגדיר Environment Variables: VITE_SUPABASE_URL ו‑VITE_SUPABASE_PUBLISHABLE_KEY ואז לבצע Redeploy.'
+    );
+    return false;
+  };
+
+  const createResponseId = (): string => {
+    if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
+
+    const cryptoObj = globalThis.crypto;
+    if (cryptoObj?.getRandomValues) {
+      const bytes = new Uint8Array(16);
+      cryptoObj.getRandomValues(bytes);
+
+      // RFC 4122 version 4
+      bytes[6] = (bytes[6] & 0x0f) | 0x40;
+      bytes[8] = (bytes[8] & 0x3f) | 0x80;
+
+      const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+      return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+    }
+
+    return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  };
+
   // Calculate progress
   const progressInfo = useMemo(() => {
     const totalFields = fields.length;
@@ -50,6 +77,11 @@ const FormPreview = () => {
   }, [id]);
 
   const fetchFormData = async () => {
+    if (!ensureBackendConfig()) {
+      setLoading(false);
+      return;
+    }
+
     const { data: formData, error: formError } = await supabase
       .from('forms')
       .select('*')
@@ -104,12 +136,13 @@ const settings = typeof formData.settings === 'object' && formData.settings !== 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!form || !id) return;
+    if (!ensureBackendConfig()) return;
 
     try {
       // Create the response record without selecting it back (anon users can't SELECT due to RLS)
-      const responseId = crypto.randomUUID();
+      const responseId = createResponseId();
 
       const { error: responseError } = await supabase
         .from('form_responses')
