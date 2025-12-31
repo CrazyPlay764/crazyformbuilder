@@ -82,6 +82,36 @@ const FormBuilder = () => {
     setDraggedFieldType({ type, label });
   };
 
+  const handleAddField = async (type: string, label: string) => {
+    if (!id) return;
+
+    const newField = {
+      form_id: id,
+      type: type,
+      label: label,
+      position: fields.length,
+      required: false,
+      options: type === 'dropdown' || type === 'radio' 
+        ? ['Option 1', 'Option 2'] 
+        : type === 'multiplechoice'
+        ? ['Option 1', 'Option 2', 'Option 3']
+        : null,
+    };
+
+    const { data, error } = await supabase
+      .from('form_fields')
+      .insert(newField)
+      .select()
+      .single();
+
+    if (error) {
+      toast.error('Failed to add field');
+    } else {
+      setFields([...fields, data as FormField]);
+      toast.success('Field added');
+    }
+  };
+
   const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     if (!draggedFieldType || !id) return;
@@ -364,7 +394,7 @@ const FormBuilder = () => {
       <main className="container mx-auto px-4 py-6">
         <div className="flex gap-6">
           <div className="w-64 shrink-0">
-            <FieldPalette onDragStart={handleDragStart} />
+            <FieldPalette onDragStart={handleDragStart} onAddField={handleAddField} />
           </div>
           
           <FormCanvas
