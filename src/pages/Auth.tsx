@@ -147,8 +147,9 @@ const Auth = () => {
       }
       // Show banner instead of sending email
       setResetEmail(email);
-      setShowResetBanner(true);
+      setBannerExiting(false);
       setResetCountdown(10);
+      setShowResetBanner(true);
       return;
     }
 
