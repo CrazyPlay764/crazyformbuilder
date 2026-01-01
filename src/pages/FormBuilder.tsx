@@ -492,9 +492,21 @@ const FormBuilder = () => {
                 <FieldSettings field={selectedField} onUpdate={handleUpdateField} />
               ) : (
                 <div className="glass rounded-xl p-4">
-                  <p className="text-muted-foreground text-sm font-inter text-center">
-                    Select a field to edit its settings, or click Design to customize the form appearance.
-                  </p>
+                  <div className="flex flex-col items-center gap-3 text-center">
+                    <Share2 className="w-8 h-8 text-muted-foreground" />
+                    <p className="text-muted-foreground text-sm font-inter">
+                      Share your form with others
+                    </p>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => setShareOpen(true)}
+                      className="w-full"
+                    >
+                      <Share2 className="w-4 h-4 mr-2" />
+                      Share Form
+                    </Button>
+                  </div>
                 </div>
               )}
             </div>
