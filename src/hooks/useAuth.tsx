@@ -167,7 +167,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const resetPassword = async (email: string) => {
-    const redirectUrl = `${window.location.origin}/auth?mode=reset`;
+    // Use production URL for password reset redirects
+    const productionUrl = 'https://crazyform.vercel.app';
+    const redirectUrl = `${productionUrl}/auth?mode=reset`;
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: redirectUrl,
     });
