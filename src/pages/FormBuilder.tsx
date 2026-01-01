@@ -1,10 +1,10 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { ArrowLeft, Save, Share2, Sparkles, Palette, Eye, EyeOff, AlertCircle, Play, MessageSquare, Monitor, Tablet, Smartphone } from 'lucide-react';
+import { ArrowLeft, Save, Share2, Sparkles, Palette, Eye, EyeOff, AlertCircle, Play, MessageSquare, Monitor, Tablet, Smartphone, Lock } from 'lucide-react';
 import FieldPalette from '@/components/FormBuilder/FieldPalette';
 import FormCanvas from '@/components/FormBuilder/FormCanvas';
 import FieldSettings from '@/components/FormBuilder/FieldSettings';
@@ -15,6 +15,7 @@ import { FormField, Form } from '@/types/form';
 
 const FormBuilder = () => {
   const { id } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   
@@ -29,7 +30,11 @@ const FormBuilder = () => {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [draggedFieldType, setDraggedFieldType] = useState<{ type: string; label: string } | null>(null);
   const [previewDevice, setPreviewDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
+  const [userRole, setUserRole] = useState<'owner' | 'editor' | 'viewer'>('owner');
   const initialFormRef = useRef<string | null>(null);
+
+  const isReadOnly = userRole === 'viewer';
+  const isOwner = userRole === 'owner';
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -41,8 +46,43 @@ const FormBuilder = () => {
     if (user && id) {
       fetchForm();
       fetchFields();
+      determineUserRole();
     }
   }, [user, id]);
+
+  const determineUserRole = async () => {
+    // Check if user is the owner
+    const { data: formData } = await supabase
+      .from('forms')
+      .select('user_id')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (formData?.user_id === user?.id) {
+      setUserRole('owner');
+      return;
+    }
+
+    // Check URL param for role hint
+    const roleParam = searchParams.get('role');
+    if (roleParam === 'viewer' || roleParam === 'editor') {
+      setUserRole(roleParam);
+      return;
+    }
+
+    // Check collaborator status
+    const { data: collab } = await supabase
+      .from('form_collaborators')
+      .select('role')
+      .eq('form_id', id)
+      .or(`user_id.eq.${user?.id},email.eq.${user?.email}`)
+      .eq('status', 'accepted')
+      .maybeSingle();
+
+    if (collab) {
+      setUserRole(collab.role as 'editor' | 'viewer');
+    }
+  };
 
   const fetchForm = async () => {
     const { data, error } = await supabase
@@ -276,6 +316,16 @@ const FormBuilder = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Read-only banner for viewers */}
+      {isReadOnly && (
+        <div className="bg-amber-500/20 border-b border-amber-500/50 px-4 py-2">
+          <div className="container mx-auto flex items-center justify-center gap-2 text-amber-200">
+            <Lock className="w-4 h-4" />
+            <span className="text-sm font-inter">You have view-only access to this form</span>
+          </div>
+        </div>
+      )}
+      
       <header className="glass-strong sticky top-0 z-50 border-b border-border/50">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -289,6 +339,15 @@ const FormBuilder = () => {
               <Sparkles className="w-6 h-6 text-primary transition-all duration-300 group-hover:scale-110" />
               <span className="font-orbitron font-semibold text-foreground group-hover:text-primary transition-colors">{form.title}</span>
             </button>
+            {!isOwner && (
+              <span className={`text-xs px-2 py-1 rounded-full ${
+                userRole === 'editor' 
+                  ? 'bg-primary/20 text-primary' 
+                  : 'bg-amber-500/20 text-amber-200'
+              }`}>
+                {userRole === 'editor' ? 'Editor' : 'Viewer'}
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-2">
             {/* Device Preview Toggle */}
@@ -330,119 +389,138 @@ const FormBuilder = () => {
               <Play className="w-4 h-4 mr-2" />
               Preview
             </Button>
-            <Button 
-              variant={showFormSettings ? 'glow' : 'ghost'} 
-              size="sm"
-              onClick={() => {
-                setShowFormSettings(!showFormSettings);
-                setShowResponses(false);
-                setSelectedField(null);
-              }}
-            >
-              <Palette className="w-4 h-4 mr-2" />
-              Design
-            </Button>
-            <Button 
-              variant={showResponses ? 'glow' : 'ghost'} 
-              size="sm"
-              onClick={() => {
-                setShowResponses(!showResponses);
-                setShowFormSettings(false);
-                setSelectedField(null);
-              }}
-            >
-              <MessageSquare className="w-4 h-4 mr-2" />
-              Responses
-            </Button>
-            <Button 
-              variant={form.is_published ? 'default' : 'outline'} 
-              size="sm"
-              onClick={togglePublish}
-              className={form.is_published ? 'bg-green-600 hover:bg-green-700' : ''}
-            >
-              {form.is_published ? (
-                <>
-                  <Eye className="w-4 h-4 mr-2" />
-                  Open
-                </>
-              ) : (
-                <>
-                  <EyeOff className="w-4 h-4 mr-2" />
-                  Closed
-                </>
-              )}
-            </Button>
-            <Button variant="ghost" size="sm" onClick={() => setShareOpen(true)}>
-              <Share2 className="w-4 h-4 mr-2" />
-              Share
-            </Button>
-            <Button 
-              variant="glow" 
-              size="sm" 
-              onClick={handleSave} 
-              disabled={saving}
-              className={hasUnsavedChanges ? 'ring-2 ring-amber-500 ring-offset-2 ring-offset-background' : ''}
-            >
-              {hasUnsavedChanges && <AlertCircle className="w-4 h-4 mr-2 text-amber-500" />}
-              <Save className="w-4 h-4 mr-2" />
-              {saving ? 'Saving...' : hasUnsavedChanges ? 'Save*' : 'Save'}
-            </Button>
+            
+            {!isReadOnly && (
+              <>
+                <Button 
+                  variant={showFormSettings ? 'glow' : 'ghost'} 
+                  size="sm"
+                  onClick={() => {
+                    setShowFormSettings(!showFormSettings);
+                    setShowResponses(false);
+                    setSelectedField(null);
+                  }}
+                >
+                  <Palette className="w-4 h-4 mr-2" />
+                  Design
+                </Button>
+                <Button 
+                  variant={showResponses ? 'glow' : 'ghost'} 
+                  size="sm"
+                  onClick={() => {
+                    setShowResponses(!showResponses);
+                    setShowFormSettings(false);
+                    setSelectedField(null);
+                  }}
+                >
+                  <MessageSquare className="w-4 h-4 mr-2" />
+                  Responses
+                </Button>
+                <Button 
+                  variant={form.is_published ? 'default' : 'outline'} 
+                  size="sm"
+                  onClick={togglePublish}
+                  className={form.is_published ? 'bg-green-600 hover:bg-green-700' : ''}
+                >
+                  {form.is_published ? (
+                    <>
+                      <Eye className="w-4 h-4 mr-2" />
+                      Open
+                    </>
+                  ) : (
+                    <>
+                      <EyeOff className="w-4 h-4 mr-2" />
+                      Closed
+                    </>
+                  )}
+                </Button>
+              </>
+            )}
+            
+            {isOwner && (
+              <Button variant="ghost" size="sm" onClick={() => setShareOpen(true)}>
+                <Share2 className="w-4 h-4 mr-2" />
+                Share
+              </Button>
+            )}
+            
+            {!isReadOnly && (
+              <Button 
+                variant="glow" 
+                size="sm" 
+                onClick={handleSave} 
+                disabled={saving}
+                className={hasUnsavedChanges ? 'ring-2 ring-amber-500 ring-offset-2 ring-offset-background' : ''}
+              >
+                {hasUnsavedChanges && <AlertCircle className="w-4 h-4 mr-2 text-amber-500" />}
+                <Save className="w-4 h-4 mr-2" />
+                {saving ? 'Saving...' : hasUnsavedChanges ? 'Save*' : 'Save'}
+              </Button>
+            )}
           </div>
         </div>
       </header>
 
       <main className="container mx-auto px-4 py-6">
         <div className="flex gap-6">
-          <div className="w-64 shrink-0">
-            <FieldPalette onDragStart={handleDragStart} onAddField={handleAddField} />
-          </div>
+          {/* Field palette - only for editors/owners */}
+          {!isReadOnly && (
+            <div className="w-64 shrink-0">
+              <FieldPalette onDragStart={handleDragStart} onAddField={handleAddField} />
+            </div>
+          )}
           
           <FormCanvas
             fields={fields}
             formSettings={form.settings}
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-            onDeleteField={handleDeleteField}
-            onSelectField={(field) => {
+            onDrop={isReadOnly ? () => {} : handleDrop}
+            onDragOver={isReadOnly ? () => {} : handleDragOver}
+            onDeleteField={isReadOnly ? () => {} : handleDeleteField}
+            onSelectField={isReadOnly ? () => {} : (field) => {
               setSelectedField(field);
               setShowFormSettings(false);
             }}
-            selectedFieldId={selectedField?.id || null}
-            onReorderFields={handleReorderFields}
+            selectedFieldId={isReadOnly ? null : selectedField?.id || null}
+            onReorderFields={isReadOnly ? () => {} : handleReorderFields}
             previewDevice={previewDevice}
           />
 
-          <div className="w-72 shrink-0">
-            {showResponses ? (
-              <FormResponses formId={form.id} />
-            ) : showFormSettings ? (
-              <FormSettings
-                settings={form.settings}
-                onUpdate={updateFormSettings}
-                title={form.title}
-                onTitleChange={updateFormTitle}
-                description={form.description || ''}
-                onDescriptionChange={updateFormDescription}
-              />
-            ) : selectedField ? (
-              <FieldSettings field={selectedField} onUpdate={handleUpdateField} />
-            ) : (
-              <div className="glass rounded-xl p-4">
-                <p className="text-muted-foreground text-sm font-inter text-center">
-                  Select a field to edit its settings, or click Design to customize the form appearance.
-                </p>
-              </div>
-            )}
-          </div>
+          {/* Settings panel - only for editors/owners */}
+          {!isReadOnly && (
+            <div className="w-72 shrink-0">
+              {showResponses ? (
+                <FormResponses formId={form.id} />
+              ) : showFormSettings ? (
+                <FormSettings
+                  settings={form.settings}
+                  onUpdate={updateFormSettings}
+                  title={form.title}
+                  onTitleChange={updateFormTitle}
+                  description={form.description || ''}
+                  onDescriptionChange={updateFormDescription}
+                />
+              ) : selectedField ? (
+                <FieldSettings field={selectedField} onUpdate={handleUpdateField} />
+              ) : (
+                <div className="glass rounded-xl p-4">
+                  <p className="text-muted-foreground text-sm font-inter text-center">
+                    Select a field to edit its settings, or click Design to customize the form appearance.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </main>
 
-      <ShareDialog
-        open={shareOpen}
-        onOpenChange={setShareOpen}
-        formId={form.id}
-        userId={user?.id || ''}
-      />
+      {isOwner && (
+        <ShareDialog
+          open={shareOpen}
+          onOpenChange={setShareOpen}
+          formId={form.id}
+          userId={user?.id || ''}
+        />
+      )}
     </div>
   );
 };

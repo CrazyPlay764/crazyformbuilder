@@ -5,7 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { Plus, FileText, Trash2, Edit, LogOut, Sparkles, Pencil, Check, X, Eye, EyeOff, Settings } from 'lucide-react';
+import { Plus, FileText, Trash2, Edit, LogOut, Sparkles, Pencil, Check, X, Eye, EyeOff, Settings, Users, Mail } from 'lucide-react';
 
 interface Form {
   id: string;
@@ -16,10 +16,25 @@ interface Form {
   updated_at: string;
 }
 
+interface SharedForm extends Form {
+  role: 'editor' | 'viewer';
+  status: string;
+}
+
+interface PendingInvite {
+  id: string;
+  form_id: string;
+  form_title: string;
+  role: 'editor' | 'viewer';
+  invited_by_email?: string;
+}
+
 const Dashboard = () => {
   const { user, profile, signOut, updateDisplayName, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [forms, setForms] = useState<Form[]>([]);
+  const [sharedForms, setSharedForms] = useState<SharedForm[]>([]);
+  const [pendingInvites, setPendingInvites] = useState<PendingInvite[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingName, setEditingName] = useState(false);
   const [newDisplayName, setNewDisplayName] = useState('');
@@ -39,6 +54,8 @@ const Dashboard = () => {
   useEffect(() => {
     if (user) {
       fetchForms();
+      fetchSharedForms();
+      fetchPendingInvites();
     }
   }, [user]);
 
@@ -61,6 +78,99 @@ const Dashboard = () => {
       setForms(data || []);
     }
     setLoading(false);
+  };
+
+  const fetchSharedForms = async () => {
+    // First get collaborator entries for current user
+    const { data: collabs, error: collabError } = await supabase
+      .from('form_collaborators')
+      .select('form_id, role, status')
+      .or(`user_id.eq.${user?.id},email.eq.${user?.email}`)
+      .eq('status', 'accepted');
+
+    if (collabError || !collabs || collabs.length === 0) {
+      return;
+    }
+
+    const formIds = collabs.map(c => c.form_id);
+    
+    const { data: sharedData, error: formsError } = await supabase
+      .from('forms')
+      .select('*')
+      .in('id', formIds)
+      .neq('user_id', user?.id); // Exclude own forms
+
+    if (!formsError && sharedData) {
+      const sharedWithRoles = sharedData.map(form => {
+        const collab = collabs.find(c => c.form_id === form.id);
+        return {
+          ...form,
+          role: (collab?.role || 'viewer') as 'editor' | 'viewer',
+          status: collab?.status || 'pending',
+        };
+      });
+      setSharedForms(sharedWithRoles);
+    }
+  };
+
+  const fetchPendingInvites = async () => {
+    const { data: pendingCollabs, error } = await supabase
+      .from('form_collaborators')
+      .select('id, form_id, role, status')
+      .eq('email', user?.email)
+      .eq('status', 'pending');
+
+    if (error || !pendingCollabs || pendingCollabs.length === 0) {
+      setPendingInvites([]);
+      return;
+    }
+
+    const formIds = pendingCollabs.map(c => c.form_id);
+    const { data: formsData } = await supabase
+      .from('forms')
+      .select('id, title')
+      .in('id', formIds);
+
+    const invites = pendingCollabs.map(collab => {
+      const form = formsData?.find(f => f.id === collab.form_id);
+      return {
+        id: collab.id,
+        form_id: collab.form_id,
+        form_title: form?.title || 'Unknown Form',
+        role: collab.role as 'editor' | 'viewer',
+      };
+    });
+    setPendingInvites(invites);
+  };
+
+  const acceptInvite = async (formId: string) => {
+    const { error } = await supabase
+      .from('form_collaborators')
+      .update({ status: 'accepted', user_id: user?.id })
+      .eq('form_id', formId)
+      .eq('email', user?.email);
+
+    if (error) {
+      toast.error('Failed to accept invite');
+    } else {
+      toast.success('Invite accepted!');
+      fetchSharedForms();
+      fetchPendingInvites();
+    }
+  };
+
+  const declineInvite = async (inviteId: string) => {
+    const { error } = await supabase
+      .from('form_collaborators')
+      .delete()
+      .eq('id', inviteId);
+
+    if (error) {
+      toast.error('Failed to decline invite');
+    } else {
+      toast.success('Invite declined');
+      fetchPendingInvites();
+    }
   };
 
   const createForm = async () => {
@@ -242,6 +352,106 @@ const Dashboard = () => {
               </div>
             ))}
           </div>
+        )}
+
+        {/* Pending Invites Section */}
+        {pendingInvites.length > 0 && (
+          <>
+            <div className="flex items-center gap-3 mt-12 mb-6">
+              <Mail className="w-6 h-6 text-amber-500" />
+              <h2 className="text-2xl font-orbitron font-bold text-foreground">Pending Invites</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {pendingInvites.map((invite) => (
+                <div
+                  key={invite.id}
+                  className="glass glow-border rounded-xl p-6 border-l-4 border-l-amber-500/50"
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <FileText className="w-10 h-10 text-amber-500/70" />
+                  </div>
+                  <h3 className="text-lg font-orbitron font-semibold text-foreground mb-2">
+                    {invite.form_title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground font-inter mb-4">
+                    You've been invited as {invite.role === 'editor' ? 'an Editor' : 'a Viewer'}
+                  </p>
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="glow" 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={() => acceptInvite(invite.form_id)}
+                    >
+                      <Check className="w-4 h-4 mr-1" />
+                      Accept
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => declineInvite(invite.id)}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* Shared Forms Section */}
+        {sharedForms.length > 0 && (
+          <>
+            <div className="flex items-center gap-3 mt-12 mb-6">
+              <Users className="w-6 h-6 text-primary" />
+              <h2 className="text-2xl font-orbitron font-bold text-foreground">Shared With Me</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {sharedForms.map((form) => (
+                <div
+                  key={form.id}
+                  className="glass glow-border rounded-xl p-6 hover:bg-card/80 transition-all duration-300 group border-l-4 border-l-primary/50"
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <FileText className="w-10 h-10 text-primary/70" />
+                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => navigate(`/builder/${form.id}?role=${form.role}`)}
+                        title={form.role === 'editor' ? 'Edit form' : 'View form'}
+                      >
+                        {form.role === 'editor' ? (
+                          <Edit className="w-4 h-4" />
+                        ) : (
+                          <Eye className="w-4 h-4" />
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                  <h3 className="text-lg font-orbitron font-semibold text-foreground mb-2">
+                    {form.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground font-inter mb-3">
+                    {form.description || 'No description'}
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <span className={`text-xs px-2 py-1 rounded-full ${
+                      form.role === 'editor' 
+                        ? 'bg-primary/20 text-primary' 
+                        : 'bg-muted text-muted-foreground'
+                    }`}>
+                      {form.role === 'editor' ? 'Editor' : 'Viewer'}
+                    </span>
+                    <p className="text-xs text-muted-foreground font-inter">
+                      {new Date(form.updated_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </main>
     </div>
