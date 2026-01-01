@@ -10,6 +10,7 @@ import FormCanvas from '@/components/FormBuilder/FormCanvas';
 import FieldSettings from '@/components/FormBuilder/FieldSettings';
 import FormSettings from '@/components/FormBuilder/FormSettings';
 import FormResponses from '@/components/FormBuilder/FormResponses';
+import FormPreviewModal from '@/components/FormBuilder/FormPreviewModal';
 import ShareDialog from '@/components/FormBuilder/ShareDialog';
 import { FormField, Form } from '@/types/form';
 
@@ -24,6 +25,7 @@ const FormBuilder = () => {
   const [selectedField, setSelectedField] = useState<FormField | null>(null);
   const [showFormSettings, setShowFormSettings] = useState(false);
   const [showResponses, setShowResponses] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -382,9 +384,14 @@ const FormBuilder = () => {
             </div>
             
             <Button 
-              variant="ghost" 
+              variant={showPreview ? 'glow' : 'ghost'} 
               size="sm"
-              onClick={() => window.open(`/form/${id}`, '_blank')}
+              onClick={() => {
+                setShowPreview(!showPreview);
+                setShowFormSettings(false);
+                setShowResponses(false);
+                setSelectedField(null);
+              }}
             >
               <Play className="w-4 h-4 mr-2" />
               Preview
@@ -526,6 +533,13 @@ const FormBuilder = () => {
         onDescriptionChange={updateFormDescription}
         isOpen={showFormSettings}
         onClose={() => setShowFormSettings(false)}
+      />
+
+      {/* Preview Modal */}
+      <FormPreviewModal
+        formId={form.id}
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
       />
 
       {isOwner && (
