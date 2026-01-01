@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { PasswordResetBanner, type PasswordResetBannerKind } from '@/components/auth/PasswordResetBanner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -40,6 +41,7 @@ const Auth = () => {
   const [checkingName, setCheckingName] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string; displayName?: string; confirmPassword?: string }>({});
+  const [resetBanner, setResetBanner] = useState<PasswordResetBannerKind | null>(null);
   const { signIn, signUp, user, resetPassword, updatePassword, checkDisplayNameAvailable } = useAuth();
   const navigate = useNavigate();
 
