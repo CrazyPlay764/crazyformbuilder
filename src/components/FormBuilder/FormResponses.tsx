@@ -139,13 +139,13 @@ const FormResponses = ({ formId, isOpen, onClose }: FormResponsesProps) => {
       {/* Centered Modal Panel */}
       <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
         <div 
-          className={`w-[500px] max-w-[90vw] max-h-[80vh] bg-background/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-2xl pointer-events-auto transition-all duration-300 ease-out ${
+          className={`w-[650px] max-w-[90vw] max-h-[85vh] bg-background/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-2xl pointer-events-auto transition-all duration-300 ease-out ${
             isAnimating 
               ? 'opacity-100 scale-100 translate-y-0' 
               : 'opacity-0 scale-95 translate-y-4'
           }`}
         >
-          <div className="flex flex-col h-full max-h-[80vh]">
+          <div className="flex flex-col h-full max-h-[85vh]">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-border/50">
               <h3 className="text-lg font-orbitron font-semibold text-foreground">
