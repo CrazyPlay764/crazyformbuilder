@@ -489,7 +489,7 @@ const FormBuilder = () => {
 
           {/* Settings panel - only for editors/owners */}
           {!isReadOnly && (
-            <div className="w-72 shrink-0">
+            <div className="w-72 shrink-0 space-y-4">
               {selectedField ? (
                 <FieldSettings field={selectedField} onUpdate={handleUpdateField} />
               ) : (
@@ -511,6 +511,18 @@ const FormBuilder = () => {
                   </div>
                 </div>
               )}
+              
+              {/* Design Settings - always visible below */}
+              {showFormSettings && (
+                <FormSettings
+                  settings={form.settings}
+                  onUpdate={updateFormSettings}
+                  title={form.title}
+                  onTitleChange={updateFormTitle}
+                  description={form.description || ''}
+                  onDescriptionChange={updateFormDescription}
+                />
+              )}
             </div>
           )}
         </div>
@@ -523,17 +535,6 @@ const FormBuilder = () => {
         onClose={() => setShowResponses(false)} 
       />
 
-      {/* Design Panel - centered modal */}
-      <FormSettings
-        settings={form.settings}
-        onUpdate={updateFormSettings}
-        title={form.title}
-        onTitleChange={updateFormTitle}
-        description={form.description || ''}
-        onDescriptionChange={updateFormDescription}
-        isOpen={showFormSettings}
-        onClose={() => setShowFormSettings(false)}
-      />
 
       {/* Preview Modal */}
       <FormPreviewModal
