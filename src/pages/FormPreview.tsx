@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,7 +12,9 @@ import { FormField, Form } from '@/types/form';
 
 const FormPreview = () => {
   const { id } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const isEmbed = searchParams.get('embed') === 'true';
   
   const [form, setForm] = useState<Form | null>(null);
   const [fields, setFields] = useState<FormField[]>([]);
@@ -383,23 +385,25 @@ const settings = typeof formData.settings === 'object' && formData.settings !== 
       }}
     >
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <div className="mb-6 flex justify-between items-center">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={() => navigate('/')}
-            className="text-foreground/70 hover:text-foreground"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
-          </Button>
-          <Link to="/auth">
-            <Button variant="ghost" size="sm" className="text-foreground/70 hover:text-foreground">
-              <LogIn className="w-4 h-4 mr-2" />
-              Login
+        {!isEmbed && (
+          <div className="mb-6 flex justify-between items-center">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate('/')}
+              className="text-foreground/70 hover:text-foreground"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back
             </Button>
-          </Link>
-        </div>
+            <Link to="/auth">
+              <Button variant="ghost" size="sm" className="text-foreground/70 hover:text-foreground">
+                <LogIn className="w-4 h-4 mr-2" />
+                Login
+              </Button>
+            </Link>
+          </div>
+        )}
 
         <div className="bg-background/20 backdrop-blur-sm rounded-2xl p-8 border border-border/30">
           {form.settings.logoUrl && (
