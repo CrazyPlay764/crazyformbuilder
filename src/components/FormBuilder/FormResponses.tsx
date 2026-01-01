@@ -29,6 +29,26 @@ const FormResponses = ({ formId, isOpen, onClose }: FormResponsesProps) => {
   const [responses, setResponses] = useState<FormResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedResponse, setExpandedResponse] = useState<string | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsVisible(true);
+      // Small delay to trigger animation
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setIsAnimating(true);
+        });
+      });
+    } else {
+      setIsAnimating(false);
+      const timer = setTimeout(() => {
+        setIsVisible(false);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     fetchResponses();
@@ -104,107 +124,113 @@ const FormResponses = ({ formId, isOpen, onClose }: FormResponsesProps) => {
     setExpandedResponse(expandedResponse === responseId ? null : responseId);
   };
 
-  if (!isOpen) return null;
+  if (!isVisible) return null;
 
   return (
     <>
       {/* Backdrop */}
       <div 
-        className="fixed inset-0 bg-background/60 backdrop-blur-sm z-40 transition-opacity duration-300"
+        className={`fixed inset-0 bg-background/60 backdrop-blur-sm z-40 transition-opacity duration-300 ${
+          isAnimating ? 'opacity-100' : 'opacity-0'
+        }`}
         onClick={onClose}
       />
       
-      {/* Slide-in Panel */}
-      <div 
-        className={`fixed top-0 right-0 h-full w-96 max-w-[90vw] bg-background/95 backdrop-blur-xl border-l border-border/50 z-50 shadow-2xl transition-transform duration-300 ease-out ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
-      >
-        <div className="flex flex-col h-full">
-          {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-border/50">
-            <h3 className="text-lg font-orbitron font-semibold text-foreground">
-              Responses ({responses.length})
-            </h3>
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" onClick={fetchResponses}>
-                Refresh
-              </Button>
-              <Button variant="ghost" size="icon" onClick={onClose}>
-                <X className="w-5 h-5" />
-              </Button>
-            </div>
-          </div>
-
-          {/* Content */}
-          <div className="flex-1 overflow-y-auto p-4">
-            {loading ? (
-              <p className="text-muted-foreground text-sm">Loading responses...</p>
-            ) : responses.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-muted-foreground text-sm">No responses yet</p>
-                <p className="text-muted-foreground text-xs mt-1">
-                  Responses will appear here when people submit the form
-                </p>
+      {/* Centered Modal Panel */}
+      <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+        <div 
+          className={`w-[500px] max-w-[90vw] max-h-[80vh] bg-background/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-2xl pointer-events-auto transition-all duration-300 ease-out ${
+            isAnimating 
+              ? 'opacity-100 scale-100 translate-y-0' 
+              : 'opacity-0 scale-95 translate-y-4'
+          }`}
+        >
+          <div className="flex flex-col h-full max-h-[80vh]">
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b border-border/50">
+              <h3 className="text-lg font-orbitron font-semibold text-foreground">
+                Responses ({responses.length})
+              </h3>
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="sm" onClick={fetchResponses}>
+                  Refresh
+                </Button>
+                <Button variant="ghost" size="icon" onClick={onClose}>
+                  <X className="w-5 h-5" />
+                </Button>
               </div>
-            ) : (
-              <div className="space-y-3">
-                {responses.map((response, index) => (
-                  <div
-                    key={response.id}
-                    className="bg-background/50 rounded-lg border border-border/30 overflow-hidden"
-                  >
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto p-4">
+              {loading ? (
+                <p className="text-muted-foreground text-sm">Loading responses...</p>
+              ) : responses.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground text-sm">No responses yet</p>
+                  <p className="text-muted-foreground text-xs mt-1">
+                    Responses will appear here when people submit the form
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {responses.map((response, index) => (
                     <div
-                      className="flex items-center justify-between p-3 cursor-pointer hover:bg-background/70 transition-colors"
-                      onClick={() => toggleExpand(response.id)}
+                      key={response.id}
+                      className="bg-background/50 rounded-lg border border-border/30 overflow-hidden"
                     >
-                      <div className="flex items-center gap-3">
-                        <span className="text-sm font-medium text-foreground">
-                          #{responses.length - index}
-                        </span>
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <Calendar className="w-3 h-3" />
-                          {formatDate(response.submitted_at)}
+                      <div
+                        className="flex items-center justify-between p-3 cursor-pointer hover:bg-background/70 transition-colors"
+                        onClick={() => toggleExpand(response.id)}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm font-medium text-foreground">
+                            #{responses.length - index}
+                          </span>
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <Calendar className="w-3 h-3" />
+                            {formatDate(response.submitted_at)}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteResponse(response.id);
+                            }}
+                          >
+                            <Trash2 className="w-3.5 h-3.5 text-destructive" />
+                          </Button>
+                          {expandedResponse === response.id ? (
+                            <ChevronUp className="w-4 h-4 text-muted-foreground" />
+                          ) : (
+                            <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                          )}
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            deleteResponse(response.id);
-                          }}
-                        >
-                          <Trash2 className="w-3.5 h-3.5 text-destructive" />
-                        </Button>
-                        {expandedResponse === response.id ? (
-                          <ChevronUp className="w-4 h-4 text-muted-foreground" />
-                        ) : (
-                          <ChevronDown className="w-4 h-4 text-muted-foreground" />
-                        )}
-                      </div>
-                    </div>
 
-                    {expandedResponse === response.id && (
-                      <div className="px-3 pb-3 space-y-2 border-t border-border/20 pt-3">
-                        {response.values.map((value) => (
-                          <div key={value.id} className="space-y-1">
-                            <p className="text-xs font-medium text-muted-foreground">
-                              {value.field_label}
-                            </p>
-                            <p className="text-sm text-foreground bg-background/50 rounded px-2 py-1.5">
-                              {value.value || <span className="text-muted-foreground italic">Empty</span>}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
+                      {expandedResponse === response.id && (
+                        <div className="px-3 pb-3 space-y-2 border-t border-border/20 pt-3">
+                          {response.values.map((value) => (
+                            <div key={value.id} className="space-y-1">
+                              <p className="text-xs font-medium text-muted-foreground">
+                                {value.field_label}
+                              </p>
+                              <p className="text-sm text-foreground bg-background/50 rounded px-2 py-1.5">
+                                {value.value || <span className="text-muted-foreground italic">Empty</span>}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
