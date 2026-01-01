@@ -437,12 +437,7 @@ const FormBuilder = () => {
               </>
             )}
             
-            {isOwner && (
-              <Button variant="ghost" size="sm" onClick={() => setShareOpen(true)}>
-                <Share2 className="w-4 h-4 mr-2" />
-                Share
-              </Button>
-            )}
+            
             
             {!isReadOnly && (
               <Button 
