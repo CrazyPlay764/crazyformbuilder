@@ -486,18 +486,9 @@ const FormBuilder = () => {
           />
 
           {/* Settings panel - only for editors/owners */}
-          {!isReadOnly && !showResponses && (
+          {!isReadOnly && (
             <div className="w-72 shrink-0">
-              {showFormSettings ? (
-                <FormSettings
-                  settings={form.settings}
-                  onUpdate={updateFormSettings}
-                  title={form.title}
-                  onTitleChange={updateFormTitle}
-                  description={form.description || ''}
-                  onDescriptionChange={updateFormDescription}
-                />
-              ) : selectedField ? (
+              {selectedField ? (
                 <FieldSettings field={selectedField} onUpdate={handleUpdateField} />
               ) : (
                 <div className="glass rounded-xl p-4">
@@ -516,6 +507,18 @@ const FormBuilder = () => {
         formId={form.id} 
         isOpen={showResponses} 
         onClose={() => setShowResponses(false)} 
+      />
+
+      {/* Design Panel - centered modal */}
+      <FormSettings
+        settings={form.settings}
+        onUpdate={updateFormSettings}
+        title={form.title}
+        onTitleChange={updateFormTitle}
+        description={form.description || ''}
+        onDescriptionChange={updateFormDescription}
+        isOpen={showFormSettings}
+        onClose={() => setShowFormSettings(false)}
       />
 
       {isOwner && (
