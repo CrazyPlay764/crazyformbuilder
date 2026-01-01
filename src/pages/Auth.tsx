@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { PasswordResetBanner, type PasswordResetBannerKind } from '@/components/auth/PasswordResetBanner';
+import { PasswordResetBanner } from '@/components/auth/PasswordResetBanner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 import { Sparkles, Mail, Lock, ArrowLeft, User, Check, X, Loader2 } from 'lucide-react';
 import { z } from 'zod';
 
@@ -41,8 +42,10 @@ const Auth = () => {
   const [checkingName, setCheckingName] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string; displayName?: string; confirmPassword?: string }>({});
-  const [resetBanner, setResetBanner] = useState<PasswordResetBannerKind | null>(null);
-  const { signIn, signUp, user, resetPassword, updatePassword, checkDisplayNameAvailable } = useAuth();
+  const [showResetBanner, setShowResetBanner] = useState(false);
+  const [resetCountdown, setResetCountdown] = useState(10);
+  const [resetEmail, setResetEmail] = useState('');
+  const { signIn, signUp, user, checkDisplayNameAvailable } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -74,6 +77,58 @@ const Auth = () => {
 
     return () => clearTimeout(timeoutId);
   }, [displayName, mode, checkDisplayNameAvailable]);
+
+  // Countdown timer for reset banner
+  useEffect(() => {
+    if (!showResetBanner) return;
+    
+    if (resetCountdown <= 0) {
+      setShowResetBanner(false);
+      setResetCountdown(10);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setResetCountdown(prev => prev - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [showResetBanner, resetCountdown]);
+
+  const handleDirectPasswordReset = async () => {
+    const validation = resetSchema.safeParse({ password, confirmPassword });
+    if (!validation.success) {
+      const fieldErrors: { password?: string; confirmPassword?: string } = {};
+      validation.error.errors.forEach((err) => {
+        if (err.path[0] === 'password') fieldErrors.password = err.message;
+        if (err.path[0] === 'confirmPassword') fieldErrors.confirmPassword = err.message;
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('reset-password-direct', {
+        body: { email: resetEmail, newPassword: password }
+      });
+      
+      if (error) {
+        toast.error(error.message || 'Failed to update password');
+      } else if (data?.error) {
+        toast.error(data.error);
+      } else {
+        toast.success('Password updated successfully! You can now log in.');
+        setMode('login');
+        setPassword('');
+        setConfirmPassword('');
+      }
+    } catch (err) {
+      toast.error('Failed to update password');
+    }
+    setLoading(false);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
@@ -83,38 +138,15 @@ const Auth = () => {
         setErrors({ email: 'Email is required' });
         return;
       }
-      setLoading(true);
-      const { error } = await resetPassword(email);
-      if (error) {
-        toast.error(error.message || 'Failed to send reset email');
-      } else {
-        toast.success('Password reset email sent! Check your inbox.');
-        setMode('login');
-      }
-      setLoading(false);
+      // Show banner instead of sending email
+      setResetEmail(email);
+      setShowResetBanner(true);
+      setResetCountdown(10);
       return;
     }
 
     if (mode === 'reset') {
-      const validation = resetSchema.safeParse({ password, confirmPassword });
-      if (!validation.success) {
-        const fieldErrors: { password?: string; confirmPassword?: string } = {};
-        validation.error.errors.forEach((err) => {
-          if (err.path[0] === 'password') fieldErrors.password = err.message;
-          if (err.path[0] === 'confirmPassword') fieldErrors.confirmPassword = err.message;
-        });
-        setErrors(fieldErrors);
-        return;
-      }
-      setLoading(true);
-      const { error } = await updatePassword(password);
-      if (error) {
-        toast.error(error.message || 'Failed to update password');
-      } else {
-        toast.success('Password updated successfully!');
-        navigate('/dashboard');
-      }
-      setLoading(false);
+      await handleDirectPasswordReset();
       return;
     }
 
@@ -191,13 +223,28 @@ const Auth = () => {
     switch (mode) {
       case 'login': return 'Sign In';
       case 'signup': return 'Create Account';
-      case 'forgot': return 'Send Reset Link';
+      case 'forgot': return 'Continue';
       case 'reset': return 'Update Password';
     }
   };
 
+  const handleBannerReset = () => {
+    setShowResetBanner(false);
+    setMode('reset');
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      {/* Password Reset Banner */}
+      {showResetBanner && (
+        <PasswordResetBanner
+          email={resetEmail}
+          countdown={resetCountdown}
+          onClickReset={handleBannerReset}
+          onDismiss={() => setShowResetBanner(false)}
+        />
+      )}
+
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px]" />
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-accent/10 rounded-full blur-[100px]" />
