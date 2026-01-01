@@ -43,6 +43,7 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string; displayName?: string; confirmPassword?: string }>({});
   const [showResetBanner, setShowResetBanner] = useState(false);
+  const [bannerExiting, setBannerExiting] = useState(false);
   const [resetCountdown, setResetCountdown] = useState(10);
   const [resetEmail, setResetEmail] = useState('');
   const { signIn, signUp, user, checkDisplayNameAvailable } = useAuth();
@@ -80,12 +81,18 @@ const Auth = () => {
 
   // Countdown timer for reset banner
   useEffect(() => {
-    if (!showResetBanner) return;
+    if (!showResetBanner || bannerExiting) return;
     
     if (resetCountdown <= 0) {
-      setShowResetBanner(false);
-      setResetCountdown(10);
-      return;
+      // Start exit animation
+      setBannerExiting(true);
+      // Remove banner after animation completes
+      const exitTimer = setTimeout(() => {
+        setShowResetBanner(false);
+        setBannerExiting(false);
+        setResetCountdown(10);
+      }, 500);
+      return () => clearTimeout(exitTimer);
     }
 
     const timer = setTimeout(() => {
@@ -93,7 +100,7 @@ const Auth = () => {
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [showResetBanner, resetCountdown]);
+  }, [showResetBanner, resetCountdown, bannerExiting]);
 
   const handleDirectPasswordReset = async () => {
     const validation = resetSchema.safeParse({ password, confirmPassword });
@@ -229,8 +236,21 @@ const Auth = () => {
   };
 
   const handleBannerReset = () => {
-    setShowResetBanner(false);
-    setMode('reset');
+    setBannerExiting(true);
+    setTimeout(() => {
+      setShowResetBanner(false);
+      setBannerExiting(false);
+      setMode('reset');
+    }, 300);
+  };
+
+  const handleBannerDismiss = () => {
+    setBannerExiting(true);
+    setTimeout(() => {
+      setShowResetBanner(false);
+      setBannerExiting(false);
+      setResetCountdown(10);
+    }, 300);
   };
 
   return (
@@ -241,7 +261,8 @@ const Auth = () => {
           email={resetEmail}
           countdown={resetCountdown}
           onClickReset={handleBannerReset}
-          onDismiss={() => setShowResetBanner(false)}
+          onDismiss={handleBannerDismiss}
+          isExiting={bannerExiting}
         />
       )}
 

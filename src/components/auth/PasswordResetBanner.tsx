@@ -8,6 +8,7 @@ interface PasswordResetBannerProps {
   countdown: number;
   onClickReset: () => void;
   onDismiss: () => void;
+  isExiting?: boolean;
 }
 
 export function PasswordResetBanner({
@@ -15,9 +16,16 @@ export function PasswordResetBanner({
   countdown,
   onClickReset,
   onDismiss,
+  isExiting = false,
 }: PasswordResetBannerProps) {
   return (
-    <div className="fixed top-4 left-1/2 z-50 w-[min(44rem,calc(100%-1.5rem))] -translate-x-1/2 animate-in slide-in-from-top-4 fade-in duration-300">
+    <div 
+      className={`fixed top-4 left-1/2 z-50 w-[min(44rem,calc(100%-1.5rem))] -translate-x-1/2 transition-all duration-500 ease-out ${
+        isExiting 
+          ? "opacity-0 -translate-y-4 scale-95" 
+          : "animate-in slide-in-from-top-4 fade-in duration-300"
+      }`}
+    >
       <Alert className="bg-primary/95 text-primary-foreground border-primary shadow-lg">
         <KeyRound className="h-5 w-5 text-primary-foreground" />
 
