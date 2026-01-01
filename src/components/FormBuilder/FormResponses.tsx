@@ -114,13 +114,13 @@ const FormResponses = ({ formId, isOpen, onClose }: FormResponsesProps) => {
         onClick={onClose}
       />
       
-      {/* Centered Panel */}
+      {/* Slide-in Panel */}
       <div 
-        className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] max-w-[90vw] max-h-[80vh] bg-background/95 backdrop-blur-xl border border-border/50 rounded-2xl z-50 shadow-2xl transition-all duration-300 ease-out ${
-          isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+        className={`fixed top-0 right-0 h-full w-96 max-w-[90vw] bg-background/95 backdrop-blur-xl border-l border-border/50 z-50 shadow-2xl transition-transform duration-300 ease-out ${
+          isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        <div className="flex flex-col max-h-[80vh]">
+        <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-border/50">
             <h3 className="text-lg font-orbitron font-semibold text-foreground">
