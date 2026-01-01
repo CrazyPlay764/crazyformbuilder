@@ -486,11 +486,9 @@ const FormBuilder = () => {
           />
 
           {/* Settings panel - only for editors/owners */}
-          {!isReadOnly && (
+          {!isReadOnly && !showResponses && (
             <div className="w-72 shrink-0">
-              {showResponses ? (
-                <FormResponses formId={form.id} />
-              ) : showFormSettings ? (
+              {showFormSettings ? (
                 <FormSettings
                   settings={form.settings}
                   onUpdate={updateFormSettings}
@@ -512,6 +510,13 @@ const FormBuilder = () => {
           )}
         </div>
       </main>
+
+      {/* Responses Panel - slides in as overlay */}
+      <FormResponses 
+        formId={form.id} 
+        isOpen={showResponses} 
+        onClose={() => setShowResponses(false)} 
+      />
 
       {isOwner && (
         <ShareDialog
