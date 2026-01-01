@@ -72,7 +72,7 @@ const FormPreviewModal = ({ formId, isOpen, onClose }: FormPreviewModalProps) =>
             {/* Content - iframe */}
             <div className="flex-1 overflow-hidden p-4">
               <iframe
-                src={`/form/${formId}`}
+                src={`/form/${formId}?embed=true`}
                 className="w-full h-full rounded-lg border border-border/30"
                 title="Form Preview"
               />
