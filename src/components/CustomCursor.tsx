@@ -1,15 +1,48 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
+
+interface TrailPoint {
+  x: number;
+  y: number;
+  id: number;
+}
 
 const CustomCursor = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isPointer, setIsPointer] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [trail, setTrail] = useState<TrailPoint[]>([]);
+  const trailIdRef = useRef(0);
+  const lastPositionRef = useRef({ x: 0, y: 0 });
+
+  const addTrailPoint = useCallback((x: number, y: number) => {
+    // Only add trail point if moved enough distance
+    const dx = x - lastPositionRef.current.x;
+    const dy = y - lastPositionRef.current.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    
+    if (distance > 8) {
+      lastPositionRef.current = { x, y };
+      const id = trailIdRef.current++;
+      
+      setTrail(prev => {
+        const newTrail = [...prev, { x, y, id }];
+        // Keep only last 12 points
+        return newTrail.slice(-12);
+      });
+      
+      // Remove this point after animation
+      setTimeout(() => {
+        setTrail(prev => prev.filter(p => p.id !== id));
+      }, 500);
+    }
+  }, []);
 
   useEffect(() => {
     const updatePosition = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY });
       setIsVisible(true);
+      addTrailPoint(e.clientX, e.clientY);
       
       // Check if hovering over clickable element
       const target = e.target as HTMLElement;
@@ -42,7 +75,7 @@ const CustomCursor = () => {
       document.documentElement.removeEventListener('mouseleave', handleMouseLeave);
       document.documentElement.removeEventListener('mouseenter', handleMouseEnter);
     };
-  }, []);
+  }, [addTrailPoint]);
 
   if (!isVisible) return null;
 
@@ -54,6 +87,30 @@ const CustomCursor = () => {
           cursor: none !important;
         }
       `}</style>
+      
+      {/* Trail effect */}
+      {trail.map((point, index) => {
+        const age = (trail.length - index) / trail.length;
+        const size = 6 * age;
+        const opacity = age * 0.6;
+        
+        return (
+          <div
+            key={point.id}
+            className="fixed pointer-events-none z-[9997] rounded-full bg-primary"
+            style={{
+              left: point.x,
+              top: point.y,
+              width: size,
+              height: size,
+              opacity,
+              transform: 'translate(-50%, -50%)',
+              boxShadow: `0 0 ${8 * age}px hsl(var(--primary) / ${opacity})`,
+              transition: 'opacity 0.3s ease-out, width 0.3s ease-out, height 0.3s ease-out',
+            }}
+          />
+        );
+      })}
       
       {/* Outer ring - follows with slight delay */}
       <div

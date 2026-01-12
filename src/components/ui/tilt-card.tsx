@@ -19,6 +19,7 @@ const TiltCard = ({
   const [rotateY, setRotateY] = useState(0);
   const [scale, setScale] = useState(1);
   const [glarePosition, setGlarePosition] = useState({ x: 50, y: 50 });
+  const [shadowOffset, setShadowOffset] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   
@@ -29,10 +30,10 @@ const TiltCard = ({
       
       // Wobble animation sequence
       const wobble = [
-        { x: rotateX * -0.3, y: rotateY * -0.3, scale: 1.01 },
-        { x: rotateX * 0.15, y: rotateY * 0.15, scale: 0.99 },
-        { x: rotateX * -0.05, y: rotateY * -0.05, scale: 1.005 },
-        { x: 0, y: 0, scale: 1 },
+        { x: rotateX * -0.3, y: rotateY * -0.3, scale: 1.01, sx: shadowOffset.x * -0.3, sy: shadowOffset.y * -0.3 },
+        { x: rotateX * 0.15, y: rotateY * 0.15, scale: 0.99, sx: shadowOffset.x * 0.15, sy: shadowOffset.y * 0.15 },
+        { x: rotateX * -0.05, y: rotateY * -0.05, scale: 1.005, sx: shadowOffset.x * -0.05, sy: shadowOffset.y * -0.05 },
+        { x: 0, y: 0, scale: 1, sx: 0, sy: 0 },
       ];
       
       let step = 0;
@@ -41,6 +42,7 @@ const TiltCard = ({
           setRotateX(wobble[step].x);
           setRotateY(wobble[step].y);
           setScale(wobble[step].scale);
+          setShadowOffset({ x: wobble[step].sx, y: wobble[step].sy });
           step++;
           setTimeout(animate, 100);
         } else {
@@ -66,6 +68,12 @@ const TiltCard = ({
     setRotateY(-mouseX * tiltIntensity);
     setScale(1.02);
     
+    // Shadow moves opposite to tilt direction
+    setShadowOffset({
+      x: mouseX * 20,
+      y: mouseY * 20
+    });
+    
     setGlarePosition({
       x: ((e.clientX - rect.left) / rect.width) * 100,
       y: ((e.clientY - rect.top) / rect.height) * 100
@@ -82,18 +90,25 @@ const TiltCard = ({
   };
 
   const transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(${scale}, ${scale}, ${scale})`;
+  
+  // Dynamic shadow that moves opposite to tilt
+  const dynamicShadow = isHovering 
+    ? `${shadowOffset.x}px ${shadowOffset.y}px 30px -5px hsl(var(--primary) / 0.25), ${shadowOffset.x * 0.5}px ${shadowOffset.y * 0.5}px 60px -10px hsl(var(--primary) / 0.15)`
+    : '0 0 0 0 transparent';
 
   return (
     <div
       ref={cardRef}
       className={cn(
         'relative',
-        isAnimating ? 'transition-none' : 'transition-transform duration-200 ease-out',
+        isAnimating ? 'transition-none' : 'transition-all duration-200 ease-out',
         className
       )}
       style={{ 
         transform,
-        transformStyle: 'preserve-3d'
+        transformStyle: 'preserve-3d',
+        boxShadow: dynamicShadow,
+        borderRadius: '1rem'
       }}
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
