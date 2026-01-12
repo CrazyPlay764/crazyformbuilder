@@ -1,4 +1,4 @@
-import { useRef, useState, ReactNode } from 'react';
+import { useRef, useState, useEffect, ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 
 interface TiltCardProps {
@@ -15,29 +15,57 @@ const TiltCard = ({
   glareEnabled = true 
 }: TiltCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [transform, setTransform] = useState('perspective(1000px) rotateX(0deg) rotateY(0deg)');
+  const [rotateX, setRotateX] = useState(0);
+  const [rotateY, setRotateY] = useState(0);
+  const [scale, setScale] = useState(1);
   const [glarePosition, setGlarePosition] = useState({ x: 50, y: 50 });
   const [isHovering, setIsHovering] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  
+  // Spring animation on mouse leave
+  useEffect(() => {
+    if (!isHovering && (rotateX !== 0 || rotateY !== 0)) {
+      setIsAnimating(true);
+      
+      // Wobble animation sequence
+      const wobble = [
+        { x: rotateX * -0.3, y: rotateY * -0.3, scale: 1.01 },
+        { x: rotateX * 0.15, y: rotateY * 0.15, scale: 0.99 },
+        { x: rotateX * -0.05, y: rotateY * -0.05, scale: 1.005 },
+        { x: 0, y: 0, scale: 1 },
+      ];
+      
+      let step = 0;
+      const animate = () => {
+        if (step < wobble.length) {
+          setRotateX(wobble[step].x);
+          setRotateY(wobble[step].y);
+          setScale(wobble[step].scale);
+          step++;
+          setTimeout(animate, 100);
+        } else {
+          setIsAnimating(false);
+        }
+      };
+      
+      animate();
+    }
+  }, [isHovering]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
+    if (!cardRef.current || isAnimating) return;
 
     const rect = cardRef.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
     
-    // Calculate distance from center (normalized -1 to 1)
     const mouseX = (e.clientX - centerX) / (rect.width / 2);
     const mouseY = (e.clientY - centerY) / (rect.height / 2);
     
-    // Card tilts TOWARD the cursor (like gravity pulling it)
-    // If cursor is top-left, card tilts so top-left goes down
-    const rotateX = mouseY * tiltIntensity; // Positive mouseY = tilt forward
-    const rotateY = -mouseX * tiltIntensity; // Negative mouseX = tilt left
+    setRotateX(mouseY * tiltIntensity);
+    setRotateY(-mouseX * tiltIntensity);
+    setScale(1.02);
     
-    setTransform(`perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`);
-    
-    // Glare follows cursor
     setGlarePosition({
       x: ((e.clientX - rect.left) / rect.width) * 100,
       y: ((e.clientY - rect.top) / rect.height) * 100
@@ -50,14 +78,19 @@ const TiltCard = ({
 
   const handleMouseLeave = () => {
     setIsHovering(false);
-    setTransform('perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)');
     setGlarePosition({ x: 50, y: 50 });
   };
+
+  const transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(${scale}, ${scale}, ${scale})`;
 
   return (
     <div
       ref={cardRef}
-      className={cn('relative transition-transform duration-200 ease-out', className)}
+      className={cn(
+        'relative',
+        isAnimating ? 'transition-none' : 'transition-transform duration-200 ease-out',
+        className
+      )}
       style={{ 
         transform,
         transformStyle: 'preserve-3d'
