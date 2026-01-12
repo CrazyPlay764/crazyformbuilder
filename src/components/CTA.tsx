@@ -1,6 +1,7 @@
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import TiltCard from '@/components/ui/tilt-card';
 
 const CTA = () => {
   return (
@@ -11,51 +12,53 @@ const CTA = () => {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-4xl mx-auto">
-          <div className="glass glow-border rounded-3xl p-8 sm:p-12 md:p-16 text-center relative overflow-hidden">
-            {/* Decorative Elements */}
-            <div className="absolute top-0 left-0 w-32 h-32 bg-primary/20 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 right-0 w-40 h-40 bg-accent/20 rounded-full blur-3xl" />
+          <TiltCard tiltIntensity={10}>
+            <div className="glass glow-border rounded-3xl p-8 sm:p-12 md:p-16 text-center relative overflow-hidden">
+              {/* Decorative Elements */}
+              <div className="absolute top-0 left-0 w-32 h-32 bg-primary/20 rounded-full blur-3xl" />
+              <div className="absolute bottom-0 right-0 w-40 h-40 bg-accent/20 rounded-full blur-3xl" />
 
-            {/* Content */}
-            <div className="relative z-10">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 text-sm font-inter text-primary mb-8">
-                <Sparkles className="w-4 h-4" />
-                Start building forms today
+              {/* Content */}
+              <div className="relative z-10">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 text-sm font-inter text-primary mb-8">
+                  <Sparkles className="w-4 h-4" />
+                  Start building forms today
+                </div>
+
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-orbitron font-bold mb-6">
+                  <span className="text-foreground">Ready to Create</span>
+                  <br />
+                  <span className="gradient-text glow-text">Your First Form?</span>
+                </h2>
+
+                <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-10 font-inter font-light">
+                  Sign up for free and start building beautiful, customizable forms in minutes.
+                </p>
+
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <Button variant="glow" size="xl" asChild>
+                    <Link to="/auth">
+                      Get Started Free
+                      <ArrowRight className="w-5 h-5" />
+                    </Link>
+                  </Button>
+                  <Button 
+                    variant="glass" 
+                    size="xl"
+                    onClick={() => {
+                      document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    Talk to Sales
+                  </Button>
+                </div>
+
+                <p className="text-sm text-muted-foreground mt-8 font-inter">
+                  No credit card required • 14-day free trial • Cancel anytime
+                </p>
               </div>
-
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-orbitron font-bold mb-6">
-                <span className="text-foreground">Ready to Create</span>
-                <br />
-                <span className="gradient-text glow-text">Your First Form?</span>
-              </h2>
-
-              <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-10 font-inter font-light">
-                Sign up for free and start building beautiful, customizable forms in minutes.
-              </p>
-
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Button variant="glow" size="xl" asChild>
-                  <Link to="/auth">
-                    Get Started Free
-                    <ArrowRight className="w-5 h-5" />
-                  </Link>
-                </Button>
-                <Button 
-                  variant="glass" 
-                  size="xl"
-                  onClick={() => {
-                    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                >
-                  Talk to Sales
-                </Button>
-              </div>
-
-              <p className="text-sm text-muted-foreground mt-8 font-inter">
-                No credit card required • 14-day free trial • Cancel anytime
-              </p>
             </div>
-          </div>
+          </TiltCard>
         </div>
       </div>
     </section>
