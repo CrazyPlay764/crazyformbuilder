@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import TiltCard from '@/components/ui/tilt-card';
 import { useParallax } from '@/hooks/useParallax';
+import { ScrollReveal } from '@/components/ScrollReveal';
 
 const CTA = () => {
   const { getParallaxStyle } = useParallax();
