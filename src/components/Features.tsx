@@ -86,7 +86,7 @@ const Features = () => {
                   </p>
                   <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
                     <div className="absolute inset-0 rounded-2xl" style={{
-                      background: 'radial-gradient(ellipse at center, hsl(263 70% 50% / 0.1) 0%, transparent 70%)'
+                      background: 'radial-gradient(ellipse at center, hsl(217 91% 50% / 0.1) 0%, transparent 70%)'
                     }} />
                   </div>
                 </div>
