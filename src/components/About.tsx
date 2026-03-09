@@ -46,17 +46,19 @@ const About = () => {
           </ScrollReveal>
 
           {/* Team */}
-          <TiltCard>
-            <div className="glass p-8 rounded-2xl text-center group hover:bg-card/60 transition-all duration-300 h-full">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-xl bg-accent/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Users className="w-8 h-8 text-accent" />
+          <ScrollReveal animation="fade-up" delay={150}>
+            <TiltCard>
+              <div className="glass p-8 rounded-2xl text-center group hover:bg-card/60 transition-all duration-300 h-full">
+                <div className="w-16 h-16 mx-auto mb-6 rounded-xl bg-accent/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Users className="w-8 h-8 text-accent" />
+                </div>
+                <h3 className="text-xl font-semibold mb-4">Our Team</h3>
+                <p className="text-muted-foreground">
+                  A passionate team of designers and developers dedicated to crafting the best form-building experience.
+                </p>
               </div>
-              <h3 className="text-xl font-semibold mb-4">Our Team</h3>
-              <p className="text-muted-foreground">
-                A passionate team of designers and developers dedicated to crafting the best form-building experience.
-              </p>
-            </div>
-          </TiltCard>
+            </TiltCard>
+          </ScrollReveal>
 
           {/* Vision */}
           <TiltCard>
