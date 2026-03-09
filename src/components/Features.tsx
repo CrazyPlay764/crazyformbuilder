@@ -36,11 +36,13 @@ const features = [
 ];
 
 const Features = () => {
+  const { getParallaxStyle } = useParallax();
+
   return (
     <section id="features" className="relative py-32 overflow-hidden">
       {/* Background Elements */}
-      <div className="absolute top-1/2 left-0 w-72 h-72 bg-primary/10 rounded-full blur-[100px]" />
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/10 rounded-full blur-[120px]" />
+      <div className="absolute top-1/2 left-0 w-72 h-72 bg-primary/10 rounded-full blur-[100px]" style={getParallaxStyle(-0.2)} />
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/10 rounded-full blur-[120px]" style={getParallaxStyle(-0.35)} />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
