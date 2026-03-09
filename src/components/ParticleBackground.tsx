@@ -65,7 +65,7 @@ const ParticleBackground = () => {
         // Draw particle
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(263, 70%, 60%, ${particle.opacity})`;
+        ctx.fillStyle = `hsla(217, 91%, 60%, ${particle.opacity})`;
         ctx.fill();
 
         // Draw connections
