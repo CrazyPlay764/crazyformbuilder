@@ -79,7 +79,7 @@ const ParticleBackground = () => {
             ctx.moveTo(particle.x, particle.y);
             ctx.lineTo(other.x, other.y);
             const opacity = (1 - distance / 150) * 0.2;
-            ctx.strokeStyle = `hsla(263, 70%, 60%, ${opacity})`;
+            ctx.strokeStyle = `hsla(217, 91%, 60%, ${opacity})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
