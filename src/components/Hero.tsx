@@ -62,7 +62,7 @@ const Hero = () => {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-20 animate-fade-up-delayed-2">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-20">
             {[
               { value: '10+', label: 'Field Types' },
               { value: '100%', label: 'Customizable' },

@@ -61,17 +61,19 @@ const About = () => {
           </ScrollReveal>
 
           {/* Vision */}
-          <TiltCard>
-            <div className="glass p-8 rounded-2xl text-center group hover:bg-card/60 transition-all duration-300 h-full">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-xl bg-secondary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Zap className="w-8 h-8 text-secondary" />
+          <ScrollReveal animation="fade-right" delay={300}>
+            <TiltCard>
+              <div className="glass p-8 rounded-2xl text-center group hover:bg-card/60 transition-all duration-300 h-full">
+                <div className="w-16 h-16 mx-auto mb-6 rounded-xl bg-secondary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Zap className="w-8 h-8 text-secondary" />
+                </div>
+                <h3 className="text-xl font-semibold mb-4">Our Vision</h3>
+                <p className="text-muted-foreground">
+                  To become the go-to platform for anyone who needs beautiful, powerful forms without complexity.
+                </p>
               </div>
-              <h3 className="text-xl font-semibold mb-4">Our Vision</h3>
-              <p className="text-muted-foreground">
-                To become the go-to platform for anyone who needs beautiful, powerful forms without complexity.
-              </p>
-            </div>
-          </TiltCard>
+            </TiltCard>
+          </ScrollReveal>
         </div>
       </div>
     </section>

@@ -69,32 +69,29 @@ const Features = () => {
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feature, index) => (
-            <TiltCard key={index} className="h-full">
-              <div className="group relative glass glow-border rounded-2xl p-8 h-full transition-colors duration-500 hover:bg-card/80">
-                {/* Icon */}
-                <div className="relative mb-6">
-                  <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center transition-all duration-300 group-hover:bg-primary/20 group-hover:scale-110">
-                    <feature.icon className="w-7 h-7 text-primary" />
+            <ScrollReveal key={index} animation="fade-up" delay={index * 100}>
+              <TiltCard className="h-full">
+                <div className="group relative glass glow-border rounded-2xl p-8 h-full transition-colors duration-500 hover:bg-card/80">
+                  <div className="relative mb-6">
+                    <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center transition-all duration-300 group-hover:bg-primary/20 group-hover:scale-110">
+                      <feature.icon className="w-7 h-7 text-primary" />
+                    </div>
+                    <div className="absolute inset-0 bg-primary/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
-                  <div className="absolute inset-0 bg-primary/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <h3 className="text-xl font-orbitron font-semibold text-foreground mb-3 group-hover:text-primary transition-colors duration-300">
+                    {feature.title}
+                  </h3>
+                  <p className="text-muted-foreground font-inter font-light leading-relaxed">
+                    {feature.description}
+                  </p>
+                  <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                    <div className="absolute inset-0 rounded-2xl" style={{
+                      background: 'radial-gradient(ellipse at center, hsl(263 70% 50% / 0.1) 0%, transparent 70%)'
+                    }} />
+                  </div>
                 </div>
-
-                {/* Content */}
-                <h3 className="text-xl font-orbitron font-semibold text-foreground mb-3 group-hover:text-primary transition-colors duration-300">
-                  {feature.title}
-                </h3>
-                <p className="text-muted-foreground font-inter font-light leading-relaxed">
-                  {feature.description}
-                </p>
-
-                {/* Hover Glow Effect */}
-                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                  <div className="absolute inset-0 rounded-2xl" style={{
-                    background: 'radial-gradient(ellipse at center, hsl(263 70% 50% / 0.1) 0%, transparent 70%)'
-                  }} />
-                </div>
-              </div>
-            </TiltCard>
+              </TiltCard>
+            </ScrollReveal>
           ))}
         </div>
       </div>

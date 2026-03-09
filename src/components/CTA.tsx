@@ -64,6 +64,7 @@ const CTA = () => {
               </div>
             </div>
           </TiltCard>
+        </ScrollReveal>
         </div>
       </div>
     </section>
