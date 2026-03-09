@@ -48,16 +48,22 @@ const Features = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div className="text-center mb-20">
+        <ScrollReveal animation="fade-up">
           <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border-primary/30 text-sm font-inter text-muted-foreground mb-6">
             Powerful Features
           </span>
+        </ScrollReveal>
+        <ScrollReveal animation="fade-up" delay={100}>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-orbitron font-bold mb-6">
             <span className="text-foreground">Powerful </span>
             <span className="gradient-text">Features</span>
           </h2>
+        </ScrollReveal>
+        <ScrollReveal animation="fade-up" delay={200}>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-inter font-light">
             Everything you need to create, customize, and manage beautiful forms.
           </p>
+        </ScrollReveal>
         </div>
 
         {/* Features Grid */}
