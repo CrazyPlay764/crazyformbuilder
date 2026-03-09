@@ -31,17 +31,19 @@ const About = () => {
         {/* Content Grid */}
         <div className="grid md:grid-cols-3 gap-8">
           {/* Mission */}
-          <TiltCard>
-            <div className="glass p-8 rounded-2xl text-center group hover:bg-card/60 transition-all duration-300 h-full">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Target className="w-8 h-8 text-primary" />
+          <ScrollReveal animation="fade-left">
+            <TiltCard>
+              <div className="glass p-8 rounded-2xl text-center group hover:bg-card/60 transition-all duration-300 h-full">
+                <div className="w-16 h-16 mx-auto mb-6 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Target className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold mb-4">Our Mission</h3>
+                <p className="text-muted-foreground">
+                  To empower creators with intuitive tools that transform ideas into stunning, functional forms in minutes.
+                </p>
               </div>
-              <h3 className="text-xl font-semibold mb-4">Our Mission</h3>
-              <p className="text-muted-foreground">
-                To empower creators with intuitive tools that transform ideas into stunning, functional forms in minutes.
-              </p>
-            </div>
-          </TiltCard>
+            </TiltCard>
+          </ScrollReveal>
 
           {/* Team */}
           <TiltCard>
