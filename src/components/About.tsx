@@ -16,12 +16,16 @@ const About = () => {
       <div className="relative max-w-6xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
+        <ScrollReveal animation="fade-up">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 gradient-text">
             About FormFlow
           </h2>
+        </ScrollReveal>
+        <ScrollReveal animation="fade-up" delay={100}>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             We're on a mission to make form creation effortless and beautiful for everyone.
           </p>
+        </ScrollReveal>
         </div>
 
         {/* Content Grid */}
