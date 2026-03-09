@@ -1,18 +1,21 @@
 import { ArrowRight, Play } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useParallax } from '@/hooks/useParallax';
 
 const Hero = () => {
+  const { getParallaxStyle } = useParallax();
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
       {/* Background Glow Effects */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] animate-glow-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-accent/15 rounded-full blur-[100px] animate-glow-pulse" style={{ animationDelay: '1.5s' }} />
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] animate-glow-pulse" style={getParallaxStyle(-0.3)} />
+      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-accent/15 rounded-full blur-[100px] animate-glow-pulse" style={{ ...getParallaxStyle(-0.15), animationDelay: '1.5s' }} />
       
       {/* Floating Elements */}
-      <div className="absolute top-32 left-10 w-20 h-20 border border-primary/20 rounded-2xl rotate-12 animate-float opacity-30" />
-      <div className="absolute bottom-40 right-20 w-16 h-16 border border-silver/20 rounded-full animate-float-delayed opacity-20" />
-      <div className="absolute top-1/2 right-10 w-12 h-12 bg-primary/10 rounded-lg rotate-45 animate-float opacity-20" />
+      <div className="absolute top-32 left-10 w-20 h-20 border border-primary/20 rounded-2xl rotate-12 animate-float opacity-30" style={getParallaxStyle(-0.4)} />
+      <div className="absolute bottom-40 right-20 w-16 h-16 border border-silver/20 rounded-full animate-float-delayed opacity-20" style={getParallaxStyle(-0.2)} />
+      <div className="absolute top-1/2 right-10 w-12 h-12 bg-primary/10 rounded-lg rotate-45 animate-float opacity-20" style={getParallaxStyle(-0.5)} />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
