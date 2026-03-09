@@ -94,7 +94,7 @@ const ParticleBackground = () => {
           ctx.beginPath();
           ctx.moveTo(particle.x, particle.y);
           ctx.lineTo(mouseRef.current.x, mouseRef.current.y);
-          ctx.strokeStyle = `hsla(263, 100%, 70%, ${opacity})`;
+          ctx.strokeStyle = `hsla(217, 100%, 70%, ${opacity})`;
           ctx.lineWidth = 0.8;
           ctx.stroke();
         }
