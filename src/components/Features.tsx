@@ -1,5 +1,6 @@
 import { MousePointer2, Palette, Type, Calendar, Upload, Users } from 'lucide-react';
 import TiltCard from '@/components/ui/tilt-card';
+import { useParallax } from '@/hooks/useParallax';
 
 const features = [
   {
