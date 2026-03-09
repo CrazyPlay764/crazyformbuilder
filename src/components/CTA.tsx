@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import TiltCard from '@/components/ui/tilt-card';
 import { useParallax } from '@/hooks/useParallax';
+import { ScrollReveal } from '@/components/ScrollReveal';
 
 const CTA = () => {
   const { getParallaxStyle } = useParallax();
@@ -15,6 +16,7 @@ const CTA = () => {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-4xl mx-auto">
+        <ScrollReveal animation="scale">
           <TiltCard tiltIntensity={10}>
             <div className="glass glow-border rounded-3xl p-8 sm:p-12 md:p-16 text-center relative overflow-hidden">
               {/* Decorative Elements */}
@@ -62,6 +64,7 @@ const CTA = () => {
               </div>
             </div>
           </TiltCard>
+        </ScrollReveal>
         </div>
       </div>
     </section>
