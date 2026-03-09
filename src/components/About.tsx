@@ -1,6 +1,7 @@
 import { Users, Target, Zap } from 'lucide-react';
 import TiltCard from '@/components/ui/tilt-card';
 import { useParallax } from '@/hooks/useParallax';
+import { ScrollReveal } from '@/components/ScrollReveal';
 
 const About = () => {
   const { getParallaxStyle } = useParallax();
