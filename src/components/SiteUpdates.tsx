@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
-import ScrollReveal from './ScrollReveal';
+import { ScrollReveal } from './ScrollReveal';
 
 interface SiteUpdate {
   id: string;
