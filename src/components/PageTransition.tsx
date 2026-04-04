@@ -90,7 +90,7 @@ const PageTransition = ({ children }: { children: React.ReactNode }) => {
                 animate={{ letterSpacing: '0.1em', opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
               >
-                CrazyForms
+                CrazyForums
               </motion.h1>
             </motion.div>
           </motion.div>
