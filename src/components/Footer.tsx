@@ -19,7 +19,7 @@ const Footer = () => {
             <a href="#" className="flex items-center gap-2 mb-4">
               <Sparkles className="w-7 h-7 text-primary" />
               <span className="text-lg font-orbitron font-bold gradient-text">
-                FormBuilder
+                CrazyForums
               </span>
             </a>
             <p className="text-sm text-muted-foreground font-inter font-light mb-6 max-w-xs">
