@@ -174,19 +174,41 @@ const Dashboard = () => {
     }
   };
 
-  const createForm = async () => {
+  const createForm = async (template?: FormTemplate) => {
     const { data, error } = await supabase
       .from('forms')
-      .insert({ user_id: user?.id, title: 'Untitled Form' })
+      .insert({ user_id: user?.id, title: template?.name || 'Untitled Form' })
       .select()
       .single();
 
     if (error) {
       toast.error('Failed to create form');
-    } else {
-      toast.success('Form created!');
-      navigate(`/builder/${data.id}`);
+      return;
     }
+
+    // If using a template, add the fields
+    if (template && data) {
+      const fieldsToInsert = template.fields.map((field, index) => ({
+        form_id: data.id,
+        type: field.type,
+        label: field.label,
+        position: index,
+        required: field.required,
+        placeholder: field.placeholder || null,
+        options: field.options || null,
+      }));
+
+      const { error: fieldsError } = await supabase
+        .from('form_fields')
+        .insert(fieldsToInsert);
+
+      if (fieldsError) {
+        toast.error('Form created but failed to add template fields');
+      }
+    }
+
+    toast.success('Form created!');
+    navigate(`/builder/${data.id}`);
   };
 
   const deleteForm = async (id: string) => {
