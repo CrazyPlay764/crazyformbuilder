@@ -54,7 +54,7 @@ const Navbar = () => {
                 <div className="absolute inset-0 bg-primary/30 blur-xl rounded-full animate-glow-pulse opacity-50 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
               <span className="text-xl font-orbitron font-bold gradient-text transition-all duration-300 group-hover:scale-105 group-active:scale-95">
-                FormBuilder
+                CrazyForums
               </span>
             </button>
 
