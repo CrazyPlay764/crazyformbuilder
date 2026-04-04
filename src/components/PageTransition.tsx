@@ -50,7 +50,7 @@ const PageTransition = ({ children }: { children: React.ReactNode }) => {
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="h-full bg-gradient-to-r from-primary via-blue-400 to-primary rounded-full shadow-[0_0_15px_hsl(var(--primary)/0.6)]"
+              className="h-full bg-gradient-to-r from-primary via-accent to-primary rounded-full shadow-[0_0_15px_hsl(var(--primary)/0.6)]"
               initial={{ width: '0%' }}
               animate={{ width: '100%' }}
               transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
