@@ -265,7 +265,7 @@ const Dashboard = () => {
             className="flex items-center gap-2 group"
           >
             <Sparkles className="w-7 h-7 text-primary transition-all duration-300 group-hover:scale-110" />
-            <span className="text-xl font-orbitron font-bold gradient-text">Form Builder</span>
+            <span className="text-xl font-orbitron font-bold gradient-text">CrazyForums</span>
           </button>
           <div className="flex items-center gap-4">
             {editingName ? (
