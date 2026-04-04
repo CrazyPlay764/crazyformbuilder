@@ -181,7 +181,7 @@ const FormCanvas = ({
           <p className="text-muted-foreground font-inter">Drag and drop fields here</p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-4" dir="rtl">
           {fields.map((field, index) => (
             <div
               key={field.id}
