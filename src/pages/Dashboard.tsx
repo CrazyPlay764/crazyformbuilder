@@ -304,9 +304,12 @@ const Dashboard = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8 relative z-10">
+        {/* Templates Section */}
+        <FormTemplates onSelectTemplate={(template) => createForm(template)} />
+
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-orbitron font-bold text-foreground">My Forms</h1>
-          <Button variant="glow" onClick={createForm}>
+          <Button variant="glow" onClick={() => createForm()}>
             <Plus className="w-5 h-5 mr-2" />
             Create Form
           </Button>
