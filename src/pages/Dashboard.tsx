@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { Plus, FileText, Trash2, Edit, LogOut, Sparkles, Pencil, Check, X, Eye, EyeOff, Settings, Users, Mail } from 'lucide-react';
+import FormTemplates, { FormTemplate } from '@/components/FormTemplates';
 
 interface Form {
   id: string;
