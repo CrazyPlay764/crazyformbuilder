@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { Plus, FileText, Trash2, Edit, LogOut, Sparkles, Pencil, Check, X, Eye, EyeOff, Settings, Users, Mail } from 'lucide-react';
+import FormTemplates, { FormTemplate } from '@/components/FormTemplates';
 
 interface Form {
   id: string;
@@ -173,19 +174,41 @@ const Dashboard = () => {
     }
   };
 
-  const createForm = async () => {
+  const createForm = async (template?: FormTemplate) => {
     const { data, error } = await supabase
       .from('forms')
-      .insert({ user_id: user?.id, title: 'Untitled Form' })
+      .insert({ user_id: user?.id, title: template?.name || 'Untitled Form' })
       .select()
       .single();
 
     if (error) {
       toast.error('Failed to create form');
-    } else {
-      toast.success('Form created!');
-      navigate(`/builder/${data.id}`);
+      return;
     }
+
+    // If using a template, add the fields
+    if (template && data) {
+      const fieldsToInsert = template.fields.map((field, index) => ({
+        form_id: data.id,
+        type: field.type,
+        label: field.label,
+        position: index,
+        required: field.required,
+        placeholder: field.placeholder || null,
+        options: field.options || null,
+      }));
+
+      const { error: fieldsError } = await supabase
+        .from('form_fields')
+        .insert(fieldsToInsert);
+
+      if (fieldsError) {
+        toast.error('Form created but failed to add template fields');
+      }
+    }
+
+    toast.success('Form created!');
+    navigate(`/builder/${data.id}`);
   };
 
   const deleteForm = async (id: string) => {
@@ -242,7 +265,7 @@ const Dashboard = () => {
             className="flex items-center gap-2 group"
           >
             <Sparkles className="w-7 h-7 text-primary transition-all duration-300 group-hover:scale-110" />
-            <span className="text-xl font-orbitron font-bold gradient-text">Form Builder</span>
+            <span className="text-xl font-orbitron font-bold gradient-text">CrazyForums</span>
           </button>
           <div className="flex items-center gap-4">
             {editingName ? (
@@ -281,9 +304,12 @@ const Dashboard = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8 relative z-10">
+        {/* Templates Section */}
+        <FormTemplates onSelectTemplate={(template) => createForm(template)} />
+
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-orbitron font-bold text-foreground">My Forms</h1>
-          <Button variant="glow" onClick={createForm}>
+          <Button variant="glow" onClick={() => createForm()}>
             <Plus className="w-5 h-5 mr-2" />
             Create Form
           </Button>
@@ -294,7 +320,7 @@ const Dashboard = () => {
             <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
             <h2 className="text-xl font-orbitron font-semibold text-foreground mb-2">No forms yet</h2>
             <p className="text-muted-foreground font-inter mb-6">Create your first form to get started</p>
-            <Button variant="glow" onClick={createForm}>
+            <Button variant="glow" onClick={() => createForm()}>
               <Plus className="w-5 h-5 mr-2" />
               Create Your First Form
             </Button>
