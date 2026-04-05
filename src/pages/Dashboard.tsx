@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { Plus, FileText, Trash2, Edit, LogOut, Sparkles, Pencil, Check, X, Eye, EyeOff, Settings, Users, Mail } from 'lucide-react';
-import FormTemplates, { FormTemplate } from '@/components/FormTemplates';
+
 
 interface Form {
   id: string;
@@ -174,37 +174,16 @@ const Dashboard = () => {
     }
   };
 
-  const createForm = async (template?: FormTemplate) => {
+  const createForm = async () => {
     const { data, error } = await supabase
       .from('forms')
-      .insert({ user_id: user?.id, title: template?.name || 'Untitled Form' })
+      .insert({ user_id: user?.id, title: 'Untitled Form' })
       .select()
       .single();
 
     if (error) {
       toast.error('Failed to create form');
       return;
-    }
-
-    // If using a template, add the fields
-    if (template && data) {
-      const fieldsToInsert = template.fields.map((field, index) => ({
-        form_id: data.id,
-        type: field.type,
-        label: field.label,
-        position: index,
-        required: field.required,
-        placeholder: field.placeholder || null,
-        options: field.options || null,
-      }));
-
-      const { error: fieldsError } = await supabase
-        .from('form_fields')
-        .insert(fieldsToInsert);
-
-      if (fieldsError) {
-        toast.error('Form created but failed to add template fields');
-      }
     }
 
     toast.success('Form created!');
@@ -304,9 +283,6 @@ const Dashboard = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8 relative z-10">
-        {/* Templates Section */}
-        <FormTemplates onSelectTemplate={(template) => createForm(template)} />
-
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-orbitron font-bold text-foreground">My Forms</h1>
           <Button variant="glow" onClick={() => createForm()}>
