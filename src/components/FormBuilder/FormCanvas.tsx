@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Trash2, GripVertical, Settings } from 'lucide-react';
+import { Trash2, GripVertical, Settings, ChevronUp, ChevronDown } from 'lucide-react';
 
 interface FormCanvasProps {
   fields: FormField[];
@@ -35,7 +35,6 @@ const getGradientStyle = (direction: string, startColor: string, endColor: strin
     'to-tr': 'to top right',
     'to-tl': 'to top left',
   };
-  
   const cssDirection = directionMap[direction] || 'to bottom';
   return `linear-gradient(${cssDirection}, ${startColor}, ${endColor})`;
 };
@@ -61,8 +60,8 @@ const FormCanvas = ({
   const backgroundStyle = hasGradient
     ? { background: getGradientStyle(formSettings.gradientDirection!, formSettings.backgroundColor, formSettings.gradientEndColor || '#4a1d96') }
     : { backgroundColor: formSettings.backgroundColor };
+
   const handleFieldDragStart = (e: React.DragEvent, index: number, isGripHandle: boolean) => {
-    // Only allow dragging from the grip handle, not touch events on mobile
     if (!isGripHandle) {
       e.preventDefault();
       return;
@@ -76,6 +75,14 @@ const FormCanvas = ({
     if (dragIndex) {
       onReorderFields(parseInt(dragIndex), dropIndex);
     }
+  };
+
+  const moveUp = (index: number) => {
+    if (index > 0) onReorderFields(index, index - 1);
+  };
+
+  const moveDown = (index: number) => {
+    if (index < fields.length - 1) onReorderFields(index, index + 1);
   };
 
   const renderField = (field: FormField) => {
@@ -156,6 +163,35 @@ const FormCanvas = ({
     }
   };
 
+  const ReorderButtons = ({ index }: { index: number }) => (
+    <div className="flex flex-col gap-0.5">
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-6 w-6 p-0"
+        disabled={index === 0}
+        onClick={(e) => {
+          e.stopPropagation();
+          moveUp(index);
+        }}
+      >
+        <ChevronUp className="w-4 h-4" />
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-6 w-6 p-0"
+        disabled={index === fields.length - 1}
+        onClick={(e) => {
+          e.stopPropagation();
+          moveDown(index);
+        }}
+      >
+        <ChevronDown className="w-4 h-4" />
+      </Button>
+    </div>
+  );
+
   return (
     <div className="flex-1 flex justify-center">
       <div
@@ -201,12 +237,15 @@ const FormCanvas = ({
             >
               {field.type === 'section' ? (
                 <div className="flex items-center justify-between gap-3">
-                  <div
-                    draggable
-                    onDragStart={(e) => handleFieldDragStart(e, index, true)}
-                    className="cursor-grab touch-none flex-shrink-0"
-                  >
-                    <GripVertical className="w-4 h-4 text-muted-foreground" />
+                  <div className="flex items-center gap-1">
+                    <ReorderButtons index={index} />
+                    <div
+                      draggable
+                      onDragStart={(e) => handleFieldDragStart(e, index, true)}
+                      className="cursor-grab touch-none flex-shrink-0 hidden md:block"
+                    >
+                      <GripVertical className="w-4 h-4 text-muted-foreground" />
+                    </div>
                   </div>
                   <div className="flex-1 border-b-2 border-primary/50 pb-2">
                     <h3 className="text-lg font-orbitron font-bold text-foreground text-right">
@@ -245,10 +284,11 @@ const FormCanvas = ({
                 <>
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
+                      <ReorderButtons index={index} />
                       <div
                         draggable
                         onDragStart={(e) => handleFieldDragStart(e, index, true)}
-                        className="cursor-grab touch-none"
+                        className="cursor-grab touch-none hidden md:block"
                       >
                         <GripVertical className="w-4 h-4 text-muted-foreground" />
                       </div>
