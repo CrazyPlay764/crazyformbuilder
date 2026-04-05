@@ -200,25 +200,23 @@ const FormCanvas = ({
               }`}
             >
               {field.type === 'section' ? (
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 flex-1">
-                    <div
-                      draggable
-                      onDragStart={(e) => handleFieldDragStart(e, index, true)}
-                      className="cursor-grab touch-none"
-                    >
-                      <GripVertical className="w-4 h-4 text-muted-foreground" />
-                    </div>
-                    <div className="flex-1 border-b-2 border-primary/50 pb-2">
-                      <h3 className="text-lg font-semibold text-foreground">
-                        {field.label}
-                      </h3>
-                      {field.placeholder && (
-                        <p className="text-sm text-muted-foreground mt-1">{field.placeholder}</p>
-                      )}
-                    </div>
+                <div className="flex items-center justify-between gap-3">
+                  <div
+                    draggable
+                    onDragStart={(e) => handleFieldDragStart(e, index, true)}
+                    className="cursor-grab touch-none flex-shrink-0"
+                  >
+                    <GripVertical className="w-4 h-4 text-muted-foreground" />
                   </div>
-                  <div className="flex gap-1 ml-2">
+                  <div className="flex-1 border-b-2 border-primary/50 pb-2">
+                    <h3 className="text-lg font-orbitron font-bold text-foreground text-right">
+                      {field.label}
+                    </h3>
+                    {field.placeholder && (
+                      <p className="text-sm text-muted-foreground mt-1 text-right">{field.placeholder}</p>
+                    )}
+                  </div>
+                  <div className="flex gap-1 flex-shrink-0">
                     <Button
                       variant="ghost"
                       size="icon"
