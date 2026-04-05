@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, Send, LogIn, CheckCircle, RotateCcw } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Send, LogIn, CheckCircle, ChevronRight, ChevronLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { FormField, Form } from '@/types/form';
 
@@ -24,6 +24,7 @@ const FormPreview = () => {
   const [closedMessage, setClosedMessage] = useState<string>('');
   const [submitted, setSubmitted] = useState(false);
   const [formValues, setFormValues] = useState<Record<string, string | boolean | string[]>>({});
+  const [currentPage, setCurrentPage] = useState(0);
 
   const ensureBackendConfig = () => {
     if (import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY) return true;
@@ -40,11 +41,8 @@ const FormPreview = () => {
     if (cryptoObj?.getRandomValues) {
       const bytes = new Uint8Array(16);
       cryptoObj.getRandomValues(bytes);
-
-      // RFC 4122 version 4
       bytes[6] = (bytes[6] & 0x0f) | 0x40;
       bytes[8] = (bytes[8] & 0x3f) | 0x80;
-
       const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
       return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
     }
@@ -52,12 +50,53 @@ const FormPreview = () => {
     return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
   };
 
+  // Split fields into pages by section dividers
+  const pages = useMemo(() => {
+    if (fields.length === 0) return [];
+    
+    const result: { title?: string; description?: string; fields: FormField[] }[] = [];
+    let currentPageFields: FormField[] = [];
+    let currentTitle: string | undefined;
+    let currentDescription: string | undefined;
+
+    fields.forEach((field) => {
+      if (field.type === 'section') {
+        // If we have accumulated fields, push them as a page
+        if (currentPageFields.length > 0 || result.length === 0) {
+          result.push({ title: currentTitle, description: currentDescription, fields: currentPageFields });
+        }
+        currentTitle = field.label;
+        currentDescription = field.placeholder || undefined;
+        currentPageFields = [];
+      } else {
+        currentPageFields.push(field);
+      }
+    });
+
+    // Push remaining fields
+    if (currentPageFields.length > 0 || result.length === 0) {
+      result.push({ title: currentTitle, description: currentDescription, fields: currentPageFields });
+    }
+
+    // If there's only one page with no sections, just return all fields as single page
+    if (result.length === 1 && !result[0].title) {
+      return [{ fields: fields.filter(f => f.type !== 'section') }];
+    }
+
+    return result;
+  }, [fields]);
+
+  const totalPages = pages.length;
+  const isLastPage = currentPage === totalPages - 1;
+  const isFirstPage = currentPage === 0;
+
   // Calculate progress
   const progressInfo = useMemo(() => {
-    const totalFields = fields.length;
+    const allFields = fields.filter(f => f.type !== 'section');
+    const totalFields = allFields.length;
     if (totalFields === 0) return { completed: 0, total: 0, percentage: 0 };
     
-    const completedFields = fields.filter((field) => {
+    const completedFields = allFields.filter((field) => {
       const value = formValues[field.id];
       if (value === undefined || value === null) return false;
       if (typeof value === 'boolean') return value === true;
@@ -96,11 +135,10 @@ const FormPreview = () => {
       return;
     }
 
-const settings = typeof formData.settings === 'object' && formData.settings !== null
+    const settings = typeof formData.settings === 'object' && formData.settings !== null
       ? formData.settings as { backgroundColor: string; fontFamily: string; primaryColor: string; logoUrl?: string; submitButtonText?: string; successMessage?: string; closedFormMessage?: string; gradientDirection?: string; gradientEndColor?: string }
       : { backgroundColor: '#1a1a2e', fontFamily: 'Inter', primaryColor: '#8b5cf6' };
 
-    // Check if form is closed (not published)
     if (!formData.is_published) {
       setFormClosed(true);
       setClosedMessage(settings.closedFormMessage || 'This form is currently closed.');
@@ -136,14 +174,39 @@ const settings = typeof formData.settings === 'object' && formData.settings !== 
     }
   };
 
+  const validateCurrentPage = (): boolean => {
+    if (pages.length === 0) return true;
+    const currentFields = pages[currentPage]?.fields || [];
+    const requiredFields = currentFields.filter(f => f.required);
+    
+    for (const field of requiredFields) {
+      const value = formValues[field.id];
+      if (value === undefined || value === null || value === '' || (Array.isArray(value) && value.length === 0)) {
+        toast.error(`נא למלא את השדה: ${field.label}`);
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const handleNext = () => {
+    if (validateCurrentPage()) {
+      setCurrentPage(prev => Math.min(prev + 1, totalPages - 1));
+    }
+  };
+
+  const handlePrev = () => {
+    setCurrentPage(prev => Math.max(prev - 1, 0));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!form || !id) return;
     if (!ensureBackendConfig()) return;
+    if (!validateCurrentPage()) return;
 
     try {
-      // Create the response record without selecting it back (anon users can't SELECT due to RLS)
       const responseId = createResponseId();
 
       const { error: responseError } = await supabase
@@ -156,8 +219,8 @@ const settings = typeof formData.settings === 'object' && formData.settings !== 
         return;
       }
 
-      // Insert all field values
-      const responseValues = fields.map((field) => ({
+      const allFields = fields.filter(f => f.type !== 'section');
+      const responseValues = allFields.map((field) => ({
         response_id: responseId,
         field_id: field.id,
         field_label: field.label,
@@ -366,7 +429,6 @@ const settings = typeof formData.settings === 'object' && formData.settings !== 
       'to-tr': 'to top right',
       'to-tl': 'to top left',
     };
-    
     const cssDirection = directionMap[direction] || 'to bottom';
     return `linear-gradient(${cssDirection}, ${startColor}, ${endColor})`;
   };
@@ -375,6 +437,8 @@ const settings = typeof formData.settings === 'object' && formData.settings !== 
   const backgroundStyle = hasGradient
     ? { background: getGradientStyle(form.settings.gradientDirection!, form.settings.backgroundColor, form.settings.gradientEndColor || '#4a1d96') }
     : { backgroundColor: form.settings.backgroundColor };
+
+  const currentPageData = pages[currentPage];
 
   return (
     <div 
@@ -451,7 +515,41 @@ const settings = typeof formData.settings === 'object' && formData.settings !== 
                 <Progress value={progressInfo.percentage} className="h-2" />
               </div>
 
-              {fields.map((field) => (
+              {/* Page indicator for multi-page forms */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-2">
+                  {pages.map((_, i) => (
+                    <div
+                      key={i}
+                      className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                        i === currentPage
+                          ? 'bg-primary scale-125'
+                          : i < currentPage
+                          ? 'bg-primary/50'
+                          : 'bg-muted-foreground/30'
+                      }`}
+                    />
+                  ))}
+                  <span className="text-sm text-muted-foreground mr-3">
+                    {currentPage + 1} / {totalPages}
+                  </span>
+                </div>
+              )}
+
+              {/* Section title */}
+              {currentPageData?.title && (
+                <div className="text-center py-2 border-b border-primary/30 mb-4">
+                  <h2 className="text-xl font-orbitron font-bold text-foreground">
+                    {currentPageData.title}
+                  </h2>
+                  {currentPageData.description && (
+                    <p className="text-sm text-muted-foreground mt-1">{currentPageData.description}</p>
+                  )}
+                </div>
+              )}
+
+              {/* Current page fields */}
+              {currentPageData?.fields.map((field) => (
                 <div key={field.id} className="space-y-2">
                   <label className="text-sm font-medium text-foreground">
                     {field.label}
@@ -461,14 +559,43 @@ const settings = typeof formData.settings === 'object' && formData.settings !== 
                 </div>
               ))}
 
-              <Button 
-                type="submit" 
-                className="w-full mt-8"
-                style={{ backgroundColor: form.settings.primaryColor }}
-              >
-                <Send className="w-4 h-4 mr-2" />
-                {form.settings.submitButtonText || 'Submit'}
-              </Button>
+              {/* Navigation buttons */}
+              <div className="flex items-center justify-between pt-4 gap-3">
+                {!isFirstPage ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handlePrev}
+                    className="gap-2"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                    הקודם
+                  </Button>
+                ) : (
+                  <div />
+                )}
+
+                {isLastPage ? (
+                  <Button 
+                    type="submit" 
+                    className="gap-2"
+                    style={{ backgroundColor: form.settings.primaryColor }}
+                  >
+                    <Send className="w-4 h-4" />
+                    {form.settings.submitButtonText || 'Submit'}
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    onClick={handleNext}
+                    className="gap-2"
+                    style={{ backgroundColor: form.settings.primaryColor }}
+                  >
+                    הבא
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+                )}
+              </div>
             </form>
           )}
         </div>
