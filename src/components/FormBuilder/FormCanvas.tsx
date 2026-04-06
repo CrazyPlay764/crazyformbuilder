@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Trash2, GripVertical, Settings, ChevronUp, ChevronDown } from 'lucide-react';
+import { Trash2, GripVertical, Settings, ChevronUp, ChevronDown, Image } from 'lucide-react';
 
 interface FormCanvasProps {
   fields: FormField[];
@@ -123,6 +123,13 @@ const FormCanvas = ({
         return (
           <div className="border-2 border-dashed border-border/50 rounded-lg p-6 text-center">
             <p className="text-muted-foreground text-sm">Drop files here or click to upload</p>
+          </div>
+        );
+      case 'image':
+        return (
+          <div className="border-2 border-dashed border-border/50 rounded-lg p-6 text-center">
+            <Image className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+            <p className="text-muted-foreground text-sm">תמונה - קישור URL או העלאת קובץ</p>
           </div>
         );
       case 'dropdown':
