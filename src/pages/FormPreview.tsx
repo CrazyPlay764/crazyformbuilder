@@ -6,9 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, ArrowRight, Send, LogIn, CheckCircle, ChevronRight, ChevronLeft } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Send, LogIn, CheckCircle, ChevronRight, ChevronLeft, Image, Link2, Upload, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { FormField, Form } from '@/types/form';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const FormPreview = () => {
   const { id } = useParams<{ id: string }>();
