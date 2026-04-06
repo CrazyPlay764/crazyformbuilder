@@ -6,9 +6,145 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, ArrowRight, Send, LogIn, CheckCircle, ChevronRight, ChevronLeft } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Send, LogIn, CheckCircle, ChevronRight, ChevronLeft, Image, Link2, Upload, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { FormField, Form } from '@/types/form';
+import { useIsMobile } from '@/hooks/use-mobile';
+
+const ImageFieldInput = ({ fieldId, value, onChange }: { fieldId: string; value: string; onChange: (id: string, val: string) => void }) => {
+  const isMobile = useIsMobile();
+  const [mode, setMode] = useState<'choose' | 'url' | 'file' | 'done'>(value ? 'done' : (isMobile ? 'file' : 'choose'));
+  const [urlInput, setUrlInput] = useState(value || '');
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useState<HTMLInputElement | null>(null);
+
+  const handleFileUpload = async (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select an image file');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image must be under 5MB');
+      return;
+    }
+    setUploading(true);
+    const ext = file.name.split('.').pop();
+    const path = `${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage.from('form-images').upload(path, file);
+    if (error) {
+      toast.error('Failed to upload image');
+      setUploading(false);
+      return;
+    }
+    const { data: urlData } = supabase.storage.from('form-images').getPublicUrl(path);
+    onChange(fieldId, urlData.publicUrl);
+    setMode('done');
+    setUploading(false);
+  };
+
+  const handleUrlSubmit = () => {
+    if (!urlInput.trim()) return;
+    onChange(fieldId, urlInput.trim());
+    setMode('done');
+  };
+
+  const handleRemove = () => {
+    onChange(fieldId, '');
+    setMode(isMobile ? 'file' : 'choose');
+    setUrlInput('');
+  };
+
+  if (mode === 'done' && value) {
+    return (
+      <div className="relative rounded-lg overflow-hidden border border-border/50">
+        <img src={value} alt="Uploaded" className="w-full max-h-64 object-contain bg-background/30" />
+        <Button
+          type="button"
+          variant="destructive"
+          size="icon"
+          className="absolute top-2 right-2 h-7 w-7"
+          onClick={handleRemove}
+        >
+          <X className="w-4 h-4" />
+        </Button>
+      </div>
+    );
+  }
+
+  if (mode === 'url') {
+    return (
+      <div className="space-y-2">
+        <div className="flex gap-2">
+          <Input
+            placeholder="https://example.com/image.jpg"
+            value={urlInput}
+            onChange={(e) => setUrlInput(e.target.value)}
+            className="bg-background/30 border-border/50"
+          />
+          <Button type="button" size="sm" onClick={handleUrlSubmit}>
+            אישור
+          </Button>
+        </div>
+        <Button type="button" variant="ghost" size="sm" onClick={() => setMode('choose')}>
+          ← חזור
+        </Button>
+      </div>
+    );
+  }
+
+  if (mode === 'file') {
+    return (
+      <div className="space-y-2">
+        <div
+          className="border-2 border-dashed border-border/50 rounded-lg p-6 text-center cursor-pointer hover:border-primary/50 transition-colors"
+          onClick={() => document.getElementById(`img-file-${fieldId}`)?.click()}
+        >
+          {uploading ? (
+            <p className="text-muted-foreground text-sm">מעלה...</p>
+          ) : (
+            <>
+              <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+              <p className="text-muted-foreground text-sm">לחץ לבחירת תמונה</p>
+            </>
+          )}
+        </div>
+        <input
+          id={`img-file-${fieldId}`}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) handleFileUpload(file);
+          }}
+        />
+        {!isMobile && (
+          <Button type="button" variant="ghost" size="sm" onClick={() => setMode('choose')}>
+            ← חזור
+          </Button>
+        )}
+      </div>
+    );
+  }
+
+  // choose mode (desktop only)
+  return (
+    <div className="border-2 border-dashed border-border/50 rounded-lg p-6">
+      <Image className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
+      <p className="text-center text-sm text-muted-foreground mb-4">איך תרצה להוסיף תמונה?</p>
+      <div className="flex gap-3 justify-center">
+        <Button type="button" variant="outline" size="sm" onClick={() => setMode('url')} className="gap-2">
+          <Link2 className="w-4 h-4" />
+          קישור URL
+        </Button>
+        <Button type="button" variant="outline" size="sm" onClick={() => setMode('file')} className="gap-2">
+          <Upload className="w-4 h-4" />
+          העלאת קובץ
+        </Button>
+      </div>
+    </div>
+  );
+};
 
 const FormPreview = () => {
   const { id } = useParams<{ id: string }>();
@@ -358,6 +494,14 @@ const FormPreview = () => {
               );
             })}
           </div>
+        );
+      case 'image':
+        return (
+          <ImageFieldInput
+            fieldId={field.id}
+            value={(formValues[field.id] as string) || ''}
+            onChange={handleInputChange}
+          />
         );
       default:
         return (

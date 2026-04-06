@@ -11,7 +11,8 @@ import {
   Circle,
   ListChecks,
   LayoutList,
-  Plus
+  Plus,
+  Image
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -30,6 +31,7 @@ const fieldTypes: FieldType[] = [
   { type: 'checkbox', label: 'Checkbox', icon: <CheckSquare className="w-5 h-5" /> },
   { type: 'multiplechoice', label: 'Multiple Choice', icon: <ListChecks className="w-5 h-5" /> },
   { type: 'date', label: 'Date Picker', icon: <Calendar className="w-5 h-5" /> },
+  { type: 'image', label: 'Image', icon: <Image className="w-5 h-5" /> },
   { type: 'file', label: 'File Upload', icon: <Upload className="w-5 h-5" /> },
   { type: 'dropdown', label: 'Dropdown', icon: <ChevronDown className="w-5 h-5" /> },
   { type: 'radio', label: 'Radio Buttons', icon: <Circle className="w-5 h-5" /> },
