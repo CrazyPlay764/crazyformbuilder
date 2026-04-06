@@ -495,6 +495,14 @@ const FormPreview = () => {
             })}
           </div>
         );
+      case 'image':
+        return (
+          <ImageFieldInput
+            fieldId={field.id}
+            value={(formValues[field.id] as string) || ''}
+            onChange={handleInputChange}
+          />
+        );
       default:
         return (
           <Input 
