@@ -97,14 +97,14 @@ const SiteUpdates = () => {
   const handleSubmit = async () => {
     if (!title.trim() || !content.trim() || !user) return;
 
-    const payload = { title: title.trim(), content: content.trim(), media: media as unknown as Record<string, unknown>[] };
+    const mediaJson = JSON.parse(JSON.stringify(media));
 
     if (editingId) {
-      const { error } = await supabase.from('site_updates').update(payload).eq('id', editingId);
+      const { error } = await supabase.from('site_updates').update({ title: title.trim(), content: content.trim(), media: mediaJson }).eq('id', editingId);
       if (error) { toast.error('שגיאה בעדכון'); return; }
       toast.success('העדכון נערך בהצלחה');
     } else {
-      const { error } = await supabase.from('site_updates').insert({ ...payload, user_id: user.id });
+      const { error } = await supabase.from('site_updates').insert([{ title: title.trim(), content: content.trim(), media: mediaJson, user_id: user.id }]);
       if (error) { toast.error('שגיאה בפרסום העדכון'); return; }
       toast.success('העדכון פורסם בהצלחה');
     }
