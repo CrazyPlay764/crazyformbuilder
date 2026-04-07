@@ -27,6 +27,7 @@ export interface Form {
     closedFormMessage?: string;
     gradientDirection?: string;
     gradientEndColor?: string;
+    backgroundMedia?: { type: 'image' | 'video' | 'youtube'; url: string };
   };
   created_at: string;
   updated_at: string;
