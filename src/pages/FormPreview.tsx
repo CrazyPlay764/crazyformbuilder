@@ -622,7 +622,7 @@ const FormPreview = () => {
           <div className="absolute inset-0 bg-black/40" />
         </div>
       )}
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
+      <div className="container mx-auto px-4 py-8 max-w-2xl relative z-10">
         {!isEmbed && (
           <div className="mb-6 flex justify-between items-center">
             <Button 
