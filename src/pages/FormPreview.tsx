@@ -272,7 +272,7 @@ const FormPreview = () => {
     }
 
     const settings = typeof formData.settings === 'object' && formData.settings !== null
-      ? formData.settings as { backgroundColor: string; fontFamily: string; primaryColor: string; logoUrl?: string; submitButtonText?: string; successMessage?: string; closedFormMessage?: string; gradientDirection?: string; gradientEndColor?: string }
+      ? formData.settings as { backgroundColor: string; fontFamily: string; primaryColor: string; logoUrl?: string; submitButtonText?: string; successMessage?: string; closedFormMessage?: string; gradientDirection?: string; gradientEndColor?: string; backgroundMedia?: { type: 'image' | 'video' | 'youtube'; url: string } }
       : { backgroundColor: '#1a1a2e', fontFamily: 'Inter', primaryColor: '#8b5cf6' };
 
     if (!formData.is_published) {
@@ -584,15 +584,45 @@ const FormPreview = () => {
 
   const currentPageData = pages[currentPage];
 
+  const extractYoutubeId = (url: string): string | null => {
+    const match = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    return match ? match[1] : null;
+  };
+
+  const bgMedia = form.settings.backgroundMedia;
+
   return (
     <div 
-      className="min-h-screen"
+      className="min-h-screen relative overflow-hidden"
       style={{ 
         ...backgroundStyle,
         fontFamily: form.settings.fontFamily
       }}
     >
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
+      {/* Background Media Layer */}
+      {bgMedia && (
+        <div className="fixed inset-0 z-0">
+          {bgMedia.type === 'image' && (
+            <img src={bgMedia.url} alt="" className="w-full h-full object-cover" />
+          )}
+          {bgMedia.type === 'video' && (
+            <video src={bgMedia.url} autoPlay loop muted playsInline className="w-full h-full object-cover" />
+          )}
+          {bgMedia.type === 'youtube' && (() => {
+            const ytId = extractYoutubeId(bgMedia.url);
+            return ytId ? (
+              <iframe
+                src={`https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=0&showinfo=0&modestbranding=1&rel=0&disablekb=1`}
+                className="w-full h-full border-0 pointer-events-none scale-150"
+                allow="autoplay; encrypted-media"
+                allowFullScreen
+              />
+            ) : null;
+          })()}
+          <div className="absolute inset-0 bg-black/40" />
+        </div>
+      )}
+      <div className="container mx-auto px-4 py-8 max-w-2xl relative z-10">
         {!isEmbed && (
           <div className="mb-6 flex justify-between items-center">
             <Button 
