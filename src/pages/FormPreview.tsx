@@ -272,7 +272,7 @@ const FormPreview = () => {
     }
 
     const settings = typeof formData.settings === 'object' && formData.settings !== null
-      ? formData.settings as { backgroundColor: string; fontFamily: string; primaryColor: string; logoUrl?: string; submitButtonText?: string; successMessage?: string; closedFormMessage?: string; gradientDirection?: string; gradientEndColor?: string }
+      ? formData.settings as { backgroundColor: string; fontFamily: string; primaryColor: string; logoUrl?: string; submitButtonText?: string; successMessage?: string; closedFormMessage?: string; gradientDirection?: string; gradientEndColor?: string; backgroundMedia?: { type: 'image' | 'video' | 'youtube'; url: string } }
       : { backgroundColor: '#1a1a2e', fontFamily: 'Inter', primaryColor: '#8b5cf6' };
 
     if (!formData.is_published) {
