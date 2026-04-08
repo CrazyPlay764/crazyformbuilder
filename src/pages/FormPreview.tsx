@@ -613,9 +613,14 @@ const FormPreview = () => {
             return ytId ? (
               <div className="absolute inset-0 overflow-hidden">
                 <iframe
-                  src={`https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=0&showinfo=0&modestbranding=1&rel=0&disablekb=1&iv_load_policy=3&fs=0`}
+                  src={`https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=0&showinfo=0&modestbranding=1&rel=0&disablekb=1&iv_load_policy=3&fs=0&playsinline=1`}
                   className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-0 pointer-events-none"
-                  style={{ width: '300vw', height: '300vh', minWidth: '300vw', minHeight: '300vh' }}
+                  style={{ 
+                    width: 'max(177.78vh, 100vw)', 
+                    height: 'max(56.25vw, 100vh)', 
+                    minWidth: '100vw', 
+                    minHeight: '100vh' 
+                  }}
                   allow="autoplay; encrypted-media"
                   allowFullScreen
                 />
