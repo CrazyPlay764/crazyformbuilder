@@ -197,21 +197,27 @@ const FormPreview = () => {
 
     fields.forEach((field) => {
       if (field.type === 'section') {
-        // If we have accumulated fields, push them as a page
-        if (currentPageFields.length > 0 || result.length === 0) {
+        // Only push a previous page if we already have fields OR a previous section title
+        if (currentPageFields.length > 0 || (result.length === 0 && currentTitle)) {
           result.push({ title: currentTitle, description: currentDescription, fields: currentPageFields });
+          currentPageFields = [];
         }
+        // If this is the very first item and no fields yet, don't create an empty page
         currentTitle = field.label;
         currentDescription = field.placeholder || undefined;
-        currentPageFields = [];
       } else {
         currentPageFields.push(field);
       }
     });
 
     // Push remaining fields
-    if (currentPageFields.length > 0 || result.length === 0) {
+    if (currentPageFields.length > 0 || currentTitle) {
       result.push({ title: currentTitle, description: currentDescription, fields: currentPageFields });
+    }
+
+    // If nothing was created, return single empty page
+    if (result.length === 0) {
+      return [{ fields: [] }];
     }
 
     // If there's only one page with no sections, just return all fields as single page
