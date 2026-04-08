@@ -599,24 +599,27 @@ const FormPreview = () => {
         fontFamily: form.settings.fontFamily
       }}
     >
-      {/* Background Media Layer */}
+      {/* Background Media Layer - Full Screen */}
       {bgMedia && (
-        <div className="fixed inset-0 z-0">
+        <div className="fixed inset-0 z-0 w-screen h-screen overflow-hidden">
           {bgMedia.type === 'image' && (
-            <img src={bgMedia.url} alt="" className="w-full h-full object-cover" />
+            <img src={bgMedia.url} alt="" className="absolute inset-0 w-full h-full object-cover" />
           )}
           {bgMedia.type === 'video' && (
-            <video src={bgMedia.url} autoPlay loop muted playsInline className="w-full h-full object-cover" />
+            <video src={bgMedia.url} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover" />
           )}
           {bgMedia.type === 'youtube' && (() => {
             const ytId = extractYoutubeId(bgMedia.url);
             return ytId ? (
-              <iframe
-                src={`https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=0&showinfo=0&modestbranding=1&rel=0&disablekb=1`}
-                className="w-full h-full border-0 pointer-events-none scale-150"
-                allow="autoplay; encrypted-media"
-                allowFullScreen
-              />
+              <div className="absolute inset-0 overflow-hidden">
+                <iframe
+                  src={`https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=0&showinfo=0&modestbranding=1&rel=0&disablekb=1&iv_load_policy=3&fs=0`}
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-0 pointer-events-none"
+                  style={{ width: '300vw', height: '300vh', minWidth: '300vw', minHeight: '300vh' }}
+                  allow="autoplay; encrypted-media"
+                  allowFullScreen
+                />
+              </div>
             ) : null;
           })()}
           <div className="absolute inset-0 bg-black/40" />
