@@ -42,12 +42,12 @@ const FormPreviewModal = ({ formId, isOpen, onClose }: FormPreviewModalProps) =>
       />
       
       {/* Centered Modal Panel */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none p-4">
+      <div className="fixed inset-0 z-50 flex items-start justify-center pointer-events-none pt-16 p-4">
         <div 
           className={`w-[900px] max-w-[95vw] h-[85vh] bg-background/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-2xl pointer-events-auto transition-all duration-300 ease-out ${
             isAnimating 
               ? 'opacity-100 scale-100 translate-y-0' 
-              : 'opacity-0 scale-95 translate-y-4'
+              : 'opacity-0 scale-95 -translate-y-4'
           }`}
         >
           <div className="flex flex-col h-full">
