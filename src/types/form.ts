@@ -13,7 +13,7 @@ export interface FormField {
 
 export interface Form {
   id: string;
-  user_id: string;
+  user_id?: string;
   title: string;
   description?: string | null;
   is_published?: boolean;
