@@ -8,25 +8,47 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { Sparkles, Mail, Lock, ArrowLeft, User, Check, X, Loader2 } from 'lucide-react';
 import { z } from 'zod';
+import {
+  getLockRemainingMs,
+  recordFailure,
+  resetAttempts,
+  formatRemaining,
+} from '@/lib/auth-throttle';
+
+const strongPassword = z
+  .string()
+  .min(12, 'Password must be at least 12 characters')
+  .max(128, 'Password is too long')
+  .regex(/[a-z]/, 'Must include a lowercase letter')
+  .regex(/[A-Z]/, 'Must include an uppercase letter')
+  .regex(/[0-9]/, 'Must include a digit')
+  .regex(/[^A-Za-z0-9]/, 'Must include a symbol');
 
 const loginSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  email: z.string().email('Invalid email address').max(255),
+  password: z.string().min(1, 'Password is required').max(128),
 });
 
 const signupSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  displayName: z.string().min(2, 'Name must be at least 2 characters'),
+  email: z.string().email('Invalid email address').max(255),
+  password: strongPassword,
+  displayName: z
+    .string()
+    .trim()
+    .min(2, 'Name must be at least 2 characters')
+    .max(50, 'Name must be less than 50 characters')
+    .regex(/^[\p{L}\p{N}_.\- ]+$/u, 'Name contains invalid characters'),
 });
 
-const resetSchema = z.object({
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  confirmPassword: z.string().min(6, 'Password must be at least 6 characters'),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+const resetSchema = z
+  .object({
+    password: strongPassword,
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  });
 
 type AuthMode = 'login' | 'signup' | 'forgot' | 'reset';
 
@@ -40,6 +62,7 @@ const Auth = () => {
   const [displayNameAvailable, setDisplayNameAvailable] = useState<boolean | null>(null);
   const [checkingName, setCheckingName] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [lockRemaining, setLockRemaining] = useState(getLockRemainingMs());
   const [errors, setErrors] = useState<{ email?: string; password?: string; displayName?: string; confirmPassword?: string }>({});
   const { signIn, signUp, user, checkDisplayNameAvailable, resetPassword, updatePassword } = useAuth();
   const navigate = useNavigate();
@@ -56,6 +79,13 @@ const Auth = () => {
       navigate('/dashboard');
     }
   }, [user, navigate, mode]);
+
+  // Tick the lockout countdown once per second while locked.
+  useEffect(() => {
+    if (lockRemaining <= 0) return;
+    const t = setInterval(() => setLockRemaining(getLockRemainingMs()), 1000);
+    return () => clearInterval(t);
+  }, [lockRemaining]);
 
   // Debounced display name availability check
   useEffect(() => {
@@ -132,6 +162,13 @@ const Auth = () => {
     }
 
 
+    // Global lockout gate for login/signup
+    if ((mode === 'login' || mode === 'signup') && getLockRemainingMs() > 0) {
+      setLockRemaining(getLockRemainingMs());
+      toast.error(`Too many attempts. Try again in ${formatRemaining(getLockRemainingMs())}.`);
+      return;
+    }
+
     if (mode === 'login') {
       const validation = loginSchema.safeParse({ email, password });
       if (!validation.success) {
@@ -147,8 +184,11 @@ const Auth = () => {
       setLoading(true);
       const { error } = await signIn(email, password);
       if (error) {
+        recordFailure();
+        setLockRemaining(getLockRemainingMs());
         toast.error(error.message || 'Failed to sign in');
       } else {
+        resetAttempts();
         toast.success('Welcome back!');
         navigate('/dashboard');
       }
@@ -168,12 +208,15 @@ const Auth = () => {
       setLoading(true);
       const { error } = await signUp(email, password, displayName);
       if (error) {
+        recordFailure();
+        setLockRemaining(getLockRemainingMs());
         if (error.message.includes('already registered')) {
           toast.error('This email is already registered. Please sign in instead.');
         } else {
           toast.error(error.message || 'Failed to sign up');
         }
       } else {
+        resetAttempts();
         toast.success('Account created successfully!');
         navigate('/dashboard');
       }
@@ -200,7 +243,10 @@ const Auth = () => {
     }
   };
 
+  const isLocked = (mode === 'login' || mode === 'signup') && lockRemaining > 0;
+
   const getButtonText = () => {
+    if (isLocked) return `Locked (${formatRemaining(lockRemaining)})`;
     if (loading) return 'Loading...';
     switch (mode) {
       case 'login': return 'Sign In';
@@ -349,7 +395,7 @@ const Auth = () => {
               type="submit" 
               variant="glow" 
               className="w-full" 
-              disabled={loading}
+              disabled={loading || isLocked}
             >
               {getButtonText()}
             </Button>
