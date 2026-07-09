@@ -267,7 +267,7 @@ const FormPreview = () => {
 
     const { data: formData, error: formError } = await supabase
       .from('forms')
-      .select('*')
+      .select('id, title, description, settings, is_published, created_at, updated_at')
       .eq('id', id)
       .maybeSingle();
 
