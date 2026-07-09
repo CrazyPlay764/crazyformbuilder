@@ -8,25 +8,47 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { Sparkles, Mail, Lock, ArrowLeft, User, Check, X, Loader2 } from 'lucide-react';
 import { z } from 'zod';
+import {
+  getLockRemainingMs,
+  recordFailure,
+  resetAttempts,
+  formatRemaining,
+} from '@/lib/auth-throttle';
+
+const strongPassword = z
+  .string()
+  .min(12, 'Password must be at least 12 characters')
+  .max(128, 'Password is too long')
+  .regex(/[a-z]/, 'Must include a lowercase letter')
+  .regex(/[A-Z]/, 'Must include an uppercase letter')
+  .regex(/[0-9]/, 'Must include a digit')
+  .regex(/[^A-Za-z0-9]/, 'Must include a symbol');
 
 const loginSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  email: z.string().email('Invalid email address').max(255),
+  password: z.string().min(1, 'Password is required').max(128),
 });
 
 const signupSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  displayName: z.string().min(2, 'Name must be at least 2 characters'),
+  email: z.string().email('Invalid email address').max(255),
+  password: strongPassword,
+  displayName: z
+    .string()
+    .trim()
+    .min(2, 'Name must be at least 2 characters')
+    .max(50, 'Name must be less than 50 characters')
+    .regex(/^[\p{L}\p{N}_.\- ]+$/u, 'Name contains invalid characters'),
 });
 
-const resetSchema = z.object({
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  confirmPassword: z.string().min(6, 'Password must be at least 6 characters'),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+const resetSchema = z
+  .object({
+    password: strongPassword,
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  });
 
 type AuthMode = 'login' | 'signup' | 'forgot' | 'reset';
 
