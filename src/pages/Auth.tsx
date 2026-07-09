@@ -74,30 +74,7 @@ const Auth = () => {
     return () => clearTimeout(timeoutId);
   }, [displayName, mode, checkDisplayNameAvailable]);
 
-  // Countdown timer for reset banner
-  useEffect(() => {
-    if (!showResetBanner || bannerExiting) return;
-    
-    if (resetCountdown <= 0) {
-      // Start exit animation
-      setBannerExiting(true);
-      // Remove banner after animation completes
-      const exitTimer = setTimeout(() => {
-        setShowResetBanner(false);
-        setBannerExiting(false);
-        setResetCountdown(10);
-      }, 500);
-      return () => clearTimeout(exitTimer);
-    }
-
-    const timer = setTimeout(() => {
-      setResetCountdown(prev => prev - 1);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [showResetBanner, resetCountdown, bannerExiting]);
-
-  const handleDirectPasswordReset = async () => {
+  const handlePasswordUpdate = async () => {
     const validation = resetSchema.safeParse({ password, confirmPassword });
     if (!validation.success) {
       const fieldErrors: { password?: string; confirmPassword?: string } = {};
@@ -108,22 +85,19 @@ const Auth = () => {
       setErrors(fieldErrors);
       return;
     }
-    
+
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('reset-password-direct', {
-        body: { email: resetEmail, newPassword: password }
-      });
-      
+      const { error } = await updatePassword(password);
       if (error) {
         toast.error(error.message || 'Failed to update password');
-      } else if (data?.error) {
-        toast.error(data.error);
       } else {
         toast.success('Password updated successfully! You can now log in.');
+        await supabase.auth.signOut();
         setMode('login');
         setPassword('');
         setConfirmPassword('');
+        navigate('/auth', { replace: true });
       }
     } catch (err) {
       toast.error('Failed to update password');
@@ -140,18 +114,23 @@ const Auth = () => {
         setErrors({ email: 'Email is required' });
         return;
       }
-      // Show banner instead of sending email
-      setResetEmail(email);
-      setBannerExiting(false);
-      setResetCountdown(10);
-      setShowResetBanner(true);
+      setLoading(true);
+      const { error } = await resetPassword(email);
+      setLoading(false);
+      if (error) {
+        toast.error(error.message || 'Failed to send reset email');
+      } else {
+        toast.success('Password reset email sent! Check your inbox and click the link to reset your password.');
+        setMode('login');
+      }
       return;
     }
 
     if (mode === 'reset') {
-      await handleDirectPasswordReset();
+      await handlePasswordUpdate();
       return;
     }
+
 
     if (mode === 'login') {
       const validation = loginSchema.safeParse({ email, password });
