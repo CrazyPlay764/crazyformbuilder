@@ -80,6 +80,13 @@ const Auth = () => {
     }
   }, [user, navigate, mode]);
 
+  // Tick the lockout countdown once per second while locked.
+  useEffect(() => {
+    if (lockRemaining <= 0) return;
+    const t = setInterval(() => setLockRemaining(getLockRemainingMs()), 1000);
+    return () => clearInterval(t);
+  }, [lockRemaining]);
+
   // Debounced display name availability check
   useEffect(() => {
     if (mode !== 'signup' || displayName.length < 2) {
