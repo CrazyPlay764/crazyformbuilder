@@ -41,11 +41,7 @@ const Auth = () => {
   const [checkingName, setCheckingName] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string; displayName?: string; confirmPassword?: string }>({});
-  const [showResetBanner, setShowResetBanner] = useState(false);
-  const [bannerExiting, setBannerExiting] = useState(false);
-  const [resetCountdown, setResetCountdown] = useState(10);
-  const [resetEmail, setResetEmail] = useState('');
-  const { signIn, signUp, user, checkDisplayNameAvailable } = useAuth();
+  const { signIn, signUp, user, checkDisplayNameAvailable, resetPassword, updatePassword } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
