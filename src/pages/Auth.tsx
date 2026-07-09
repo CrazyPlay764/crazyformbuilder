@@ -210,36 +210,9 @@ const Auth = () => {
     }
   };
 
-  const handleBannerReset = () => {
-    setBannerExiting(true);
-    setTimeout(() => {
-      setShowResetBanner(false);
-      setBannerExiting(false);
-      setMode('reset');
-    }, 300);
-  };
-
-  const handleBannerDismiss = () => {
-    setBannerExiting(true);
-    setTimeout(() => {
-      setShowResetBanner(false);
-      setBannerExiting(false);
-      setResetCountdown(10);
-    }, 300);
-  };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      {/* Password Reset Banner */}
-      {showResetBanner && (
-        <PasswordResetBanner
-          email={resetEmail}
-          countdown={resetCountdown}
-          onClickReset={handleBannerReset}
-          onDismiss={handleBannerDismiss}
-          isExiting={bannerExiting}
-        />
-      )}
+
 
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px]" />
