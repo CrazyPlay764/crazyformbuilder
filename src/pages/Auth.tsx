@@ -395,7 +395,7 @@ const Auth = () => {
               type="submit" 
               variant="glow" 
               className="w-full" 
-              disabled={loading}
+              disabled={loading || isLocked}
             >
               {getButtonText()}
             </Button>
