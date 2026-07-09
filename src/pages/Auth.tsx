@@ -162,6 +162,13 @@ const Auth = () => {
     }
 
 
+    // Global lockout gate for login/signup
+    if ((mode === 'login' || mode === 'signup') && getLockRemainingMs() > 0) {
+      setLockRemaining(getLockRemainingMs());
+      toast.error(`Too many attempts. Try again in ${formatRemaining(getLockRemainingMs())}.`);
+      return;
+    }
+
     if (mode === 'login') {
       const validation = loginSchema.safeParse({ email, password });
       if (!validation.success) {
@@ -177,8 +184,11 @@ const Auth = () => {
       setLoading(true);
       const { error } = await signIn(email, password);
       if (error) {
+        recordFailure();
+        setLockRemaining(getLockRemainingMs());
         toast.error(error.message || 'Failed to sign in');
       } else {
+        resetAttempts();
         toast.success('Welcome back!');
         navigate('/dashboard');
       }
@@ -198,12 +208,15 @@ const Auth = () => {
       setLoading(true);
       const { error } = await signUp(email, password, displayName);
       if (error) {
+        recordFailure();
+        setLockRemaining(getLockRemainingMs());
         if (error.message.includes('already registered')) {
           toast.error('This email is already registered. Please sign in instead.');
         } else {
           toast.error(error.message || 'Failed to sign up');
         }
       } else {
+        resetAttempts();
         toast.success('Account created successfully!');
         navigate('/dashboard');
       }
