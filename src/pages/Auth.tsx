@@ -62,6 +62,7 @@ const Auth = () => {
   const [displayNameAvailable, setDisplayNameAvailable] = useState<boolean | null>(null);
   const [checkingName, setCheckingName] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [lockRemaining, setLockRemaining] = useState(getLockRemainingMs());
   const [errors, setErrors] = useState<{ email?: string; password?: string; displayName?: string; confirmPassword?: string }>({});
   const { signIn, signUp, user, checkDisplayNameAvailable, resetPassword, updatePassword } = useAuth();
   const navigate = useNavigate();
