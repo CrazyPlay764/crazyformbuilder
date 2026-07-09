@@ -243,7 +243,10 @@ const Auth = () => {
     }
   };
 
+  const isLocked = (mode === 'login' || mode === 'signup') && lockRemaining > 0;
+
   const getButtonText = () => {
+    if (isLocked) return `Locked (${formatRemaining(lockRemaining)})`;
     if (loading) return 'Loading...';
     switch (mode) {
       case 'login': return 'Sign In';
