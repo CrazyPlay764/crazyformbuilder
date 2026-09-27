@@ -1,0 +1,2 @@
+- Keep the homepage as an unframed full-width industrial product presentation in `src/pages/Index.tsx`, while existing account and form routes remain unchanged; this preserves working product flows during visual redesign.
+- Use semantic global color tokens for the graphite and ice-blue visual system; this keeps shadcn controls and site styling consistent.
