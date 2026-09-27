@@ -1,0 +1,3 @@
+- [ ] Apply the selected industrial homepage design and palette.
+- [ ] Preserve working navigation, updates, links, and account entry points.
+- [ ] Verify desktop and mobile presentation.
