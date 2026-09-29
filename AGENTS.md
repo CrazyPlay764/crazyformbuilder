@@ -1,0 +1,2 @@
+- Keep interface translations in a client-side locale context and preserve user-authored form/content strings verbatim; switching language must not mutate stored data.
+- Store rating bounds in each form field's existing JSON settings column, avoiding schema changes and preserving existing field types.

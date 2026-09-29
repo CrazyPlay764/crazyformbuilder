@@ -1,0 +1,3 @@
+- [ ] Add persistent English/Hebrew interface switch and translate visible app controls without changing user-created content.
+- [ ] Add rating slider question with editable 1–100 default range, persisted settings, and saved numeric responses.
+- [ ] Verify language switching and rating behavior.
