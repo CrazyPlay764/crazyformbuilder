@@ -1,4 +1,5 @@
 import { useLanguage } from '@/i18n/Language';
+import { useLanguage } from '@/i18n/Language';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -7,6 +8,7 @@ import { useParallax } from '@/hooks/useParallax';
 import { ScrollReveal } from '@/components/ScrollReveal';
 
 const CTA = () => {
+  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const { getParallaxStyle } = useParallax();
 

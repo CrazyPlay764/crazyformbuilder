@@ -1,4 +1,5 @@
 import { useLanguage } from '@/i18n/Language';
+import { useLanguage } from '@/i18n/Language';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { X, ExternalLink } from 'lucide-react';
@@ -10,6 +11,7 @@ interface FormPreviewModalProps {
 }
 
 const FormPreviewModal = ({ formId, isOpen, onClose }: FormPreviewModalProps) => {
+  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const [isVisible, setIsVisible] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);

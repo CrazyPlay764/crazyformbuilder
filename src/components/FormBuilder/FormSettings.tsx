@@ -1,4 +1,5 @@
 import { useLanguage } from '@/i18n/Language';
+import { useLanguage } from '@/i18n/Language';
 import { useState, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -57,6 +58,7 @@ const extractYoutubeId = (url: string): string | null => {
 };
 
 const FormSettings = ({ settings, onUpdate, title, onTitleChange, description, onDescriptionChange }: FormSettingsProps) => {
+  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const [bgMediaMode, setBgMediaMode] = useState<'none' | 'url' | 'file' | 'youtube'>(
     settings.backgroundMedia ? (settings.backgroundMedia.type === 'youtube' ? 'youtube' : 'url') : 'none'
@@ -129,22 +131,11 @@ const FormSettings = ({ settings, onUpdate, title, onTitleChange, description, o
           <Label className="text-foreground">{t("Background Media")}</Label>
           {settings.backgroundMedia ? (
             <div className=t("space-y-2")>
-              <div className=t("relative rounded-lg overflow-hidden border border-border/50 bg-background/30")>
-                {settings.backgroundMedia.type === t("image")e") && (
-                  <img src={settings.backgroundMedia.url} alt={t("Background")}d")d") className=t("w-full h-24 object-cover")r") />
-                )}
-                {settings.backgroundMedia.type === t("video")o") && (
-                  <video src={settings.backgroundMedia.url} className=t("w-full h-24 object-cover")r") muted />
-                )}
-                {settings.backgroundMedia.type === t("youtube")e") && (
-                  <div className=t("w-full h-24 flex items-center justify-center bg-background/50")0")>
-                    <Video className=t("w-6 h-6 text-primary")y") />
-                    <span className=t("text-xs text-muted-foreground ml-2")2")>{t("YouTube Video")}</span>
+              <div className=t{t("(\"relative rounded-lg overflow-hidden border border-border/50 bg-background/30\")>")}{settings.backgroundMedia.type === t("image"){t("e\") && (")}<img src={settings.backgroundMedia.url} alt={t("Background")}d{t("\")d\") className=t(\"w-full h-24 object-cover\")r\") /> )}")}{settings.backgroundMedia.type === t("video"){t("o\") && (")}<video src={settings.backgroundMedia.url} className=t{t("(\"w-full h-24 object-cover\")r\") muted /> )}")}{settings.backgroundMedia.type === t("youtube"){t("e\") && (")}<div className=t{t("(\"w-full h-24 flex items-center justify-center bg-background/50\")0\")>")}<Video className=t{t("(\"w-6 h-6 text-primary\")y\") />")}<span className=t{t("(\"text-xs text-muted-foreground ml-2\")2\")>")}{t("YouTube Video")}</span>
                   </div>
                 )}
-                <Button variant=t("ghost") size=t("icon") className=t("absolute top-1 right-1 h-6 w-6 bg-background/80") onClick={removeBgMedia}>
-                  <X className=t("w-4 h-4") />
-                </Button>
+                <Button variant=t{t("(\"ghost\") size=t(\"icon\") className=t(\"absolute top-1 right-1 h-6 w-6 bg-background/80\") onClick=")}{removeBgMedia}>
+                  <X className=t{t("(\"w-4 h-4\") />")}</Button>
               </div>
             </div>
           ) : (
@@ -222,10 +213,8 @@ const FormSettings = ({ settings, onUpdate, title, onTitleChange, description, o
           <Label className="text-foreground">{t("Form Logo")}</Label>
           {settings.logoUrl ? (
             <div className=t("relative")>
-              <img src={settings.logoUrl} alt={t("Form logo")}o") className=t("w-full h-24 object-contain rounded-lg border border-border/50 bg-background/30") />
-              <Button variant=t("ghost") size=t("icon") className=t("absolute top-1 right-1 h-6 w-6 bg-background/80") onClick={() => onUpdate({ ...settings, logoUrl: undefined })}>
-                <X className=t("w-4 h-4") />
-              </Button>
+              <img src={settings.logoUrl} alt={t("Form logo")}o{t("\") className=t(\"w-full h-24 object-contain rounded-lg border border-border/50 bg-background/30\") />")}<Button variant=t{t("(\"ghost\") size=t(\"icon\") className=t(\"absolute top-1 right-1 h-6 w-6 bg-background/80\") onClick=")}{() => onUpdate({ ...settings, logoUrl: undefined })}>
+                <X className=t{t("(\"w-4 h-4\") />")}</Button>
             </div>
           ) : (
             <div className=t("space-y-2")>

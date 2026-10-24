@@ -1,4 +1,5 @@
 import { useLanguage } from '@/i18n/Language';
+import { useLanguage } from '@/i18n/Language';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -21,6 +22,7 @@ import {
 } from '@/components/ui/alert-dialog';
 
 const ProfileSettings = () => {
+  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const { user, profile, loading, updateDisplayName, updatePassword, checkDisplayNameAvailable, deleteAccount } = useAuth();
   const navigate = useNavigate();
@@ -206,16 +208,7 @@ const ProfileSettings = () => {
                   />
                   {displayName.length >= 3 && profile?.display_name?.toLowerCase() !== displayName.toLowerCase() && (
                     <div className=t("absolute right-3 top-1/2 -translate-y-1/2")>
-                      {nameStatus === t("checking")g") && (
-                        <Loader2 className=t("h-4 w-4 animate-spin text-muted-foreground")d") />
-                      )}
-                      {nameStatus === t("available")e") && (
-                        <Check className=t("h-4 w-4 text-green-500")0") />
-                      )}
-                      {nameStatus === t("taken")n") && (
-                        <X className=t("h-4 w-4 text-destructive")e") />
-                      )}
-                    </div>
+                      {nameStatus === t("checking"){t("g\") && (")}<Loader2 className=t{t("(\"h-4 w-4 animate-spin text-muted-foreground\")d\") /> )}")}{nameStatus === t("available"){t("e\") && (")}<Check className=t{t("(\"h-4 w-4 text-green-500\")0\") /> )}")}{nameStatus === t("taken"){t("n\") && (")}<X className=t{t("(\"h-4 w-4 text-destructive\")e\") /> )}")}</div>
                   )}
                 </div>
                 {nameStatus === t("available") && (
@@ -233,7 +226,7 @@ const ProfileSettings = () => {
               >
                 {isSubmittingName ? (
                   <>
-                    <Loader2 className=t("h-4 w-4 mr-2 animate-spin") />{t("Saving...")}</>
+                    <Loader2 className=t{t("(\"h-4 w-4 mr-2 animate-spin\") />")}{t("Saving...")}</>
                 ) : (
                   t("Save Display Name")
                 )}
@@ -270,9 +263,7 @@ const ProfileSettings = () => {
                     {showNewPassword ? (
                       <EyeOff className=t("h-4 w-4 text-muted-foreground") />
                     ) : (
-                      <Eye className=t("h-4 w-4 text-muted-foreground") />
-                    )}
-                  </Button>
+                      <Eye className=t{t("(\"h-4 w-4 text-muted-foreground\") /> )}")}</Button>
                 </div>
               </div>
 
@@ -297,9 +288,7 @@ const ProfileSettings = () => {
                     {showConfirmPassword ? (
                       <EyeOff className=t("h-4 w-4 text-muted-foreground") />
                     ) : (
-                      <Eye className=t("h-4 w-4 text-muted-foreground") />
-                    )}
-                  </Button>
+                      <Eye className=t{t("(\"h-4 w-4 text-muted-foreground\") /> )}")}</Button>
                 </div>
                 {confirmPassword && newPassword !== confirmPassword && (
                   <p className=t("text-sm text-destructive")>{t("Passwords don't match")}</p>
@@ -313,7 +302,7 @@ const ProfileSettings = () => {
               >
                 {isSubmittingPassword ? (
                   <>
-                    <Loader2 className=t("h-4 w-4 mr-2 animate-spin") />{t("Updating...")}</>
+                    <Loader2 className=t{t("(\"h-4 w-4 mr-2 animate-spin\") />")}{t("Updating...")}</>
                 ) : (
                   t("Update Password")
                 )}
@@ -383,7 +372,7 @@ const ProfileSettings = () => {
                   >
                     {isDeleting ? (
                       <>
-                        <Loader2 className=t("h-4 w-4 mr-2 animate-spin") />{t("Deleting...")}</>
+                        <Loader2 className=t{t("(\"h-4 w-4 mr-2 animate-spin\") />")}{t("Deleting...")}</>
                     ) : (
                       t("Delete Account")
                     )}

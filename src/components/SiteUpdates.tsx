@@ -1,4 +1,5 @@
 import { useLanguage } from '@/i18n/Language';
+import { useLanguage } from '@/i18n/Language';
 import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { formatDistanceToNow } from 'date-fns';
@@ -27,6 +28,7 @@ interface SiteUpdate {
 const ADMIN_EMAIL = 'danieletigon@gmail.com';
 
 const SiteUpdates = () => {
+  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const [updates, setUpdates] = useState<SiteUpdate[]>([]);
   const [loading, setLoading] = useState(true);
@@ -151,18 +153,11 @@ const SiteUpdates = () => {
 
         {isAdmin && (
           <div className=t("mb-8 flex justify-center")>
-            {!showForm ? (
-              <Button variant=t("glow")w") onClick={() => setShowForm(true)} className=t("gap-2")2")>
-                <Plus className=t("w-4 h-4")4") />{t("פרסם עדכון חדש")}</Button>
+            {!{t("showForm ? (")}<Button variant=t{t("(\"glow\")w\") onClick=")}{() => setShowForm(true)}{t("className=t(\"gap-2\")2\")>")}<Plus className=t{t("(\"w-4 h-4\")4\") />")}{t("פרסם עדכון חדש")}</Button>
             ) : (
-              <div className=t("w-full max-w-xl glass-card rounded-xl p-6 space-y-4")4")>
-                <div className=t("flex items-center justify-between")n")>
-                  <h3 className=t("text-lg font-orbitron font-bold text-foreground")d")>
-                    {editingId ? t("ערוך עדכון")ן")ן") : t("עדכון חדש")ש")ש")}
-                  </h3>
+              <div className=t{t("(\"w-full max-w-xl glass-card rounded-xl p-6 space-y-4\")4\")>")}<div className=t{t("(\"flex items-center justify-between\")n\")>")}<h3 className=t{t("(\"text-lg font-orbitron font-bold text-foreground\")d\")>")}{editingId ? t("ערוך עדכון"){t("ן\")ן\") : t(\"עדכון חדש\")ש\")ש\")}")}</h3>
                   <button onClick={() => { setShowForm(false); setEditingId(null); setTitle(''); setContent(''); setMedia([]); }}>
-                    <X className=t("w-5 h-5 text-muted-foreground hover:text-foreground transition-colors")s") />
-                  </button>
+                    <X className=t{t("(\"w-5 h-5 text-muted-foreground hover:text-foreground transition-colors\")s\") />")}</button>
                 </div>
                 <Input placeholder={t("כותרת העדכון")}ן")ן") value={title} onChange={(e) => setTitle(e.target.value)} className=t("text-right")t") dir=t("rtl")l") />
                 <Textarea placeholder={t("תוכן העדכון...")}.").") value={content} onChange={(e) => setContent(e.target.value)} className=t("text-right min-h-[100px]")]") dir=t("rtl")l") />

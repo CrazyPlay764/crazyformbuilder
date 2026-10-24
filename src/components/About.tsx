@@ -1,10 +1,12 @@
 import { useLanguage } from '@/i18n/Language';
+import { useLanguage } from '@/i18n/Language';
 import { Users, Target, Zap } from 'lucide-react';
 import TiltCard from '@/components/ui/tilt-card';
 import { useParallax } from '@/hooks/useParallax';
 import { ScrollReveal } from '@/components/ScrollReveal';
 
 const About = () => {
+  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const { getParallaxStyle } = useParallax();
 

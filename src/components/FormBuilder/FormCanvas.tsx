@@ -1,4 +1,5 @@
 import { useLanguage } from '@/i18n/Language';
+import { useLanguage } from '@/i18n/Language';
 import { FormField } from '@/types/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -51,6 +52,7 @@ const FormCanvas = ({
   onReorderFields,
   previewDevice = 'desktop',
 }: FormCanvasProps) => {
+  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const deviceWidths = {
     desktop: 'w-full',
@@ -216,14 +218,11 @@ const FormCanvas = ({
         <div className=t("mb-6 flex justify-center")>
           <img 
             src={formSettings.logoUrl} 
-            alt={t("Form logo")}o") 
-            className=t("max-h-20 object-contain")
-          />
-        </div>
+            alt={t("Form logo")}o{t("\") className=t(\"max-h-20 object-contain\") />")}</div>
       )}
       {fields.length === 0 ? (
         <div className=t("h-full flex items-center justify-center border-2 border-dashed border-border/30 rounded-lg min-h-[400px]")>
-          <p className=t("text-muted-foreground font-inter")>{t("Drag and drop fields here")}</p>
+          <p className=t{t("(\"text-muted-foreground font-inter\")>")}{t("Drag and drop fields here")}</p>
         </div>
       ) : (
         <div className=t("space-y-4") dir=t("rtl")>
@@ -244,17 +243,11 @@ const FormCanvas = ({
                   : field.type === t("section") ? '' : t("border-border/30 hover:border-border/50")
               }`}
             >
-              {field.type === t("section")n") ? (
-                <div className=t("flex items-center justify-between gap-3")3")>
-                  <div className=t("flex items-center gap-1")1")>
-                    <ReorderButtons index={index} />
+              {field.type === t("section"){t("n\") ? (")}<div className=t{t("(\"flex items-center justify-between gap-3\")3\")>")}<div className=t{t("(\"flex items-center gap-1\")1\")>")}<ReorderButtons index={index} />
                     <div
                       draggable
                       onDragStart={(e) => handleFieldDragStart(e, index, true)}
-                      className=t("cursor-grab touch-none flex-shrink-0 hidden md:block")k")
-                    >
-                      <GripVertical className=t("w-4 h-4 text-muted-foreground")d") />
-                    </div>
+                      className=t{t("(\"cursor-grab touch-none flex-shrink-0 hidden md:block\")k\") >")}<GripVertical className=t{t("(\"w-4 h-4 text-muted-foreground\")d\") />")}</div>
                   </div>
                   <div className=t("flex-1 border-b-2 border-primary/50 pb-2")2")>
                     <h3 className=t("text-lg font-orbitron font-bold text-foreground text-right")t")>
@@ -291,16 +284,11 @@ const FormCanvas = ({
                 </div>
               ) : (
                 <>
-                  <div className=t("flex items-center justify-between mb-2")2")>
-                    <div className=t("flex items-center gap-2")2")>
-                      <ReorderButtons index={index} />
+                  <div className=t{t("(\"flex items-center justify-between mb-2\")2\")>")}<div className=t{t("(\"flex items-center gap-2\")2\")>")}<ReorderButtons index={index} />
                       <div
                         draggable
                         onDragStart={(e) => handleFieldDragStart(e, index, true)}
-                        className=t("cursor-grab touch-none hidden md:block")k")
-                      >
-                        <GripVertical className=t("w-4 h-4 text-muted-foreground")d") />
-                      </div>
+                        className=t{t("(\"cursor-grab touch-none hidden md:block\")k\") >")}<GripVertical className=t{t("(\"w-4 h-4 text-muted-foreground\")d\") />")}</div>
                       <label className=t("text-sm font-medium text-foreground")d")>
                         {field.label}
                         {field.required && <span className=t("text-destructive ml-1")1")1")>*</span>}

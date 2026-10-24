@@ -1,4 +1,5 @@
 import { useLanguage } from '@/i18n/Language';
+import { useLanguage } from '@/i18n/Language';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -27,6 +28,7 @@ interface FormResponsesProps {
 }
 
 const FormResponses = ({ formId, isOpen, onClose }: FormResponsesProps) => {
+  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const [responses, setResponses] = useState<FormResponse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -163,26 +165,18 @@ const FormResponses = ({ formId, isOpen, onClose }: FormResponsesProps) => {
             {/* Content */}
             <div className="flex-1 overflow-y-auto p-4">
               {loading ? (
-                <p className=t("text-muted-foreground text-sm")>{t("Loading responses...")}</p>
-              ) : responses.length === 0 ? (
-                <div className=t("text-center py-8")>
-                  <p className=t("text-muted-foreground text-sm")>{t("No responses yet")}</p>
-                  <p className=t("text-muted-foreground text-xs mt-1")>{t("Responses will appear here when people submit the form")}</p>
+                <p className=t("text-muted-foreground text-sm")>{t("Loading responses...")}</p>{t(") : responses.length === 0 ? (")}<div className=t{t("(\"text-center py-8\")>")}<p className=t{t("(\"text-muted-foreground text-sm\")>")}{t("No responses yet")}</p>
+                  <p className=t{t("(\"text-muted-foreground text-xs mt-1\")>")}{t("Responses will appear here when people submit the form")}</p>
                 </div>
               ) : (
-                <div className=t("space-y-3")>
-                  {responses.map((response, index) => (
+                <div className=t{t("(\"space-y-3\")>")}{responses.map((response, index) => (
                     <div
                       key={response.id}
                       className=t("bg-background/50 rounded-lg border border-border/30 overflow-hidden")
                     >
                       <div
                         className=t("flex items-center justify-between p-3 cursor-pointer hover:bg-background/70 transition-colors")
-                        onClick={() => toggleExpand(response.id)}
-                      >
-                        <div className=t("flex items-center gap-3")>
-                          <span className=t("text-sm font-medium text-foreground")>
-                            #{responses.length - index}
+                        onClick={(){t("=> toggleExpand(response.id)} >")}<div className=t{t("(\"flex items-center gap-3\")>")}<span className=t{t("(\"text-sm font-medium text-foreground\")> #")}{responses.length - index}
                           </span>
                           <div className=t("flex items-center gap-1 text-xs text-muted-foreground")>
                             <Calendar className=t("w-3 h-3") />

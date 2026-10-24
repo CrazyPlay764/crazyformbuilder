@@ -1,4 +1,5 @@
 import { useLanguage } from '@/i18n/Language';
+import { useLanguage } from '@/i18n/Language';
 import { FormField } from '@/types/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -13,6 +14,7 @@ interface FieldSettingsProps {
 }
 
 const FieldSettings = ({ field, onUpdate }: FieldSettingsProps) => {
+  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const [newOption, setNewOption] = useState('');
   const [localLabel, setLocalLabel] = useState(field.label);
@@ -100,9 +102,8 @@ const FieldSettings = ({ field, onUpdate }: FieldSettingsProps) => {
 
         {(field.type === t("dropdown") || field.type === t("radio") || field.type === t("multiplechoice")) && (
           <div className=t("space-y-2")>
-            <Label className=t("text-foreground")>{t("Options")}</Label>
-            <div className=t("space-y-2")>
-              {localOptions.map((option, index) => (
+            <Label className=t{t("(\"text-foreground\")>")}{t("Options")}</Label>
+            <div className=t{t("(\"space-y-2\")>")}{localOptions.map((option, index) => (
                 <div key={index} className=t("flex items-center gap-2")>
                   <Input
                     value={option}
@@ -113,10 +114,7 @@ const FieldSettings = ({ field, onUpdate }: FieldSettingsProps) => {
                   <Button
                     variant=t("ghost")
                     size=t("icon")
-                    onClick={() => removeOption(index)}
-                  >
-                    <X className=t("w-4 h-4") />
-                  </Button>
+                    onClick={(){t("=> removeOption(index)} >")}<X className=t{t("(\"w-4 h-4\") />")}</Button>
                 </div>
               ))}
             </div>

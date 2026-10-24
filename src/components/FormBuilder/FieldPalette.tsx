@@ -1,4 +1,5 @@
 import { useLanguage } from '@/i18n/Language';
+import { useLanguage } from '@/i18n/Language';
 import { useState } from 'react';
 import { 
   Type, 
@@ -44,6 +45,7 @@ interface FieldPaletteProps {
 }
 
 const FieldPalette = ({ onDragStart, onAddField }: FieldPaletteProps) => {
+  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const [selectedField, setSelectedField] = useState<FieldType | null>(null);
 

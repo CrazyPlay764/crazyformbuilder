@@ -1,4 +1,5 @@
 import { useLanguage } from '@/i18n/Language';
+import { useLanguage } from '@/i18n/Language';
 import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -13,6 +14,7 @@ import { FormField, Form } from '@/types/form';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const ImageFieldInput = ({ fieldId, value, onChange }: { fieldId: string; value: string; onChange: (id: string, val: string) => void }) => {
+  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const isMobile = useIsMobile();
   const [mode, setMode] = useState<'choose' | 'url' | 'file' | 'done'>(value ? 'done' : (isMobile ? 'file' : 'choose'));
@@ -101,9 +103,7 @@ const ImageFieldInput = ({ fieldId, value, onChange }: { fieldId: string; value:
             <p className=t("text-muted-foreground text-sm")>{t("מעלה...")}</p>
           ) : (
             <>
-              <Upload className=t("w-8 h-8 text-muted-foreground mx-auto mb-2") />
-              <p className=t("text-muted-foreground text-sm")>{t("לחץ לבחירת תמונה")}</p>
-            </>
+              <Upload className=t{t("(\"w-8 h-8 text-muted-foreground mx-auto mb-2\") />")}<p className=t{t("(\"text-muted-foreground text-sm\")>")}{t("לחץ לבחירת תמונה")}</{t("p>")}</>
           )}
         </div>
         <input
@@ -139,6 +139,7 @@ const ImageFieldInput = ({ fieldId, value, onChange }: { fieldId: string; value:
 };
 
 const FormPreview = () => {
+  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
@@ -596,28 +597,10 @@ const FormPreview = () => {
       {bgMedia && (
         <div className=t("fixed inset-0 z-0 w-screen h-screen overflow-hidden")>
           {bgMedia.type === t("image")e") && (
-            <img src={bgMedia.url} alt="" className=t("absolute inset-0 w-full h-full object-cover")r") />
-          )}
-          {bgMedia.type === t("video")o") && (
-            <video src={bgMedia.url} autoPlay loop muted playsInline className=t("absolute inset-0 w-full h-full object-cover")r") />
-          )}
-          {bgMedia.type === t("youtube")e") && (() => {
-            const ytId = extractYoutubeId(bgMedia.url);
-            return ytId ? (
-              <div className=t("absolute inset-0 overflow-hidden")n")>
-                <iframe
+            <img src={bgMedia.url}{t("alt=\"\" className=t(\"absolute inset-0 w-full h-full object-cover\")r\") /> )}")}{bgMedia.type === t("video"){t("o\") && (")}<video src={bgMedia.url} autoPlay loop muted playsInline className=t{t("(\"absolute inset-0 w-full h-full object-cover\")r\") /> )}")}{bgMedia.type === t("youtube"){t("e\") && (() =>")}{{t("const ytId = extractYoutubeId(bgMedia.url); return ytId ? (")}<div className=t{t("(\"absolute inset-0 overflow-hidden\")n\")>")}<iframe
                   src={`https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=0&showinfo=0&modestbranding=1&rel=0&disablekb=1&iv_load_policy=3&fs=0&playsinline=1`}
-                  className=t("absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-0 pointer-events-none")e")
-                  style={{ 
-                    width: t("max(177.78vh, 100vw)"))"), 
-                    height: t("max(56.25vw, 100vh)"))"), 
-                    minWidth: t("100vw")w"), 
-                    minHeight: t("100vh")h") 
-                  }}
-                  allow=t("autoplay; encrypted-media")a")
-                  allowFullScreen
-                />
-              </div>
+                  className=t{t("(\"absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-0 pointer-events-none\")e\") style=")}{{ 
+                    width: t("max(177.78vh, 100vw)"){t(")\"), height: t(\"max(56.25vw, 100vh)\"))\"), minWidth: t(\"100vw\")w\"), minHeight: t(\"100vh\")h\") }} allow=t(\"autoplay; encrypted-media\")a\") allowFullScreen />")}</div>
             ) : null;
           })()}
           <div className=t("absolute inset-0 bg-black/40") />
@@ -627,12 +610,7 @@ const FormPreview = () => {
         {!isEmbed && (
           <div className=t("mb-6 flex justify-between items-center")>
             <Button 
-              variant=t("ghost") 
-              size=t("sm") 
-              onClick={() => navigate('/')}
-              className=t("text-foreground/70 hover:text-foreground")
-            >
-              <ArrowLeft className=t("w-4 h-4 mr-2") />{t("Back")}</Button>
+              variant=t{t("(\"ghost\") size=t(\"sm\") onClick=")}{() => navigate('/')}{t("className=t(\"text-foreground/70 hover:text-foreground\") >")}<ArrowLeft className=t{t("(\"w-4 h-4 mr-2\") />")}{t("Back")}</Button>
             <Link to=t("/auth")>
               <Button variant=t("ghost") size=t("sm") className=t("text-foreground/70 hover:text-foreground")>
                 <LogIn className=t("w-4 h-4 mr-2") />{t("Login")}</Button>
@@ -645,10 +623,7 @@ const FormPreview = () => {
             <div className=t("mb-6 flex justify-center")>
               <img 
                 src={form.settings.logoUrl} 
-                alt={t("Form logo")}o") 
-                className=t("max-h-20 object-contain")
-              />
-            </div>
+                alt={t("Form logo")}o{t("\") className=t(\"max-h-20 object-contain\") />")}</div>
           )}
 
           <div className="mb-8 text-center">

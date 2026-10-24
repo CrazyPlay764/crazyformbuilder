@@ -1,4 +1,5 @@
 import { useLanguage } from '@/i18n/Language';
+import { useLanguage } from '@/i18n/Language';
 import { useState, useEffect } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -54,6 +55,7 @@ const resetSchema = z
 type AuthMode = 'login' | 'signup' | 'forgot' | 'reset';
 
 const Auth = () => {
+  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const [searchParams] = useSearchParams();
   const [mode, setMode] = useState<AuthMode>('login');
@@ -289,30 +291,15 @@ const Auth = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {mode === t("signup") && (
               <div className=t("space-y-2")>
-                <Label htmlFor=t("displayName") className=t("text-foreground")>{t("Your Name")}</Label>
-                <div className=t("relative")>
-                  <User className=t("absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground") />
-                  <Input
-                    id=t("displayName")
-                    type=t("text")
-                    placeholder="crazyplay"
-                    value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value)}
-                    className=t("pl-10 pr-10 bg-background/50 border-border/50 focus:border-primary")
-                  />
-                  {displayName.length >= 2 && (
+                <Label htmlFor=t{t("(\"displayName\") className=t(\"text-foreground\")>")}{t("Your Name")}</Label>
+                <div className=t{t("(\"relative\")>")}<User className=t{t("(\"absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground\") />")}<Input
+                    id=t{t("(\"displayName\") type=t(\"text\") placeholder=\"crazyplay\" value=")}{displayName}{t("onChange=")}{(e) => setDisplayName(e.target.value)}{t("className=t(\"pl-10 pr-10 bg-background/50 border-border/50 focus:border-primary\") />")}{displayName.length >= 2 && (
                     <div className=t("absolute right-3 top-1/2 -translate-y-1/2")2")>
                       {checkingName ? (
-                        <Loader2 className=t("w-5 h-5 text-muted-foreground animate-spin")n")n") />
-                      ) : displayNameAvailable === true ? (
-                        <Check className=t("w-5 h-5 text-green-500")0")0") />
-                      ) : displayNameAvailable === false ? (
-                        <X className=t("w-5 h-5 text-destructive")e")e") />
-                      ) : null}
-                    </div>
+                        <Loader2 className=t("w-5 h-5 text-muted-foreground animate-spin"){t("n\")n\") /> ) : displayNameAvailable === true ? (")}<Check className=t{t("(\"w-5 h-5 text-green-500\")0\")0\") /> ) : displayNameAvailable === false ? (")}<X className=t{t("(\"w-5 h-5 text-destructive\")e\")e\") /> ) : null}")}</div>
                   )}
                 </div>
-                {errors.displayName && <p className=t("text-destructive text-sm")m")>{t(errors.displayName)}</p>}
+                {errors.displayName && <p className=t{t("(\"text-destructive text-sm\")m\")>")}{t(errors.displayName)}</p>}
                 {displayNameAvailable === false && !errors.displayName && (
                   <p className=t("text-destructive text-sm")m")>{t("This name is already taken")}</p>
                 )}

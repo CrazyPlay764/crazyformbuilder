@@ -1,4 +1,5 @@
 import { useLanguage } from '@/i18n/Language';
+import { useLanguage } from '@/i18n/Language';
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -16,6 +17,7 @@ import ShareDialog from '@/components/FormBuilder/ShareDialog';
 import { FormField, Form } from '@/types/form';
 
 const FormBuilder = () => {
+  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
@@ -323,9 +325,7 @@ const FormBuilder = () => {
       {/* Read-only banner for viewers */}
       {isReadOnly && (
         <div className=t("bg-amber-500/20 border-b border-amber-500/50 px-4 py-2")>
-          <div className=t("container mx-auto flex items-center justify-center gap-2 text-amber-200")>
-            <Lock className=t("w-4 h-4") />
-            <span className=t("text-sm font-inter")>{t("You have view-only access to this form")}</span>
+          <div className=t{t("(\"container mx-auto flex items-center justify-center gap-2 text-amber-200\")>")}<Lock className=t{t("(\"w-4 h-4\") />")}<span className=t{t("(\"text-sm font-inter\")>")}{t("You have view-only access to this form")}</span>
           </div>
         </div>
       )}
@@ -349,8 +349,7 @@ const FormBuilder = () => {
                   ? t("bg-primary/20 text-primary") 
                   : t("bg-amber-500/20 text-amber-200")
               }`}>
-                {userRole === t("editor")r") ? t("Editor")r") : t("Viewer")r")}
-              </span>
+                {userRole === t("editor"){t("r\") ? t(\"Editor\")r\") : t(\"Viewer\")r\")}")}</span>
             )}
           </div>
           <div className="flex items-center gap-2">
@@ -400,37 +399,29 @@ const FormBuilder = () => {
             {!isReadOnly && (
               <>
                 <Button 
-                  variant={showFormSettings ? t("glow")w") : t("ghost")t")} 
-                  size=t("sm")
-                  onClick={() => {
+                  variant={showFormSettings ? t("glow")w{t("\") : t(\"ghost\")t\")} size=t(\"sm\") onClick=")}{() => {
                     setShowFormSettings(!showFormSettings);
                     setShowResponses(false);
                     setSelectedField(null);
                   }}
                 >
-                  <Palette className=t("w-4 h-4 mr-2") />{t("Design")}</Button>
-                <Button 
-                  variant={showResponses ? t("glow")w") : t("ghost")t")} 
-                  size=t("sm")
-                  onClick={() => {
+                  <Palette className=t{t("(\"w-4 h-4 mr-2\") />")}{t("Design")}</{t("Button>")}<Button 
+                  variant={showResponses ? t("glow")w{t("\") : t(\"ghost\")t\")} size=t(\"sm\") onClick=")}{() => {
                     setShowResponses(!showResponses);
                     setShowFormSettings(false);
                     setSelectedField(null);
                   }}
                 >
-                  <MessageSquare className=t("w-4 h-4 mr-2") />{t("Responses")}</Button>
+                  <MessageSquare className=t{t("(\"w-4 h-4 mr-2\") />")}{t("Responses")}</Button>
                 <Button 
-                  variant={form.is_published ? t("default")t") : t("outline")e")} 
-                  size=t("sm")
-                  onClick={togglePublish}
-                  className={form.is_published ? t("bg-green-600 hover:bg-green-700")0") : ''}
+                  variant={form.is_published ? t("default")t{t("\") : t(\"outline\")e\")} size=t(\"sm\") onClick=")}{togglePublish}{t("className=")}{form.is_published ? t("bg-green-600 hover:bg-green-700")0") : ''}
                 >
                   {form.is_published ? (
                     <>
-                      <Eye className=t("w-4 h-4 mr-2")2") />{t("Open")}</>
+                      <Eye className=t{t("(\"w-4 h-4 mr-2\")2\") />")}{t("Open")}</>
                   ) : (
                     <>
-                      <EyeOff className=t("w-4 h-4 mr-2")2") />{t("Closed")}</>
+                      <EyeOff className=t{t("(\"w-4 h-4 mr-2\")2\") />")}{t("Closed")}</>
                   )}
                 </Button>
               </>
@@ -488,14 +479,11 @@ const FormBuilder = () => {
                 <div className=t("glass rounded-xl p-4")4")>
                   <div className=t("flex flex-col items-center gap-3 text-center")r")>
                     <Share2 className=t("w-8 h-8 text-muted-foreground")d") />
-                    <p className=t("text-muted-foreground text-sm font-inter")r")>{t("Share your form with others")}</p>
+                    <p className=t("text-muted-foreground text-sm font-inter")rt(")>{t(")Share your form with otherst(")}</p>")
                     <Button 
                       variant=t("outline")e") 
                       size=t("sm")m") 
-                      onClick={() => setShareOpen(true)}
-                      className=t("w-full")l")
-                    >
-                      <Share2 className=t("w-4 h-4 mr-2")2") />{t("Share Form")}</Button>
+                      onClick={(){t("=> setShareOpen(true)} className=t(\"w-full\")l\") >")}<Share2 className=t{t("(\"w-4 h-4 mr-2\")2\") />")}{t("Share Form")}</Button>
                   </div>
                 </div>
               )}

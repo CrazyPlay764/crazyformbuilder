@@ -1,7 +1,9 @@
 import { useLanguage } from '@/i18n/Language';
+import { useLanguage } from '@/i18n/Language';
 import { Sparkles, Github, Twitter, Linkedin } from 'lucide-react';
 
 const Footer = () => {
+  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const footerLinks = {
     Product: ['Features', 'Pricing', 'API Reference', 'Documentation'],
