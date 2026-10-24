@@ -117,7 +117,7 @@ const FieldSettings = ({ field, onUpdate }: FieldSettingsProps) => {
           />
         </div>
 
-        {(field.type === t("dropdown") || field.type === t("radio") || field.type === t("multiplechoice")) && (
+        {(field.type === "dropdown" || field.type === "radio" || field.type === "multiplechoice") && (
           <div className="space-y-2">
             <Label className="text-foreground">{t("Options")}</Label>
             <div className="space-y-2">

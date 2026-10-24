@@ -357,7 +357,7 @@ const FormPreview = () => {
 
       if (responseError) {
         console.error('Error submitting form:', responseError);
-        toast.error(responseError.message || 'Failed to submit form');
+        toast.error(responseError.message || t("Failed to submit form"));
         return;
       }
 
@@ -379,7 +379,7 @@ const FormPreview = () => {
 
       if (valuesError) {
         console.error('Error saving response values:', valuesError);
-        toast.error(valuesError.message || 'Failed to submit form');
+        toast.error(valuesError.message || t("Failed to submit form"));
         return;
       }
 
@@ -387,7 +387,7 @@ const FormPreview = () => {
     } catch (error) {
       console.error('Error:', error);
       const message = error instanceof Error ? error.message : undefined;
-      toast.error(message || 'Failed to submit form');
+      toast.error(message || t("Failed to submit form"));
     }
   };
 
@@ -604,13 +604,13 @@ const FormPreview = () => {
       {/* Background Media Layer - Full Screen */}
       {bgMedia && (
         <div className="fixed inset-0 z-0 w-screen h-screen overflow-hidden">
-          {bgMedia.type === t("image") && (
+          {bgMedia.type === "image" && (
             <img src={bgMedia.url} alt="" className="absolute inset-0 w-full h-full object-cover" />
           )}
-          {bgMedia.type === t("video") && (
+          {bgMedia.type === "video" && (
             <video src={bgMedia.url} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover" />
           )}
-          {bgMedia.type === t("youtube") && (() => {
+          {bgMedia.type === "youtube" && (() => {
             const ytId = extractYoutubeId(bgMedia.url);
             return ytId ? (
               <div className="absolute inset-0 overflow-hidden">

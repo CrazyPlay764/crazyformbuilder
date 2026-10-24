@@ -172,7 +172,7 @@ const SiteUpdates = () => {
                   <div className="grid grid-cols-2 gap-2">
                     {media.map((item, i) => (
                       <div key={i} className="relative rounded-lg overflow-hidden border border-border">
-                        {item.type === t("image") ? (
+                        {item.type === "image" ? (
                           <img src={item.url} alt="" className="w-full h-32 object-cover" />
                         ) : (
                           <video src={item.url} className="w-full h-32 object-cover" />
@@ -221,7 +221,7 @@ const SiteUpdates = () => {
                       <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {update.media.map((item, i) => (
                           <div key={i} className="rounded-lg overflow-hidden border border-border">
-                            {item.type === t("image") ? (
+                            {item.type === "image" ? (
                               <img src={item.url} alt="" className="w-full h-48 object-cover" />
                             ) : (
                               <video src={item.url} controls className="w-full h-48 object-cover" />

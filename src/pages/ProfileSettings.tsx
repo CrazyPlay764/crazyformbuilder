@@ -79,8 +79,8 @@ const ProfileSettings = () => {
     
     if (!displayName || displayName.length < 3) {
       toast({
-        title: "Invalid name",
-        description: "Display name must be at least 3 characters.",
+        title: t("Invalid name"),
+        description: t("Display name must be at least 3 characters."),
         variant: "destructive",
       });
       return;
@@ -88,8 +88,8 @@ const ProfileSettings = () => {
 
     if (nameStatus === 'taken') {
       toast({
-        title: "Name taken",
-        description: "This display name is already in use.",
+        title: t("Name taken"),
+        description: t("This display name is already in use."),
         variant: "destructive",
       });
       return;
@@ -101,14 +101,14 @@ const ProfileSettings = () => {
 
     if (error) {
       toast({
-        title: "Update failed",
+        title: t("Update failed"),
         description: error.message,
         variant: "destructive",
       });
     } else {
       toast({
-        title: "Profile updated",
-        description: "Your display name has been updated successfully.",
+        title: t("Profile updated"),
+        description: t("Your display name has been updated successfully."),
       });
       setNameStatus('idle');
     }
@@ -119,8 +119,8 @@ const ProfileSettings = () => {
 
     if (newPassword.length < 6) {
       toast({
-        title: "Password too short",
-        description: "Password must be at least 6 characters.",
+        title: t("Password too short"),
+        description: t("Password must be at least 6 characters."),
         variant: "destructive",
       });
       return;
@@ -128,8 +128,8 @@ const ProfileSettings = () => {
 
     if (newPassword !== confirmPassword) {
       toast({
-        title: "Passwords don't match",
-        description: "Please make sure both passwords match.",
+        title: t("Passwords don't match"),
+        description: t("Please make sure both passwords match."),
         variant: "destructive",
       });
       return;
@@ -141,14 +141,14 @@ const ProfileSettings = () => {
 
     if (error) {
       toast({
-        title: "Update failed",
+        title: t("Update failed"),
         description: error.message,
         variant: "destructive",
       });
     } else {
       toast({
-        title: "Password updated",
-        description: "Your password has been changed successfully.",
+        title: t("Password updated"),
+        description: t("Your password has been changed successfully."),
       });
       setNewPassword('');
       setConfirmPassword('');
@@ -206,22 +206,22 @@ const ProfileSettings = () => {
                   />
                   {displayName.length >= 3 && profile?.display_name?.toLowerCase() !== displayName.toLowerCase() && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                      {nameStatus === t("checking") && (
+                      {nameStatus === "checking" && (
                         <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
                       )}
-                      {nameStatus === t("available") && (
+                      {nameStatus === "available" && (
                         <Check className="h-4 w-4 text-green-500" />
                       )}
-                      {nameStatus === t("taken") && (
+                      {nameStatus === "taken" && (
                         <X className="h-4 w-4 text-destructive" />
                       )}
                     </div>
                   )}
                 </div>
-                {nameStatus === t("available") && (
+                {nameStatus === "available" && (
                   <p className="text-sm text-green-500">{t("This name is available!")}</p>
                 )}
-                {nameStatus === t("taken") && (
+                {nameStatus === "taken" && (
                   <p className="text-sm text-destructive">{t("This name is already taken.")}</p>
                 )}
               </div>
@@ -367,14 +367,14 @@ const ProfileSettings = () => {
                       
                       if (error) {
                         toast({
-                          title: "Deletion failed",
+                          title: t("Deletion failed"),
                           description: error.message,
                           variant: "destructive",
                         });
                       } else {
                         toast({
-                          title: "Account deleted",
-                          description: "Your account has been permanently deleted.",
+                          title: t("Account deleted"),
+                          description: t("Your account has been permanently deleted."),
                         });
                         navigate('/');
                       }

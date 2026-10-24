@@ -11,7 +11,7 @@ describe('rating bounds', () => {
   test('supports 1–50', () => {
     const settings = updateRatingBounds({ other: 'preserved' }, 1, 50);
     expect(getRatingBounds(settings)).toEqual({ min: 1, max: 50 });
-    expect(settings.other).toBe('preserved');
+    expect(settings['other']).toBe('preserved');
     expect(isValidRating(50, settings)).toBe(true);
     expect(isValidRating(51, settings)).toBe(false);
   });

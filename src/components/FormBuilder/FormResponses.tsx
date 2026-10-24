@@ -150,7 +150,7 @@ const FormResponses = ({ formId, isOpen, onClose }: FormResponsesProps) => {
           <div className="flex flex-col h-full max-h-[85vh]">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-border/50">
-              <h3 className="text-lg font-orbitron font-semibold text-foreground">{t("Responses (")}{responses.length})
+              <h3 className="text-lg font-orbitron font-semibold text-foreground">{t("Responses") + " ("}{responses.length})
               </h3>
               <div className="flex items-center gap-2">
                 <Button variant="ghost" size="sm" onClick={fetchResponses}>{t("Refresh")}</Button>

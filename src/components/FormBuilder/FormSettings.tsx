@@ -130,13 +130,13 @@ const FormSettings = ({ settings, onUpdate, title, onTitleChange, description, o
           {settings.backgroundMedia ? (
             <div className="space-y-2">
               <div className="relative rounded-lg overflow-hidden border border-border/50 bg-background/30">
-                {settings.backgroundMedia.type === t("image") && (
+                {settings.backgroundMedia.type === "image" && (
                   <img src={settings.backgroundMedia.url} alt={t("Background")} className="w-full h-24 object-cover" />
                 )}
-                {settings.backgroundMedia.type === t("video") && (
+                {settings.backgroundMedia.type === "video" && (
                   <video src={settings.backgroundMedia.url} className="w-full h-24 object-cover" muted />
                 )}
-                {settings.backgroundMedia.type === t("youtube") && (
+                {settings.backgroundMedia.type === "youtube" && (
                   <div className="w-full h-24 flex items-center justify-center bg-background/50">
                     <Video className="w-6 h-6 text-primary" />
                     <span className="text-xs text-muted-foreground ml-2">{t("YouTube Video")}</span>
@@ -149,7 +149,7 @@ const FormSettings = ({ settings, onUpdate, title, onTitleChange, description, o
             </div>
           ) : (
             <div className="space-y-2">
-              {bgMediaMode === t("none") && (
+              {bgMediaMode === "none" && (
                 <div className="flex gap-2">
                   <Button type="button" variant="outline" size="sm" className="flex-1 gap-1 text-xs" onClick={() => setBgMediaMode('url')}>
                     <Video className="w-3 h-3" />{t("URL / YouTube")}</Button>
@@ -157,7 +157,7 @@ const FormSettings = ({ settings, onUpdate, title, onTitleChange, description, o
                     <Upload className="w-3 h-3" />{t("Upload File")}</Button>
                 </div>
               )}
-              {bgMediaMode === t("url") && (
+              {bgMediaMode === "url" && (
                 <div className="space-y-2">
                   <Input placeholder={t("YouTube URL or image/video URL")} value={bgUrl} onChange={(e) => setBgUrl(e.target.value)} className="bg-background/50 border-border/50 text-sm" />
                   <div className="flex gap-2">
@@ -186,7 +186,7 @@ const FormSettings = ({ settings, onUpdate, title, onTitleChange, description, o
           <p className="text-xs text-muted-foreground">{t("RGB color transition from background to end color")}</p>
         </div>
 
-        {settings.gradientDirection && settings.gradientDirection !== t("none") && (
+        {settings.gradientDirection && settings.gradientDirection !== "none" && (
           <div className="space-y-2">
             <Label className="text-foreground">{t("Gradient End Color")}</Label>
             <div className="flex gap-2">

@@ -338,7 +338,7 @@ const Dashboard = () => {
                     )}
                   </div>
                   <p className="text-xs text-muted-foreground font-inter">
-                    {new Date(form.updated_at).toLocaleDateString()}
+                    {new Date(form.updated_at).toLocaleDateString(language === 'he' ? 'he-IL' : 'en-US')}
                   </p>
                 </div>
               </div>
@@ -365,7 +365,7 @@ const Dashboard = () => {
                   <h3 className="text-lg font-orbitron font-semibold text-foreground mb-2">
                     {invite.form_title}
                   </h3>
-                  <p className="text-sm text-muted-foreground font-inter mb-4">{t("You've been invited as")}{invite.role === t("editor") ? t("an Editor") : t("a Viewer")}
+                  <p className="text-sm text-muted-foreground font-inter mb-4">{t("You've been invited as")}{invite.role === "editor" ? t("an Editor") : t("a Viewer")}
                   </p>
                   <div className="flex gap-2">
                     <Button 
@@ -411,7 +411,7 @@ const Dashboard = () => {
                         onClick={() => navigate(`/builder/${form.id}?role=${form.role}`)}
                         title={form.role === 'editor' ? 'Edit form' : 'View form'}
                       >
-                        {form.role === t("editor") ? (
+                        {form.role === "editor" ? (
                           <Edit className="w-4 h-4" />
                         ) : (
                           <Eye className="w-4 h-4" />
@@ -431,10 +431,10 @@ const Dashboard = () => {
                         ? 'bg-primary/20 text-primary' 
                         : 'bg-muted text-muted-foreground'
                     }`}>
-                      {form.role === t("editor") ? t("Editor") : t("Viewer")}
+                      {form.role === "editor" ? t("Editor") : t("Viewer")}
                     </span>
                     <p className="text-xs text-muted-foreground font-inter">
-                      {new Date(form.updated_at).toLocaleDateString()}
+                      {new Date(form.updated_at).toLocaleDateString(language === 'he' ? 'he-IL' : 'en-US')}
                     </p>
                   </div>
                 </div>

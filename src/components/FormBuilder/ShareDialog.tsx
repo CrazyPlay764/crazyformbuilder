@@ -92,7 +92,7 @@ const ShareDialog = ({ open, onOpenChange, formId, userId }: ShareDialogProps) =
         toast.error(t("Failed to send invitation"));
       }
     } else {
-      toast.success(`Invitation sent to ${email}`);
+      toast.success(`${t('Invitation sent to')} ${email}`);
       setEmail('');
       fetchCollaborators();
     }

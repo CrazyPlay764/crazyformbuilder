@@ -122,7 +122,7 @@ const Auth = () => {
     try {
       const { error } = await updatePassword(password);
       if (error) {
-        toast.error(error.message || 'Failed to update password');
+        toast.error(error.message || t("Failed to update password"));
       } else {
         toast.success(t("Password updated successfully! You can now log in."));
         await supabase.auth.signOut();
@@ -150,7 +150,7 @@ const Auth = () => {
       const { error } = await resetPassword(email);
       setLoading(false);
       if (error) {
-        toast.error(error.message || 'Failed to send reset email');
+        toast.error(error.message || t("Failed to send reset email"));
       } else {
         toast.success(t("Password reset email sent! Check your inbox and click the link to reset your password."));
         setMode('login');
@@ -167,7 +167,7 @@ const Auth = () => {
     // Global lockout gate for login/signup
     if ((mode === 'login' || mode === 'signup') && getLockRemainingMs() > 0) {
       setLockRemaining(getLockRemainingMs());
-      toast.error(`Too many attempts. Try again in ${formatRemaining(getLockRemainingMs())}.`);
+      toast.error(`${t('Too many attempts. Try again in')} ${formatRemaining(getLockRemainingMs())}.`);
       return;
     }
 
@@ -188,7 +188,7 @@ const Auth = () => {
       if (error) {
         recordFailure();
         setLockRemaining(getLockRemainingMs());
-        toast.error(error.message || 'Failed to sign in');
+        toast.error(error.message || t("Failed to sign in"));
       } else {
         resetAttempts();
         toast.success(t("Welcome back!"));
@@ -215,7 +215,7 @@ const Auth = () => {
         if (error.message.includes('already registered')) {
           toast.error(t("This email is already registered. Please sign in instead."));
         } else {
-          toast.error(error.message || 'Failed to sign up');
+          toast.error(error.message || t("Failed to sign up"));
         }
       } else {
         resetAttempts();
@@ -248,7 +248,7 @@ const Auth = () => {
   const isLocked = (mode === 'login' || mode === 'signup') && lockRemaining > 0;
 
   const getButtonText = () => {
-    if (isLocked) return `Locked (${formatRemaining(lockRemaining)})`;
+    if (isLocked) return `${t('Locked')} (${formatRemaining(lockRemaining)})`;
     if (loading) return 'Loading...';
     switch (mode) {
       case 'login': return 'Sign In';
@@ -287,7 +287,7 @@ const Auth = () => {
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {mode === t("signup") && (
+            {mode === "signup" && (
               <div className="space-y-2">
                 <Label htmlFor="displayName" className="text-foreground">{t("Your Name")}</Label>
                 <div className="relative">
@@ -322,7 +322,7 @@ const Auth = () => {
               </div>
             )}
 
-            {(mode === t("login") || mode === t("signup") || mode === t("forgot")) && (
+            {(mode === "login" || mode === "signup" || mode === "forgot") && (
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-foreground">{t("Email")}</Label>
                 <div className="relative">
@@ -340,10 +340,10 @@ const Auth = () => {
               </div>
             )}
 
-            {(mode === t("login") || mode === t("signup") || mode === t("reset")) && (
+            {(mode === "login" || mode === "signup" || mode === "reset") && (
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-foreground">
-                  {mode === t("reset") ? t("New Password") : t("Password")}
+                  {mode === "reset" ? t("New Password") : t("Password")}
                 </Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -360,7 +360,7 @@ const Auth = () => {
               </div>
             )}
 
-            {mode === t("reset") && (
+            {mode === "reset" && (
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword" className="text-foreground">{t("Confirm Password")}</Label>
                 <div className="relative">
@@ -378,7 +378,7 @@ const Auth = () => {
               </div>
             )}
 
-            {mode === t("login") && (
+            {mode === "login" && (
               <div className="text-right">
                 <button
                   type="button"
@@ -401,7 +401,7 @@ const Auth = () => {
             </Button>
           </form>
 
-          {mode === t("forgot") && (
+          {mode === "forgot" && (
             <p className="text-center text-muted-foreground mt-6 font-inter">{t("Remember your password?")}{' '}
               <button
                 onClick={() => {
@@ -413,9 +413,9 @@ const Auth = () => {
             </p>
           )}
 
-          {(mode === t("login") || mode === t("signup")) && (
+          {(mode === "login" || mode === "signup") && (
             <p className="text-center text-muted-foreground mt-6 font-inter">
-              {mode === t("login") ? t("Don't have an account? ") : t("Already have an account? ")}
+              {mode === "login" ? t("Don't have an account? ") : t("Already have an account? ")}
               <button
                 onClick={() => {
                   setMode(mode === 'login' ? 'signup' : 'login');
@@ -423,7 +423,7 @@ const Auth = () => {
                 }}
                 className="text-primary hover:underline font-medium"
               >
-                {mode === t("login") ? t("Sign Up") : t("Sign In")}
+                {mode === "login" ? t("Sign Up") : t("Sign In")}
               </button>
             </p>
           )}

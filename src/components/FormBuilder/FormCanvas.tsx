@@ -247,7 +247,7 @@ const FormCanvas = ({
                   : field.type === 'section' ? '' : 'border-border/30 hover:border-border/50'
               }`}
             >
-              {field.type === t("section") ? (
+              {field.type === "section" ? (
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-1">
                     <ReorderButtons index={index} />

@@ -354,7 +354,7 @@ const FormBuilder = () => {
                   ? 'bg-primary/20 text-primary' 
                   : 'bg-amber-500/20 text-amber-200'
               }`}>
-                {userRole === t("editor") ? t("Editor") : t("Viewer")}
+                {userRole === "editor" ? t("Editor") : t("Viewer")}
               </span>
             )}
           </div>
