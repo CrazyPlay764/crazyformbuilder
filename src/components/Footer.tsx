@@ -1,6 +1,8 @@
+import { useLanguage } from '@/i18n/Language';
 import { Sparkles, Github, Twitter, Linkedin } from 'lucide-react';
 
 const Footer = () => {
+  const { t, language } = useLanguage();
   const footerLinks = {
     Product: ['Features', 'Pricing', 'API Reference', 'Documentation'],
     Company: ['About', 'Blog', 'Careers', 'Press'],
@@ -22,9 +24,7 @@ const Footer = () => {
                 CrazyForums
               </span>
             </a>
-            <p className="text-sm text-muted-foreground font-inter font-light mb-6 max-w-xs">
-              Create beautiful, customizable forms with our drag & drop builder. Free to start.
-            </p>
+            <p className="text-sm text-muted-foreground font-inter font-light mb-6 max-w-xs">{t("Create beautiful, customizable forms with our drag & drop builder. Free to start.")}</p>
             <div className="flex items-center gap-4">
               {[Twitter, Github, Linkedin].map((Icon, index) => (
                 <a
@@ -40,18 +40,18 @@ const Footer = () => {
 
           {/* Links */}
           {Object.entries(footerLinks).map(([title, links]) => (
-            <div key={title}>
+            <div key={t(title)}>
               <h4 className="font-orbitron font-semibold text-foreground mb-4 text-sm">
-                {title}
+                {t(title)}
               </h4>
               <ul className="space-y-3">
                 {links.map((link) => (
-                  <li key={link}>
+                  <li key={t(link)}>
                     <a
                       href="#"
                       className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 font-inter"
                     >
-                      {link}
+                      {t(link)}
                     </a>
                   </li>
                 ))}
@@ -62,16 +62,10 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-muted-foreground font-inter">
-            © 2024 CrazyForums. All rights reserved.
-          </p>
+          <p className="text-sm text-muted-foreground font-inter">{t("© 2024 CrazyForums. All rights reserved.")}</p>
           <div className="flex items-center gap-6">
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-inter">
-              Privacy Policy
-            </a>
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-inter">
-              Terms of Service
-            </a>
+            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-inter">{t("Privacy Policy")}</a>
+            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-inter">{t("Terms of Service")}</a>
           </div>
         </div>
       </div>

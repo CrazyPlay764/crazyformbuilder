@@ -1,3 +1,4 @@
+import { useLanguage } from '@/i18n/Language';
 import { useState, useEffect } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -53,6 +54,7 @@ const resetSchema = z
 type AuthMode = 'login' | 'signup' | 'forgot' | 'reset';
 
 const Auth = () => {
+  const { t, language } = useLanguage();
   const [searchParams] = useSearchParams();
   const [mode, setMode] = useState<AuthMode>('login');
   const [email, setEmail] = useState('');
@@ -120,9 +122,9 @@ const Auth = () => {
     try {
       const { error } = await updatePassword(password);
       if (error) {
-        toast.error(error.message || 'Failed to update password');
+        toast.error(error.message || t("Failed to update password"));
       } else {
-        toast.success('Password updated successfully! You can now log in.');
+        toast.success(t("Password updated successfully! You can now log in."));
         await supabase.auth.signOut();
         setMode('login');
         setPassword('');
@@ -130,7 +132,7 @@ const Auth = () => {
         navigate('/auth', { replace: true });
       }
     } catch (err) {
-      toast.error('Failed to update password');
+      toast.error(t("Failed to update password"));
     }
     setLoading(false);
   };
@@ -148,9 +150,9 @@ const Auth = () => {
       const { error } = await resetPassword(email);
       setLoading(false);
       if (error) {
-        toast.error(error.message || 'Failed to send reset email');
+        toast.error(error.message || t("Failed to send reset email"));
       } else {
-        toast.success('Password reset email sent! Check your inbox and click the link to reset your password.');
+        toast.success(t("Password reset email sent! Check your inbox and click the link to reset your password."));
         setMode('login');
       }
       return;
@@ -165,7 +167,7 @@ const Auth = () => {
     // Global lockout gate for login/signup
     if ((mode === 'login' || mode === 'signup') && getLockRemainingMs() > 0) {
       setLockRemaining(getLockRemainingMs());
-      toast.error(`Too many attempts. Try again in ${formatRemaining(getLockRemainingMs())}.`);
+      toast.error(`${t('Too many attempts. Try again in')} ${formatRemaining(getLockRemainingMs())}.`);
       return;
     }
 
@@ -186,10 +188,10 @@ const Auth = () => {
       if (error) {
         recordFailure();
         setLockRemaining(getLockRemainingMs());
-        toast.error(error.message || 'Failed to sign in');
+        toast.error(error.message || t("Failed to sign in"));
       } else {
         resetAttempts();
-        toast.success('Welcome back!');
+        toast.success(t("Welcome back!"));
         navigate('/dashboard');
       }
     } else if (mode === 'signup') {
@@ -211,13 +213,13 @@ const Auth = () => {
         recordFailure();
         setLockRemaining(getLockRemainingMs());
         if (error.message.includes('already registered')) {
-          toast.error('This email is already registered. Please sign in instead.');
+          toast.error(t("This email is already registered. Please sign in instead."));
         } else {
-          toast.error(error.message || 'Failed to sign up');
+          toast.error(error.message || t("Failed to sign up"));
         }
       } else {
         resetAttempts();
-        toast.success('Account created successfully!');
+        toast.success(t("Account created successfully!"));
         navigate('/dashboard');
       }
     }
@@ -246,7 +248,7 @@ const Auth = () => {
   const isLocked = (mode === 'login' || mode === 'signup') && lockRemaining > 0;
 
   const getButtonText = () => {
-    if (isLocked) return `Locked (${formatRemaining(lockRemaining)})`;
+    if (isLocked) return `${t('Locked')} (${formatRemaining(lockRemaining)})`;
     if (loading) return 'Loading...';
     switch (mode) {
       case 'login': return 'Sign In';
@@ -268,7 +270,7 @@ const Auth = () => {
       <div className="w-full max-w-md relative z-10">
         <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors">
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to home</span>
+          <span>{t("Back to home")}</span>
         </Link>
         
         <div className="glass glow-border rounded-2xl p-8">
@@ -278,16 +280,16 @@ const Auth = () => {
           </div>
 
           <h1 className="text-2xl font-orbitron font-bold text-center text-foreground mb-2">
-            {getTitle()}
+            {t(getTitle())}
           </h1>
           <p className="text-muted-foreground text-center mb-8 font-inter">
-            {getSubtitle()}
+            {t(getSubtitle())}
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {mode === 'signup' && (
+            {mode === "signup" && (
               <div className="space-y-2">
-                <Label htmlFor="displayName" className="text-foreground">Your Name</Label>
+                <Label htmlFor="displayName" className="text-foreground">{t("Your Name")}</Label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
@@ -310,19 +312,19 @@ const Auth = () => {
                     </div>
                   )}
                 </div>
-                {errors.displayName && <p className="text-destructive text-sm">{errors.displayName}</p>}
+                {errors.displayName && <p className="text-destructive text-sm">{t(errors.displayName)}</p>}
                 {displayNameAvailable === false && !errors.displayName && (
-                  <p className="text-destructive text-sm">This name is already taken</p>
+                  <p className="text-destructive text-sm">{t("This name is already taken")}</p>
                 )}
                 {displayNameAvailable === true && (
-                  <p className="text-green-500 text-sm">This name is available!</p>
+                  <p className="text-green-500 text-sm">{t("This name is available!")}</p>
                 )}
               </div>
             )}
 
-            {(mode === 'login' || mode === 'signup' || mode === 'forgot') && (
+            {(mode === "login" || mode === "signup" || mode === "forgot") && (
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-foreground">Email</Label>
+                <Label htmlFor="email" className="text-foreground">{t("Email")}</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
@@ -334,14 +336,14 @@ const Auth = () => {
                     className="pl-10 bg-background/50 border-border/50 focus:border-primary"
                   />
                 </div>
-                {errors.email && <p className="text-destructive text-sm">{errors.email}</p>}
+                {errors.email && <p className="text-destructive text-sm">{t(errors.email)}</p>}
               </div>
             )}
 
-            {(mode === 'login' || mode === 'signup' || mode === 'reset') && (
+            {(mode === "login" || mode === "signup" || mode === "reset") && (
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-foreground">
-                  {mode === 'reset' ? 'New Password' : 'Password'}
+                  {mode === "reset" ? t("New Password") : t("Password")}
                 </Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -354,13 +356,13 @@ const Auth = () => {
                     className="pl-10 bg-background/50 border-border/50 focus:border-primary"
                   />
                 </div>
-                {errors.password && <p className="text-destructive text-sm">{errors.password}</p>}
+                {errors.password && <p className="text-destructive text-sm">{t(errors.password)}</p>}
               </div>
             )}
 
-            {mode === 'reset' && (
+            {mode === "reset" && (
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword" className="text-foreground">Confirm Password</Label>
+                <Label htmlFor="confirmPassword" className="text-foreground">{t("Confirm Password")}</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
@@ -372,11 +374,11 @@ const Auth = () => {
                     className="pl-10 bg-background/50 border-border/50 focus:border-primary"
                   />
                 </div>
-                {errors.confirmPassword && <p className="text-destructive text-sm">{errors.confirmPassword}</p>}
+                {errors.confirmPassword && <p className="text-destructive text-sm">{t(errors.confirmPassword)}</p>}
               </div>
             )}
 
-            {mode === 'login' && (
+            {mode === "login" && (
               <div className="text-right">
                 <button
                   type="button"
@@ -385,9 +387,7 @@ const Auth = () => {
                     setErrors({});
                   }}
                   className="text-sm text-primary hover:underline"
-                >
-                  Forgot password?
-                </button>
+                >{t("Forgot password?")}</button>
               </div>
             )}
 
@@ -397,28 +397,25 @@ const Auth = () => {
               className="w-full" 
               disabled={loading || isLocked}
             >
-              {getButtonText()}
+              {t(getButtonText())}
             </Button>
           </form>
 
-          {mode === 'forgot' && (
-            <p className="text-center text-muted-foreground mt-6 font-inter">
-              Remember your password?{' '}
+          {mode === "forgot" && (
+            <p className="text-center text-muted-foreground mt-6 font-inter">{t("Remember your password?")}{' '}
               <button
                 onClick={() => {
                   setMode('login');
                   setErrors({});
                 }}
                 className="text-primary hover:underline font-medium"
-              >
-                Sign In
-              </button>
+              >{t("Sign In")}</button>
             </p>
           )}
 
-          {(mode === 'login' || mode === 'signup') && (
+          {(mode === "login" || mode === "signup") && (
             <p className="text-center text-muted-foreground mt-6 font-inter">
-              {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
+              {mode === "login" ? t("Don't have an account? ") : t("Already have an account? ")}
               <button
                 onClick={() => {
                   setMode(mode === 'login' ? 'signup' : 'login');
@@ -426,7 +423,7 @@ const Auth = () => {
                 }}
                 className="text-primary hover:underline font-medium"
               >
-                {mode === 'login' ? 'Sign Up' : 'Sign In'}
+                {mode === "login" ? t("Sign Up") : t("Sign In")}
               </button>
             </p>
           )}

@@ -1,3 +1,4 @@
+import { useLanguage } from '@/i18n/Language';
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, Sparkles } from 'lucide-react';
@@ -5,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 
 const Navbar = () => {
+  const { t, language } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, loading } = useAuth();
@@ -62,14 +64,14 @@ const Navbar = () => {
             <div className="hidden md:flex items-center gap-8">
               {navLinks.map((link) => (
                 <button
-                  key={link.name}
+                  key={t(link.name)}
                   onClick={() => {
                     const element = document.querySelector(link.href);
                     element?.scrollIntoView({ behavior: 'smooth' });
                   }}
                   className="text-muted-foreground hover:text-foreground transition-all duration-300 text-sm font-inter relative group cursor-pointer hover:scale-105"
                 >
-                  {link.name}
+                  {t(link.name)}
                   <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full" />
                 </button>
               ))}
@@ -80,16 +82,16 @@ const Navbar = () => {
               {!loading && user ? (
                 <>
                   <Button variant="glow" size="sm" asChild>
-                    <Link to="/dashboard">Forms Area</Link>
+                    <Link to="/dashboard">{t("Forms Area")}</Link>
                   </Button>
                 </>
               ) : (
                 <>
                   <Button variant="ghost" size="sm" asChild>
-                    <Link to="/auth">Sign In</Link>
+                    <Link to="/auth">{t("Sign In")}</Link>
                   </Button>
                   <Button variant="glow" size="sm" asChild>
-                    <Link to="/auth">Get Started</Link>
+                    <Link to="/auth">{t("Get Started")}</Link>
                   </Button>
                 </>
               )}
@@ -122,7 +124,7 @@ const Navbar = () => {
       >
         <div className="flex flex-col h-full p-6">
           <div className="flex items-center justify-between mb-10">
-            <span className="text-lg font-orbitron font-bold gradient-text">Menu</span>
+            <span className="text-lg font-orbitron font-bold gradient-text">{t("Menu")}</span>
             <button
               onClick={() => setIsMobileMenuOpen(false)}
               className="p-2 text-foreground hover:text-primary transition-colors"
@@ -134,7 +136,7 @@ const Navbar = () => {
           <div className="flex flex-col gap-6">
             {navLinks.map((link, index) => (
               <button
-                key={link.name}
+                key={t(link.name)}
                 onClick={() => {
                   const element = document.querySelector(link.href);
                   element?.scrollIntoView({ behavior: 'smooth' });
@@ -143,7 +145,7 @@ const Navbar = () => {
                 className="text-lg text-muted-foreground hover:text-foreground hover:translate-x-2 transition-all duration-300 font-inter animate-fade-up text-left cursor-pointer"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                {link.name}
+                {t(link.name)}
               </button>
             ))}
           </div>
@@ -151,15 +153,15 @@ const Navbar = () => {
           <div className="mt-auto flex flex-col gap-3">
             {!loading && user ? (
               <Button variant="glow" className="w-full justify-center" asChild>
-                <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>Forms Area</Link>
+                <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>{t("Forms Area")}</Link>
               </Button>
             ) : (
               <>
                 <Button variant="ghost" className="w-full justify-center" asChild>
-                  <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>Sign In</Link>
+                  <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>{t("Sign In")}</Link>
                 </Button>
                 <Button variant="glow" className="w-full justify-center" asChild>
-                  <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>Get Started</Link>
+                  <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>{t("Get Started")}</Link>
                 </Button>
               </>
             )}

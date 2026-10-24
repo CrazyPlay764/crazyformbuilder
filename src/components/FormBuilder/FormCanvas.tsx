@@ -1,3 +1,5 @@
+import { useLanguage } from '@/i18n/Language';
+import RatingField from './RatingField';
 import { FormField } from '@/types/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -50,6 +52,7 @@ const FormCanvas = ({
   onReorderFields,
   previewDevice = 'desktop',
 }: FormCanvasProps) => {
+  const { t, language } = useLanguage();
   const deviceWidths = {
     desktop: 'w-full',
     tablet: 'max-w-[768px]',
@@ -58,7 +61,7 @@ const FormCanvas = ({
 
   const hasGradient = formSettings.gradientDirection && formSettings.gradientDirection !== 'none';
   const backgroundStyle = hasGradient
-    ? { background: getGradientStyle(formSettings.gradientDirection!, formSettings.backgroundColor, formSettings.gradientEndColor || '#4a1d96') }
+    ? { background: getGradientStyle(formSettings.gradientDirection || 'to-b', formSettings.backgroundColor, formSettings.gradientEndColor || '#4a1d96') }
     : { backgroundColor: formSettings.backgroundColor };
 
   const handleFieldDragStart = (e: React.DragEvent, index: number, isGripHandle: boolean) => {
@@ -89,13 +92,15 @@ const FormCanvas = ({
     const baseInputClass = "bg-background/30 border-border/50 focus:border-primary";
     
     switch (field.type) {
+      case 'rating':
+        return <RatingField settings={field.settings} label={field.label} disabled />;
       case 'text':
       case 'email':
       case 'number':
         return (
           <Input
             type={field.type}
-            placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}`}
+            placeholder={field.placeholder || `${t('Enter')} ${field.label}`}
             className={baseInputClass}
             disabled
           />
@@ -112,7 +117,7 @@ const FormCanvas = ({
         return (
           <div className="flex items-center gap-2">
             <Checkbox disabled />
-            <span className="text-sm text-foreground">{field.placeholder || 'Check this option'}</span>
+            <span className="text-sm text-foreground">{field.placeholder || t("Check this option")}</span>
           </div>
         );
       case 'date':
@@ -122,20 +127,20 @@ const FormCanvas = ({
       case 'file':
         return (
           <div className="border-2 border-dashed border-border/50 rounded-lg p-6 text-center">
-            <p className="text-muted-foreground text-sm">Drop files here or click to upload</p>
+            <p className="text-muted-foreground text-sm">{t("Drop files here or click to upload")}</p>
           </div>
         );
       case 'image':
         return (
           <div className="border-2 border-dashed border-border/50 rounded-lg p-6 text-center">
             <Image className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-            <p className="text-muted-foreground text-sm">תמונה - קישור URL או העלאת קובץ</p>
+            <p className="text-muted-foreground text-sm">{t("תמונה - קישור URL או העלאת קובץ")}</p>
           </div>
         );
       case 'dropdown':
         return (
           <select className={`w-full p-2 rounded-md ${baseInputClass}`} disabled>
-            <option>Select an option</option>
+            <option>{t("Select an option")}</option>
             {(Array.isArray(field.options) ? field.options : []).map((opt, i) => (
               <option key={i}>{String(opt)}</option>
             ))}
@@ -214,14 +219,14 @@ const FormCanvas = ({
         <div className="mb-6 flex justify-center">
           <img 
             src={formSettings.logoUrl} 
-            alt="Form logo" 
+            alt={t("Form logo")} 
             className="max-h-20 object-contain"
           />
         </div>
       )}
       {fields.length === 0 ? (
         <div className="h-full flex items-center justify-center border-2 border-dashed border-border/30 rounded-lg min-h-[400px]">
-          <p className="text-muted-foreground font-inter">Drag and drop fields here</p>
+          <p className="text-muted-foreground font-inter">{t("Drag and drop fields here")}</p>
         </div>
       ) : (
         <div className="space-y-4" dir="rtl">
@@ -242,7 +247,7 @@ const FormCanvas = ({
                   : field.type === 'section' ? '' : 'border-border/30 hover:border-border/50'
               }`}
             >
-              {field.type === 'section' ? (
+              {field.type === "section" ? (
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-1">
                     <ReorderButtons index={index} />

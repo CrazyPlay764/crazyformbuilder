@@ -1,3 +1,4 @@
+import { useLanguage } from '@/i18n/Language';
 import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { formatDistanceToNow } from 'date-fns';
@@ -26,6 +27,7 @@ interface SiteUpdate {
 const ADMIN_EMAIL = 'danieletigon@gmail.com';
 
 const SiteUpdates = () => {
+  const { t, language } = useLanguage();
   const [updates, setUpdates] = useState<SiteUpdate[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -68,11 +70,11 @@ const SiteUpdates = () => {
       const isVideo = file.type.startsWith('video/');
       const isImage = file.type.startsWith('image/');
       if (!isVideo && !isImage) {
-        toast.error('רק תמונות וסרטונים מותרים');
+        toast.error(t("רק תמונות וסרטונים מותרים"));
         continue;
       }
       if (file.size > 50 * 1024 * 1024) {
-        toast.error('הקובץ גדול מדי (מקסימום 50MB)');
+        toast.error(t("הקובץ גדול מדי (מקסימום 50MB)"));
         continue;
       }
 
@@ -80,7 +82,7 @@ const SiteUpdates = () => {
       const path = `updates/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
       const { error } = await supabase.storage.from('form-images').upload(path, file);
       if (error) {
-        toast.error('שגיאה בהעלאת הקובץ');
+        toast.error(t("שגיאה בהעלאת הקובץ"));
         continue;
       }
       const { data: urlData } = supabase.storage.from('form-images').getPublicUrl(path);
@@ -101,12 +103,12 @@ const SiteUpdates = () => {
 
     if (editingId) {
       const { error } = await supabase.from('site_updates').update({ title: title.trim(), content: content.trim(), media: mediaJson }).eq('id', editingId);
-      if (error) { toast.error('שגיאה בעדכון'); return; }
-      toast.success('העדכון נערך בהצלחה');
+      if (error) { toast.error(t("שגיאה בעדכון")); return; }
+      toast.success(t("העדכון נערך בהצלחה"));
     } else {
       const { error } = await supabase.from('site_updates').insert([{ title: title.trim(), content: content.trim(), media: mediaJson, user_id: user.id }]);
-      if (error) { toast.error('שגיאה בפרסום העדכון'); return; }
-      toast.success('העדכון פורסם בהצלחה');
+      if (error) { toast.error(t("שגיאה בפרסום העדכון")); return; }
+      toast.success(t("העדכון פורסם בהצלחה"));
     }
 
     setTitle(''); setContent(''); setMedia([]); setShowForm(false); setEditingId(null);
@@ -115,8 +117,8 @@ const SiteUpdates = () => {
 
   const handleDelete = async (id: string) => {
     const { error } = await supabase.from('site_updates').delete().eq('id', id);
-    if (error) { toast.error('שגיאה במחיקה'); return; }
-    toast.success('העדכון נמחק');
+    if (error) { toast.error(t("שגיאה במחיקה")); return; }
+    toast.success(t("העדכון נמחק"));
     fetchUpdates();
   };
 
@@ -138,14 +140,12 @@ const SiteUpdates = () => {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card text-sm text-muted-foreground mb-6">
               <Megaphone className="w-4 h-4 text-primary" />
-              <span>עדכוני האתר</span>
+              <span>{t("עדכוני האתר")}</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-orbitron font-bold mb-4">
-              <span className="gradient-text">מה חדש?</span>
+              <span className="gradient-text">{t("מה חדש?")}</span>
             </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto font-inter">
-              העדכונים האחרונים והשיפורים באתר
-            </p>
+            <p className="text-muted-foreground max-w-2xl mx-auto font-inter">{t("העדכונים האחרונים והשיפורים באתר")}</p>
           </div>
         </ScrollReveal>
 
@@ -153,28 +153,26 @@ const SiteUpdates = () => {
           <div className="mb-8 flex justify-center">
             {!showForm ? (
               <Button variant="glow" onClick={() => setShowForm(true)} className="gap-2">
-                <Plus className="w-4 h-4" />
-                פרסם עדכון חדש
-              </Button>
+                <Plus className="w-4 h-4" />{t("פרסם עדכון חדש")}</Button>
             ) : (
               <div className="w-full max-w-xl glass-card rounded-xl p-6 space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-orbitron font-bold text-foreground">
-                    {editingId ? 'ערוך עדכון' : 'עדכון חדש'}
+                    {editingId ? t("ערוך עדכון") : t("עדכון חדש")}
                   </h3>
                   <button onClick={() => { setShowForm(false); setEditingId(null); setTitle(''); setContent(''); setMedia([]); }}>
                     <X className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
                   </button>
                 </div>
-                <Input placeholder="כותרת העדכון" value={title} onChange={(e) => setTitle(e.target.value)} className="text-right" dir="rtl" />
-                <Textarea placeholder="תוכן העדכון..." value={content} onChange={(e) => setContent(e.target.value)} className="text-right min-h-[100px]" dir="rtl" />
+                <Input placeholder={t("כותרת העדכון")} value={title} onChange={(e) => setTitle(e.target.value)} className="text-right" dir="rtl" />
+                <Textarea placeholder={t("תוכן העדכון...")} value={content} onChange={(e) => setContent(e.target.value)} className="text-right min-h-[100px]" dir="rtl" />
 
                 {/* Media preview */}
                 {media.length > 0 && (
                   <div className="grid grid-cols-2 gap-2">
                     {media.map((item, i) => (
                       <div key={i} className="relative rounded-lg overflow-hidden border border-border">
-                        {item.type === 'image' ? (
+                        {item.type === "image" ? (
                           <img src={item.url} alt="" className="w-full h-32 object-cover" />
                         ) : (
                           <video src={item.url} className="w-full h-32 object-cover" />
@@ -192,13 +190,13 @@ const SiteUpdates = () => {
                   <input ref={fileInputRef} type="file" accept="image/*,video/*" multiple onChange={handleFileUpload} className="hidden" />
                   <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} disabled={uploading} className="gap-2">
                     <Upload className="w-4 h-4" />
-                    {uploading ? 'מעלה...' : 'הוסף תמונה/סרטון'}
+                    {uploading ? t("מעלה...") : t("הוסף תמונה/סרטון")}
                   </Button>
                 </div>
 
                 <Button variant="glow" onClick={handleSubmit} className="w-full gap-2" disabled={!title.trim() || !content.trim() || uploading}>
                   <Check className="w-4 h-4" />
-                  {editingId ? 'שמור שינויים' : 'פרסם'}
+                  {editingId ? t("שמור שינויים") : t("פרסם")}
                 </Button>
               </div>
             )}
@@ -223,7 +221,7 @@ const SiteUpdates = () => {
                       <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {update.media.map((item, i) => (
                           <div key={i} className="rounded-lg overflow-hidden border border-border">
-                            {item.type === 'image' ? (
+                            {item.type === "image" ? (
                               <img src={item.url} alt="" className="w-full h-48 object-cover" />
                             ) : (
                               <video src={item.url} controls className="w-full h-48 object-cover" />
@@ -234,7 +232,7 @@ const SiteUpdates = () => {
                     )}
 
                     <span className="text-xs text-muted-foreground/60 mt-3 block font-inter" dir="ltr">
-                      {formatDistanceToNow(new Date(update.created_at), { addSuffix: true, locale: he })}
+                      {formatDistanceToNow(new Date(update.created_at), { addSuffix: true, locale: language === 'he' ? he : undefined })}
                     </span>
                   </div>
                   {isAdmin && (
@@ -253,7 +251,7 @@ const SiteUpdates = () => {
           ))}
 
           {updates.length === 0 && isAdmin && (
-            <p className="text-center text-muted-foreground font-inter">אין עדכונים עדיין. פרסם את העדכון הראשון!</p>
+            <p className="text-center text-muted-foreground font-inter">{t("אין עדכונים עדיין. פרסם את העדכון הראשון!")}</p>
           )}
         </div>
       </div>

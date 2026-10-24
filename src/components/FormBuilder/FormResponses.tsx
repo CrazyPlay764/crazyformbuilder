@@ -1,3 +1,4 @@
+import { useLanguage } from '@/i18n/Language';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -26,6 +27,7 @@ interface FormResponsesProps {
 }
 
 const FormResponses = ({ formId, isOpen, onClose }: FormResponsesProps) => {
+  const { t, language } = useLanguage();
   const [responses, setResponses] = useState<FormResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedResponse, setExpandedResponse] = useState<string | null>(null);
@@ -109,9 +111,9 @@ const FormResponses = ({ formId, isOpen, onClose }: FormResponsesProps) => {
       .eq('id', responseId);
 
     if (error) {
-      toast.error('Failed to delete response');
+      toast.error(t("Failed to delete response"));
     } else {
-      toast.success('Response deleted');
+      toast.success(t("Response deleted"));
       setResponses(responses.filter((r) => r.id !== responseId));
     }
   };
@@ -148,13 +150,10 @@ const FormResponses = ({ formId, isOpen, onClose }: FormResponsesProps) => {
           <div className="flex flex-col h-full max-h-[85vh]">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-border/50">
-              <h3 className="text-lg font-orbitron font-semibold text-foreground">
-                Responses ({responses.length})
+              <h3 className="text-lg font-orbitron font-semibold text-foreground">{t("Responses") + " ("}{responses.length})
               </h3>
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={fetchResponses}>
-                  Refresh
-                </Button>
+                <Button variant="ghost" size="sm" onClick={fetchResponses}>{t("Refresh")}</Button>
                 <Button variant="ghost" size="icon" onClick={onClose}>
                   <X className="w-5 h-5" />
                 </Button>
@@ -164,13 +163,11 @@ const FormResponses = ({ formId, isOpen, onClose }: FormResponsesProps) => {
             {/* Content */}
             <div className="flex-1 overflow-y-auto p-4">
               {loading ? (
-                <p className="text-muted-foreground text-sm">Loading responses...</p>
+                <p className="text-muted-foreground text-sm">{t("Loading responses...")}</p>
               ) : responses.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-muted-foreground text-sm">No responses yet</p>
-                  <p className="text-muted-foreground text-xs mt-1">
-                    Responses will appear here when people submit the form
-                  </p>
+                  <p className="text-muted-foreground text-sm">{t("No responses yet")}</p>
+                  <p className="text-muted-foreground text-xs mt-1">{t("Responses will appear here when people submit the form")}</p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -220,7 +217,7 @@ const FormResponses = ({ formId, isOpen, onClose }: FormResponsesProps) => {
                                 {value.field_label}
                               </p>
                               <p className="text-sm text-foreground bg-background/50 rounded px-2 py-1.5">
-                                {value.value || <span className="text-muted-foreground italic">Empty</span>}
+                                {value.value || <span className="text-muted-foreground italic">{t("Empty")}</span>}
                               </p>
                             </div>
                           ))}

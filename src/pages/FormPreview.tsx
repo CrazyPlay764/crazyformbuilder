@@ -1,3 +1,4 @@
+import { useLanguage } from '@/i18n/Language';
 import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -8,10 +9,13 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, ArrowRight, Send, LogIn, CheckCircle, ChevronRight, ChevronLeft, Image, Link2, Upload, X } from 'lucide-react';
 import { toast } from 'sonner';
+import RatingField from '@/components/FormBuilder/RatingField';
+import { getRatingBounds, isValidRating } from '@/lib/rating';
 import { FormField, Form } from '@/types/form';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const ImageFieldInput = ({ fieldId, value, onChange }: { fieldId: string; value: string; onChange: (id: string, val: string) => void }) => {
+  const { t, language } = useLanguage();
   const isMobile = useIsMobile();
   const [mode, setMode] = useState<'choose' | 'url' | 'file' | 'done'>(value ? 'done' : (isMobile ? 'file' : 'choose'));
   const [urlInput, setUrlInput] = useState(value || '');
@@ -20,11 +24,11 @@ const ImageFieldInput = ({ fieldId, value, onChange }: { fieldId: string; value:
 
   const handleFileUpload = async (file: File) => {
     if (!file.type.startsWith('image/')) {
-      toast.error('Please select an image file');
+      toast.error(t("Please select an image file"));
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('Image must be under 5MB');
+      toast.error(t("Image must be under 5MB"));
       return;
     }
     setUploading(true);
@@ -32,7 +36,7 @@ const ImageFieldInput = ({ fieldId, value, onChange }: { fieldId: string; value:
     const path = `${crypto.randomUUID()}.${ext}`;
     const { error } = await supabase.storage.from('form-images').upload(path, file);
     if (error) {
-      toast.error('Failed to upload image');
+      toast.error(t("Failed to upload image"));
       setUploading(false);
       return;
     }
@@ -57,7 +61,7 @@ const ImageFieldInput = ({ fieldId, value, onChange }: { fieldId: string; value:
   if (mode === 'done' && value) {
     return (
       <div className="relative rounded-lg overflow-hidden border border-border/50">
-        <img src={value} alt="Uploaded" className="w-full max-h-64 object-contain bg-background/30" />
+        <img src={value} alt={t("Uploaded")} className="w-full max-h-64 object-contain bg-background/30" />
         <Button
           type="button"
           variant="destructive"
@@ -81,13 +85,9 @@ const ImageFieldInput = ({ fieldId, value, onChange }: { fieldId: string; value:
             onChange={(e) => setUrlInput(e.target.value)}
             className="bg-background/30 border-border/50"
           />
-          <Button type="button" size="sm" onClick={handleUrlSubmit}>
-            אישור
-          </Button>
+          <Button type="button" size="sm" onClick={handleUrlSubmit}>{t("אישור")}</Button>
         </div>
-        <Button type="button" variant="ghost" size="sm" onClick={() => setMode('choose')}>
-          ← חזור
-        </Button>
+        <Button type="button" variant="ghost" size="sm" onClick={() => setMode('choose')}>{t("← חזור")}</Button>
       </div>
     );
   }
@@ -100,11 +100,11 @@ const ImageFieldInput = ({ fieldId, value, onChange }: { fieldId: string; value:
           onClick={() => document.getElementById(`img-file-${fieldId}`)?.click()}
         >
           {uploading ? (
-            <p className="text-muted-foreground text-sm">מעלה...</p>
+            <p className="text-muted-foreground text-sm">{t("מעלה...")}</p>
           ) : (
             <>
               <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-              <p className="text-muted-foreground text-sm">לחץ לבחירת תמונה</p>
+              <p className="text-muted-foreground text-sm">{t("לחץ לבחירת תמונה")}</p>
             </>
           )}
         </div>
@@ -119,9 +119,7 @@ const ImageFieldInput = ({ fieldId, value, onChange }: { fieldId: string; value:
           }}
         />
         {!isMobile && (
-          <Button type="button" variant="ghost" size="sm" onClick={() => setMode('choose')}>
-            ← חזור
-          </Button>
+          <Button type="button" variant="ghost" size="sm" onClick={() => setMode('choose')}>{t("← חזור")}</Button>
         )}
       </div>
     );
@@ -131,22 +129,19 @@ const ImageFieldInput = ({ fieldId, value, onChange }: { fieldId: string; value:
   return (
     <div className="border-2 border-dashed border-border/50 rounded-lg p-6">
       <Image className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
-      <p className="text-center text-sm text-muted-foreground mb-4">איך תרצה להוסיף תמונה?</p>
+      <p className="text-center text-sm text-muted-foreground mb-4">{t("איך תרצה להוסיף תמונה?")}</p>
       <div className="flex gap-3 justify-center">
         <Button type="button" variant="outline" size="sm" onClick={() => setMode('url')} className="gap-2">
-          <Link2 className="w-4 h-4" />
-          קישור URL
-        </Button>
+          <Link2 className="w-4 h-4" />{t("קישור URL")}</Button>
         <Button type="button" variant="outline" size="sm" onClick={() => setMode('file')} className="gap-2">
-          <Upload className="w-4 h-4" />
-          העלאת קובץ
-        </Button>
+          <Upload className="w-4 h-4" />{t("העלאת קובץ")}</Button>
       </div>
     </div>
   );
 };
 
 const FormPreview = () => {
+  const { t, language } = useLanguage();
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -159,13 +154,13 @@ const FormPreview = () => {
   const [formClosed, setFormClosed] = useState(false);
   const [closedMessage, setClosedMessage] = useState<string>('');
   const [submitted, setSubmitted] = useState(false);
-  const [formValues, setFormValues] = useState<Record<string, string | boolean | string[]>>({});
+  const [formValues, setFormValues] = useState<Record<string, string | number | boolean | string[]>>({});
   const [currentPage, setCurrentPage] = useState(0);
 
   const ensureBackendConfig = () => {
     if (import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY) return true;
     toast.error(
-      'כדי שהטופס יעבוד ב‑Vercel צריך להגדיר Environment Variables: VITE_SUPABASE_URL ו‑VITE_SUPABASE_PUBLISHABLE_KEY ואז לבצע Redeploy.'
+      t("כדי שהטופס יעבוד ב‑Vercel צריך להגדיר Environment Variables: VITE_SUPABASE_URL ו‑VITE_SUPABASE_PUBLISHABLE_KEY ואז לבצע Redeploy.")
     );
     return false;
   };
@@ -283,7 +278,7 @@ const FormPreview = () => {
 
     if (!formData.is_published) {
       setFormClosed(true);
-      setClosedMessage(settings.closedFormMessage || 'This form is currently closed.');
+      setClosedMessage(settings.closedFormMessage || '');
       setLoading(false);
       return;
     }
@@ -297,13 +292,15 @@ const FormPreview = () => {
       .order('position');
 
     if (!fieldsError && fieldsData) {
-      setFields(fieldsData as FormField[]);
+      const loadedFields = fieldsData as FormField[];
+      setFields(loadedFields);
+      setFormValues(Object.fromEntries(loadedFields.filter(field => field.type === 'rating').map(field => [field.id, getRatingBounds(field.settings).min])));
     }
 
     setLoading(false);
   };
 
-  const handleInputChange = (fieldId: string, value: string | boolean | string[]) => {
+  const handleInputChange = (fieldId: string, value: string | number | boolean | string[]) => {
     setFormValues((prev) => ({ ...prev, [fieldId]: value }));
   };
 
@@ -319,12 +316,15 @@ const FormPreview = () => {
   const validateCurrentPage = (): boolean => {
     if (pages.length === 0) return true;
     const currentFields = pages[currentPage]?.fields || [];
+    for (const field of currentFields.filter(f => f.type === 'rating')) {
+      if (!isValidRating(formValues[field.id], field.settings)) { toast.error(t('Please choose a rating within the allowed range.')); return false; }
+    }
     const requiredFields = currentFields.filter(f => f.required);
     
     for (const field of requiredFields) {
       const value = formValues[field.id];
       if (value === undefined || value === null || value === '' || (Array.isArray(value) && value.length === 0)) {
-        toast.error(`נא למלא את השדה: ${field.label}`);
+        toast.error(`${t('Please complete the field:')} ${field.label}`);
         return false;
       }
     }
@@ -357,7 +357,7 @@ const FormPreview = () => {
 
       if (responseError) {
         console.error('Error submitting form:', responseError);
-        toast.error(responseError.message || 'Failed to submit form');
+        toast.error(responseError.message || t("Failed to submit form"));
         return;
       }
 
@@ -379,7 +379,7 @@ const FormPreview = () => {
 
       if (valuesError) {
         console.error('Error saving response values:', valuesError);
-        toast.error(valuesError.message || 'Failed to submit form');
+        toast.error(valuesError.message || t("Failed to submit form"));
         return;
       }
 
@@ -387,7 +387,7 @@ const FormPreview = () => {
     } catch (error) {
       console.error('Error:', error);
       const message = error instanceof Error ? error.message : undefined;
-      toast.error(message || 'Failed to submit form');
+      toast.error(message || t("Failed to submit form"));
     }
   };
 
@@ -395,13 +395,15 @@ const FormPreview = () => {
     const baseInputClass = "bg-background/30 border-border/50 focus:border-primary";
     
     switch (field.type) {
+      case 'rating':
+        return <RatingField settings={field.settings} label={field.label} value={typeof formValues[field.id] === 'number' ? Number(formValues[field.id]) : undefined} onChange={value => handleInputChange(field.id, value)} />;
       case 'text':
       case 'email':
       case 'number':
         return (
           <Input
             type={field.type}
-            placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}`}
+            placeholder={field.placeholder || `${t('Enter')} ${field.label}`}
             className={baseInputClass}
             value={(formValues[field.id] as string) || ''}
             onChange={(e) => handleInputChange(field.id, e.target.value)}
@@ -425,7 +427,7 @@ const FormPreview = () => {
               checked={(formValues[field.id] as boolean) || false}
               onCheckedChange={(checked) => handleInputChange(field.id, !!checked)}
             />
-            <span className="text-sm text-foreground">{field.placeholder || 'Check this option'}</span>
+            <span className="text-sm text-foreground">{field.placeholder || t("Check this option")}</span>
           </div>
         );
       case 'date':
@@ -448,7 +450,7 @@ const FormPreview = () => {
               onChange={(e) => handleInputChange(field.id, e.target.files?.[0]?.name || '')}
             />
             <label htmlFor={`file-${field.id}`} className="cursor-pointer">
-              <p className="text-muted-foreground text-sm">Drop files here or click to upload</p>
+              <p className="text-muted-foreground text-sm">{t("Drop files here or click to upload")}</p>
             </label>
           </div>
         );
@@ -460,7 +462,7 @@ const FormPreview = () => {
             onChange={(e) => handleInputChange(field.id, e.target.value)}
             required={field.required}
           >
-            <option value="">Select an option</option>
+            <option value="">{t("Select an option")}</option>
             {(Array.isArray(field.options) ? field.options : []).map((opt, i) => (
               <option key={i} value={String(opt)}>{String(opt)}</option>
             ))}
@@ -523,7 +525,7 @@ const FormPreview = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-foreground font-inter">Loading...</div>
+        <div className="text-foreground font-inter">{t("Loading...")}</div>
       </div>
     );
   }
@@ -532,13 +534,11 @@ const FormPreview = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center space-y-4">
-          <h1 className="text-2xl font-orbitron font-bold text-foreground">Form Closed</h1>
-          <p className="text-muted-foreground">{closedMessage}</p>
+          <h1 className="text-2xl font-orbitron font-bold text-foreground">{t("Form Closed")}</h1>
+          <p className="text-muted-foreground">{closedMessage || t('This form is currently closed.')}</p>
           <div className="flex gap-4 justify-center">
             <Button variant="outline" onClick={() => navigate('/')}>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Go Home
-            </Button>
+              <ArrowLeft className="w-4 h-4 mr-2" />{t("Go Home")}</Button>
           </div>
         </div>
       </div>
@@ -549,18 +549,14 @@ const FormPreview = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center space-y-4">
-          <h1 className="text-2xl font-orbitron font-bold text-foreground">Form Not Found</h1>
-          <p className="text-muted-foreground">This form doesn't exist.</p>
+          <h1 className="text-2xl font-orbitron font-bold text-foreground">{t("Form Not Found")}</h1>
+          <p className="text-muted-foreground">{t("This form doesn't exist.")}</p>
           <div className="flex gap-4 justify-center">
             <Button variant="outline" onClick={() => navigate('/')}>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Go Home
-            </Button>
+              <ArrowLeft className="w-4 h-4 mr-2" />{t("Go Home")}</Button>
             <Link to="/auth">
               <Button variant="glow">
-                <LogIn className="w-4 h-4 mr-2" />
-                Login
-              </Button>
+                <LogIn className="w-4 h-4 mr-2" />{t("Login")}</Button>
             </Link>
           </div>
         </div>
@@ -585,7 +581,7 @@ const FormPreview = () => {
 
   const hasGradient = form.settings.gradientDirection && form.settings.gradientDirection !== 'none';
   const backgroundStyle = hasGradient
-    ? { background: getGradientStyle(form.settings.gradientDirection!, form.settings.backgroundColor, form.settings.gradientEndColor || '#4a1d96') }
+    ? { background: getGradientStyle(form.settings.gradientDirection || 'to-b', form.settings.backgroundColor, form.settings.gradientEndColor || '#4a1d96') }
     : { backgroundColor: form.settings.backgroundColor };
 
   const currentPageData = pages[currentPage];
@@ -608,13 +604,13 @@ const FormPreview = () => {
       {/* Background Media Layer - Full Screen */}
       {bgMedia && (
         <div className="fixed inset-0 z-0 w-screen h-screen overflow-hidden">
-          {bgMedia.type === 'image' && (
+          {bgMedia.type === "image" && (
             <img src={bgMedia.url} alt="" className="absolute inset-0 w-full h-full object-cover" />
           )}
-          {bgMedia.type === 'video' && (
+          {bgMedia.type === "video" && (
             <video src={bgMedia.url} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover" />
           )}
-          {bgMedia.type === 'youtube' && (() => {
+          {bgMedia.type === "youtube" && (() => {
             const ytId = extractYoutubeId(bgMedia.url);
             return ytId ? (
               <div className="absolute inset-0 overflow-hidden">
@@ -645,14 +641,10 @@ const FormPreview = () => {
               onClick={() => navigate('/')}
               className="text-foreground/70 hover:text-foreground"
             >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
-            </Button>
+              <ArrowLeft className="w-4 h-4 mr-2" />{t("Back")}</Button>
             <Link to="/auth">
               <Button variant="ghost" size="sm" className="text-foreground/70 hover:text-foreground">
-                <LogIn className="w-4 h-4 mr-2" />
-                Login
-              </Button>
+                <LogIn className="w-4 h-4 mr-2" />{t("Login")}</Button>
             </Link>
           </div>
         )}
@@ -662,7 +654,7 @@ const FormPreview = () => {
             <div className="mb-6 flex justify-center">
               <img 
                 src={form.settings.logoUrl} 
-                alt="Form logo" 
+                alt={t("Form logo")} 
                 className="max-h-20 object-contain"
               />
             </div>
@@ -683,22 +675,21 @@ const FormPreview = () => {
                 <CheckCircle className="w-16 h-16 text-primary" />
               </div>
               <h2 className="text-2xl font-orbitron font-bold text-foreground">
-                {form.settings.successMessage || 'Thank you! Your form has been submitted successfully.'}
+                {form.settings.successMessage || t("Thank you! Your form has been submitted successfully.")}
               </h2>
             </div>
           ) : fields.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">This form has no fields yet.</p>
+              <p className="text-muted-foreground">{t("This form has no fields yet.")}</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Progress indicator */}
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Progress</span>
+                  <span className="text-muted-foreground">{t("Progress")}</span>
                   <span className="text-foreground font-medium">
-                    {progressInfo.completed} / {progressInfo.total} completed
-                  </span>
+                    {progressInfo.completed} / {progressInfo.total}{t("completed")}</span>
                 </div>
                 <Progress value={progressInfo.percentage} className="h-2" />
               </div>
@@ -756,9 +747,7 @@ const FormPreview = () => {
                     onClick={handlePrev}
                     className="gap-2"
                   >
-                    <ChevronLeft className="w-4 h-4" />
-                    הקודם
-                  </Button>
+                    <ChevronLeft className="w-4 h-4" />{t("הקודם")}</Button>
                 ) : (
                   <div />
                 )}
@@ -770,7 +759,7 @@ const FormPreview = () => {
                     style={{ backgroundColor: form.settings.primaryColor }}
                   >
                     <Send className="w-4 h-4" />
-                    {form.settings.submitButtonText || 'Submit'}
+                    {form.settings.submitButtonText || t("Submit")}
                   </Button>
                 ) : (
                   <Button
@@ -778,9 +767,7 @@ const FormPreview = () => {
                     onClick={handleNext}
                     className="gap-2"
                     style={{ backgroundColor: form.settings.primaryColor }}
-                  >
-                    הבא
-                    <ChevronRight className="w-4 h-4" />
+                  >{t("הבא")}<ChevronRight className="w-4 h-4" />
                   </Button>
                 )}
               </div>
@@ -789,7 +776,7 @@ const FormPreview = () => {
         </div>
 
         <div className="mt-4 text-center">
-          <p className="text-xs text-muted-foreground/50">Preview Mode</p>
+          <p className="text-xs text-muted-foreground/50">{t("Preview Mode")}</p>
         </div>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import { useLanguage } from '@/i18n/Language';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,6 +7,7 @@ import { useParallax } from '@/hooks/useParallax';
 import { ScrollReveal } from '@/components/ScrollReveal';
 
 const CTA = () => {
+  const { t, language } = useLanguage();
   const { getParallaxStyle } = useParallax();
 
   return (
@@ -26,25 +28,19 @@ const CTA = () => {
               {/* Content */}
               <div className="relative z-10">
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 text-sm font-inter text-primary mb-8">
-                  <Sparkles className="w-4 h-4" />
-                  Start building forms today
-                </div>
+                  <Sparkles className="w-4 h-4" />{t("Start building forms today")}</div>
 
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-orbitron font-bold mb-6">
-                  <span className="text-foreground">Ready to Create</span>
+                  <span className="text-foreground">{t("Ready to Create")}</span>
                   <br />
-                  <span className="gradient-text glow-text">Your First Form?</span>
+                  <span className="gradient-text glow-text">{t("Your First Form?")}</span>
                 </h2>
 
-                <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-10 font-inter font-light">
-                  Sign up for free and start building beautiful, customizable forms in minutes.
-                </p>
+                <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-10 font-inter font-light">{t("Sign up for free and start building beautiful, customizable forms in minutes.")}</p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                   <Button variant="glow" size="xl" asChild>
-                    <Link to="/auth">
-                      Get Started Free
-                      <ArrowRight className="w-5 h-5" />
+                    <Link to="/auth">{t("Get Started Free")}<ArrowRight className="w-5 h-5" />
                     </Link>
                   </Button>
                   <Button 
@@ -53,14 +49,10 @@ const CTA = () => {
                     onClick={() => {
                       document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                  >
-                    Talk to Sales
-                  </Button>
+                  >{t("Talk to Sales")}</Button>
                 </div>
 
-                <p className="text-sm text-muted-foreground mt-8 font-inter">
-                  No credit card required • 14-day free trial • Cancel anytime
-                </p>
+                <p className="text-sm text-muted-foreground mt-8 font-inter">{t("No credit card required • 14-day free trial • Cancel anytime")}</p>
               </div>
             </div>
           </TiltCard>

@@ -1,3 +1,4 @@
+import { useLanguage } from '@/i18n/Language';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -31,6 +32,7 @@ interface PendingInvite {
 }
 
 const Dashboard = () => {
+  const { t, language } = useLanguage();
   const { user, profile, signOut, updateDisplayName, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [forms, setForms] = useState<Form[]>([]);
@@ -74,7 +76,7 @@ const Dashboard = () => {
       .order('updated_at', { ascending: false });
 
     if (error) {
-      toast.error('Failed to load forms');
+      toast.error(t("Failed to load forms"));
     } else {
       setForms(data || []);
     }
@@ -152,9 +154,9 @@ const Dashboard = () => {
       .eq('email', user?.email);
 
     if (error) {
-      toast.error('Failed to accept invite');
+      toast.error(t("Failed to accept invite"));
     } else {
-      toast.success('Invite accepted!');
+      toast.success(t("Invite accepted!"));
       fetchSharedForms();
       fetchPendingInvites();
     }
@@ -167,9 +169,9 @@ const Dashboard = () => {
       .eq('id', inviteId);
 
     if (error) {
-      toast.error('Failed to decline invite');
+      toast.error(t("Failed to decline invite"));
     } else {
-      toast.success('Invite declined');
+      toast.success(t("Invite declined"));
       fetchPendingInvites();
     }
   };
@@ -182,20 +184,20 @@ const Dashboard = () => {
       .single();
 
     if (error) {
-      toast.error('Failed to create form');
+      toast.error(t("Failed to create form"));
       return;
     }
 
-    toast.success('Form created!');
+    toast.success(t("Form created!"));
     navigate(`/builder/${data.id}`);
   };
 
   const deleteForm = async (id: string) => {
     const { error } = await supabase.from('forms').delete().eq('id', id);
     if (error) {
-      toast.error('Failed to delete form');
+      toast.error(t("Failed to delete form"));
     } else {
-      toast.success('Form deleted');
+      toast.success(t("Form deleted"));
       setForms(forms.filter((f) => f.id !== id));
     }
   };
@@ -207,15 +209,15 @@ const Dashboard = () => {
 
   const handleSaveDisplayName = async () => {
     if (!newDisplayName.trim()) {
-      toast.error('Name cannot be empty');
+      toast.error(t("Name cannot be empty"));
       return;
     }
     
     const { error } = await updateDisplayName(newDisplayName.trim());
     if (error) {
-      toast.error('Failed to update name');
+      toast.error(t("Failed to update name"));
     } else {
-      toast.success('Name updated!');
+      toast.success(t("Name updated!"));
       setEditingName(false);
     }
   };
@@ -223,7 +225,7 @@ const Dashboard = () => {
   if (authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-foreground font-inter">Loading...</div>
+        <div className="text-foreground font-inter">{t("Loading...")}</div>
       </div>
     );
   }
@@ -271,35 +273,27 @@ const Dashboard = () => {
               </div>
             )}
             <Button variant="ghost" size="sm" onClick={handleNavigateToSettings}>
-              <Settings className="w-4 h-4 mr-2" />
-              Settings
-            </Button>
+              <Settings className="w-4 h-4 mr-2" />{t("Settings")}</Button>
             <Button variant="ghost" size="sm" onClick={handleSignOut}>
-              <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
-            </Button>
+              <LogOut className="w-4 h-4 mr-2" />{t("Sign Out")}</Button>
           </div>
         </div>
       </header>
 
       <main className="container mx-auto px-4 py-8 relative z-10">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-orbitron font-bold text-foreground">My Forms</h1>
+          <h1 className="text-3xl font-orbitron font-bold text-foreground">{t("My Forms")}</h1>
           <Button variant="glow" onClick={() => createForm()}>
-            <Plus className="w-5 h-5 mr-2" />
-            Create Form
-          </Button>
+            <Plus className="w-5 h-5 mr-2" />{t("Create Form")}</Button>
         </div>
 
         {forms.length === 0 ? (
           <div className="glass glow-border rounded-2xl p-12 text-center">
             <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-            <h2 className="text-xl font-orbitron font-semibold text-foreground mb-2">No forms yet</h2>
-            <p className="text-muted-foreground font-inter mb-6">Create your first form to get started</p>
+            <h2 className="text-xl font-orbitron font-semibold text-foreground mb-2">{t("No forms yet")}</h2>
+            <p className="text-muted-foreground font-inter mb-6">{t("Create your first form to get started")}</p>
             <Button variant="glow" onClick={() => createForm()}>
-              <Plus className="w-5 h-5 mr-2" />
-              Create Your First Form
-            </Button>
+              <Plus className="w-5 h-5 mr-2" />{t("Create Your First Form")}</Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -331,24 +325,20 @@ const Dashboard = () => {
                   {form.title}
                 </h3>
                 <p className="text-sm text-muted-foreground font-inter mb-3">
-                  {form.description || 'No description'}
+                  {form.description || t("No description")}
                 </p>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
                     {form.is_published ? (
                       <span className="flex items-center gap-1 text-xs text-green-500">
-                        <Eye className="w-3 h-3" />
-                        Open
-                      </span>
+                        <Eye className="w-3 h-3" />{t("Open")}</span>
                     ) : (
                       <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <EyeOff className="w-3 h-3" />
-                        Closed
-                      </span>
+                        <EyeOff className="w-3 h-3" />{t("Closed")}</span>
                     )}
                   </div>
                   <p className="text-xs text-muted-foreground font-inter">
-                    {new Date(form.updated_at).toLocaleDateString()}
+                    {new Date(form.updated_at).toLocaleDateString(language === 'he' ? 'he-IL' : 'en-US')}
                   </p>
                 </div>
               </div>
@@ -361,7 +351,7 @@ const Dashboard = () => {
           <>
             <div className="flex items-center gap-3 mt-12 mb-6">
               <Mail className="w-6 h-6 text-amber-500" />
-              <h2 className="text-2xl font-orbitron font-bold text-foreground">Pending Invites</h2>
+              <h2 className="text-2xl font-orbitron font-bold text-foreground">{t("Pending Invites")}</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {pendingInvites.map((invite) => (
@@ -375,8 +365,7 @@ const Dashboard = () => {
                   <h3 className="text-lg font-orbitron font-semibold text-foreground mb-2">
                     {invite.form_title}
                   </h3>
-                  <p className="text-sm text-muted-foreground font-inter mb-4">
-                    You've been invited as {invite.role === 'editor' ? 'an Editor' : 'a Viewer'}
+                  <p className="text-sm text-muted-foreground font-inter mb-4">{t("You've been invited as")}{invite.role === "editor" ? t("an Editor") : t("a Viewer")}
                   </p>
                   <div className="flex gap-2">
                     <Button 
@@ -385,9 +374,7 @@ const Dashboard = () => {
                       className="flex-1"
                       onClick={() => acceptInvite(invite.form_id)}
                     >
-                      <Check className="w-4 h-4 mr-1" />
-                      Accept
-                    </Button>
+                      <Check className="w-4 h-4 mr-1" />{t("Accept")}</Button>
                     <Button 
                       variant="ghost" 
                       size="sm"
@@ -407,7 +394,7 @@ const Dashboard = () => {
           <>
             <div className="flex items-center gap-3 mt-12 mb-6">
               <Users className="w-6 h-6 text-primary" />
-              <h2 className="text-2xl font-orbitron font-bold text-foreground">Shared With Me</h2>
+              <h2 className="text-2xl font-orbitron font-bold text-foreground">{t("Shared With Me")}</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {sharedForms.map((form) => (
@@ -424,7 +411,7 @@ const Dashboard = () => {
                         onClick={() => navigate(`/builder/${form.id}?role=${form.role}`)}
                         title={form.role === 'editor' ? 'Edit form' : 'View form'}
                       >
-                        {form.role === 'editor' ? (
+                        {form.role === "editor" ? (
                           <Edit className="w-4 h-4" />
                         ) : (
                           <Eye className="w-4 h-4" />
@@ -436,7 +423,7 @@ const Dashboard = () => {
                     {form.title}
                   </h3>
                   <p className="text-sm text-muted-foreground font-inter mb-3">
-                    {form.description || 'No description'}
+                    {form.description || t("No description")}
                   </p>
                   <div className="flex items-center justify-between">
                     <span className={`text-xs px-2 py-1 rounded-full ${
@@ -444,10 +431,10 @@ const Dashboard = () => {
                         ? 'bg-primary/20 text-primary' 
                         : 'bg-muted text-muted-foreground'
                     }`}>
-                      {form.role === 'editor' ? 'Editor' : 'Viewer'}
+                      {form.role === "editor" ? t("Editor") : t("Viewer")}
                     </span>
                     <p className="text-xs text-muted-foreground font-inter">
-                      {new Date(form.updated_at).toLocaleDateString()}
+                      {new Date(form.updated_at).toLocaleDateString(language === 'he' ? 'he-IL' : 'en-US')}
                     </p>
                   </div>
                 </div>

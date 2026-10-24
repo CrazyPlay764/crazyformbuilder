@@ -1,3 +1,4 @@
+import { useLanguage } from '@/i18n/Language';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Link2, Plus, Trash2, Pencil, X, Check, ExternalLink } from 'lucide-react';
@@ -17,6 +18,7 @@ interface SiteLink {
 const ADMIN_EMAIL = 'danieletigon@gmail.com';
 
 const SiteLinks = () => {
+  const { t, language } = useLanguage();
   const [links, setLinks] = useState<SiteLink[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -53,12 +55,12 @@ const SiteLinks = () => {
 
     if (editingId) {
       const { error } = await supabase.from('site_links').update({ title: title.trim(), url: finalUrl }).eq('id', editingId);
-      if (error) { toast.error('שגיאה בעדכון'); return; }
-      toast.success('הקישור עודכן');
+      if (error) { toast.error(t("שגיאה בעדכון")); return; }
+      toast.success(t("הקישור עודכן"));
     } else {
       const { error } = await supabase.from('site_links').insert([{ title: title.trim(), url: finalUrl, user_id: user.id, position: links.length }]);
-      if (error) { toast.error('שגיאה בהוספת הקישור'); return; }
-      toast.success('הקישור נוסף');
+      if (error) { toast.error(t("שגיאה בהוספת הקישור")); return; }
+      toast.success(t("הקישור נוסף"));
     }
     resetForm();
     fetchLinks();
@@ -66,8 +68,8 @@ const SiteLinks = () => {
 
   const handleDelete = async (id: string) => {
     const { error } = await supabase.from('site_links').delete().eq('id', id);
-    if (error) { toast.error('שגיאה במחיקה'); return; }
-    toast.success('הקישור נמחק');
+    if (error) { toast.error(t("שגיאה במחיקה")); return; }
+    toast.success(t("הקישור נמחק"));
     fetchLinks();
   };
 
@@ -88,10 +90,10 @@ const SiteLinks = () => {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card text-sm text-muted-foreground mb-6">
               <Link2 className="w-4 h-4 text-primary" />
-              <span>קישורים</span>
+              <span>{t("קישורים")}</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-orbitron font-bold mb-4">
-              <span className="gradient-text">קישורים שימושיים</span>
+              <span className="gradient-text">{t("קישורים שימושיים")}</span>
             </h2>
           </div>
         </ScrollReveal>
@@ -100,24 +102,22 @@ const SiteLinks = () => {
           <div className="mb-8 flex justify-center">
             {!showForm ? (
               <Button variant="glow" onClick={() => setShowForm(true)} className="gap-2">
-                <Plus className="w-4 h-4" />
-                הוסף קישור
-              </Button>
+                <Plus className="w-4 h-4" />{t("הוסף קישור")}</Button>
             ) : (
               <div className="w-full max-w-md glass-card rounded-xl p-6 space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-orbitron font-bold text-foreground">
-                    {editingId ? 'ערוך קישור' : 'קישור חדש'}
+                    {editingId ? t("ערוך קישור") : t("קישור חדש")}
                   </h3>
                   <button onClick={resetForm}>
                     <X className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
                   </button>
                 </div>
-                <Input placeholder="שם הקישור" value={title} onChange={(e) => setTitle(e.target.value)} className="text-right" dir="rtl" />
+                <Input placeholder={t("שם הקישור")} value={title} onChange={(e) => setTitle(e.target.value)} className="text-right" dir="rtl" />
                 <Input placeholder="https://example.com" value={url} onChange={(e) => setUrl(e.target.value)} dir="ltr" />
                 <Button variant="glow" onClick={handleSubmit} className="w-full gap-2" disabled={!title.trim() || !url.trim()}>
                   <Check className="w-4 h-4" />
-                  {editingId ? 'שמור' : 'הוסף'}
+                  {editingId ? t("שמור") : t("הוסף")}
                 </Button>
               </div>
             )}
@@ -149,7 +149,7 @@ const SiteLinks = () => {
           ))}
 
           {links.length === 0 && isAdmin && (
-            <p className="text-center text-muted-foreground font-inter col-span-full">אין קישורים עדיין. הוסף את הקישור הראשון!</p>
+            <p className="text-center text-muted-foreground font-inter col-span-full">{t("אין קישורים עדיין. הוסף את הקישור הראשון!")}</p>
           )}
         </div>
       </div>

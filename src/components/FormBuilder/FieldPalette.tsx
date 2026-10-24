@@ -1,3 +1,4 @@
+import { useLanguage } from '@/i18n/Language';
 import { useState } from 'react';
 import { 
   Type, 
@@ -12,7 +13,8 @@ import {
   ListChecks,
   LayoutList,
   Plus,
-  Image
+  Image,
+  SlidersHorizontal
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -23,6 +25,7 @@ interface FieldType {
 }
 
 const fieldTypes: FieldType[] = [
+  { type: 'rating', label: 'Rating Slider', icon: <SlidersHorizontal className="w-5 h-5" /> },
   { type: 'section', label: 'Section', icon: <LayoutList className="w-5 h-5" /> },
   { type: 'text', label: 'Text Input', icon: <Type className="w-5 h-5" /> },
   { type: 'email', label: 'Email', icon: <Mail className="w-5 h-5" /> },
@@ -43,6 +46,7 @@ interface FieldPaletteProps {
 }
 
 const FieldPalette = ({ onDragStart, onAddField }: FieldPaletteProps) => {
+  const { t, language } = useLanguage();
   const [selectedField, setSelectedField] = useState<FieldType | null>(null);
 
   const handleFieldClick = (field: FieldType) => {
@@ -51,7 +55,7 @@ const FieldPalette = ({ onDragStart, onAddField }: FieldPaletteProps) => {
 
   const handleAddClick = () => {
     if (selectedField && onAddField) {
-      onAddField(selectedField.type, selectedField.label);
+      onAddField(selectedField.type, t(selectedField.label));
       setSelectedField(null);
     }
   };
@@ -59,23 +63,21 @@ const FieldPalette = ({ onDragStart, onAddField }: FieldPaletteProps) => {
   return (
     <div className="glass rounded-xl p-4 h-fit sticky top-24">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-orbitron font-semibold text-foreground">Fields</h3>
+        <h3 className="text-lg font-orbitron font-semibold text-foreground">{t("Fields")}</h3>
         <Button
           size="sm"
           onClick={handleAddClick}
           disabled={!selectedField}
           className="gap-1"
         >
-          <Plus className="w-4 h-4" />
-          Add
-        </Button>
+          <Plus className="w-4 h-4" />{t("Add")}</Button>
       </div>
       <div className="space-y-2">
         {fieldTypes.map((field) => (
           <div
             key={field.type}
             draggable
-            onDragStart={() => onDragStart(field.type, field.label)}
+            onDragStart={() => onDragStart(field.type, t(field.label))}
             onClick={() => handleFieldClick(field)}
             className={`flex items-center gap-3 p-3 rounded-lg bg-background/50 border cursor-pointer transition-all duration-200 ${
               selectedField?.type === field.type
@@ -84,7 +86,7 @@ const FieldPalette = ({ onDragStart, onAddField }: FieldPaletteProps) => {
             }`}
           >
             <span className="text-primary">{field.icon}</span>
-            <span className="text-sm font-inter text-foreground">{field.label}</span>
+            <span className="text-sm font-inter text-foreground">{t(field.label)}</span>
           </div>
         ))}
       </div>

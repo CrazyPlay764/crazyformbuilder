@@ -1,3 +1,4 @@
+import { useLanguage } from '@/i18n/Language';
 import { MousePointer2, Palette, Type, Calendar, Upload, Users } from 'lucide-react';
 import TiltCard from '@/components/ui/tilt-card';
 import { useParallax } from '@/hooks/useParallax';
@@ -37,6 +38,7 @@ const features = [
 ];
 
 const Features = () => {
+  const { t, language } = useLanguage();
   const { getParallaxStyle } = useParallax();
 
   return (
@@ -49,20 +51,16 @@ const Features = () => {
         {/* Section Header */}
         <div className="text-center mb-20">
         <ScrollReveal animation="fade-up">
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border-primary/30 text-sm font-inter text-muted-foreground mb-6">
-            Powerful Features
-          </span>
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border-primary/30 text-sm font-inter text-muted-foreground mb-6">{t("Powerful Features")}</span>
         </ScrollReveal>
         <ScrollReveal animation="fade-up" delay={100}>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-orbitron font-bold mb-6">
-            <span className="text-foreground">Powerful </span>
-            <span className="gradient-text">Features</span>
+            <span className="text-foreground">{t("Powerful")}</span>
+            <span className="gradient-text">{t("Features")}</span>
           </h2>
         </ScrollReveal>
         <ScrollReveal animation="fade-up" delay={200}>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-inter font-light">
-            Everything you need to create, customize, and manage beautiful forms.
-          </p>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-inter font-light">{t("Everything you need to create, customize, and manage beautiful forms.")}</p>
         </ScrollReveal>
         </div>
 
@@ -79,10 +77,10 @@ const Features = () => {
                     <div className="absolute inset-0 bg-primary/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
                   <h3 className="text-xl font-orbitron font-semibold text-foreground mb-3 group-hover:text-primary transition-colors duration-300">
-                    {feature.title}
+                    {t(feature.title)}
                   </h3>
                   <p className="text-muted-foreground font-inter font-light leading-relaxed">
-                    {feature.description}
+                    {t(feature.description)}
                   </p>
                   <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
                     <div className="absolute inset-0 rounded-2xl" style={{
