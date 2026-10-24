@@ -12,11 +12,13 @@ import ProfileSettings from "./pages/ProfileSettings";
 import NotFound from "./pages/NotFound";
 import CustomCursor from "./components/CustomCursor";
 import PageTransition from "./components/PageTransition";
+import { LanguageProvider } from "@/i18n/Language";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
+    <LanguageProvider>
     <TooltipProvider>
       <CustomCursor />
       <Toaster />
@@ -35,6 +37,7 @@ const App = () => (
         </PageTransition>
       </BrowserRouter>
     </TooltipProvider>
+    </LanguageProvider>
   </QueryClientProvider>
 );
 
