@@ -13,6 +13,8 @@ import FormSettings from '@/components/FormBuilder/FormSettings';
 import FormResponses from '@/components/FormBuilder/FormResponses';
 import FormPreviewModal from '@/components/FormBuilder/FormPreviewModal';
 import ShareDialog from '@/components/FormBuilder/ShareDialog';
+import { DEFAULT_RATING_BOUNDS } from '@/lib/rating';
+import type { Json } from '@/integrations/supabase/types';
 import { FormField, Form } from '@/types/form';
 
 const FormBuilder = () => {
@@ -132,6 +134,7 @@ const FormBuilder = () => {
     const newField = {
       form_id: id,
       type: type,
+      settings: type === 'rating' ? DEFAULT_RATING_BOUNDS : {},
       label: label,
       position: fields.length,
       required: false,
@@ -163,6 +166,7 @@ const FormBuilder = () => {
     const newField = {
       form_id: id,
       type: draggedFieldType.type,
+      settings: draggedFieldType.type === 'rating' ? DEFAULT_RATING_BOUNDS : {},
       label: draggedFieldType.label,
       position: fields.length,
       required: false,
@@ -215,6 +219,7 @@ const FormBuilder = () => {
         placeholder: updatedField.placeholder,
         required: updatedField.required,
         options: updatedField.options as null,
+        settings: (updatedField.settings ?? {}) as Json,
       })
       .eq('id', updatedField.id);
 
@@ -331,7 +336,7 @@ const FormBuilder = () => {
       )}
       
       <header className="glass-strong sticky top-0 z-50 border-b border-border/50">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="container mx-auto px-4 py-3 flex flex-wrap gap-3 items-center justify-between">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon" onClick={() => navigate('/dashboard')}>
               <ArrowLeft className="w-5 h-5" />
@@ -353,7 +358,7 @@ const FormBuilder = () => {
               </span>
             )}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {/* Device Preview Toggle */}
             <div className="flex items-center border border-border/50 rounded-lg p-0.5 mr-2">
               <Button
@@ -456,10 +461,10 @@ const FormBuilder = () => {
       </header>
 
       <main className="container mx-auto px-4 py-6">
-        <div className="flex gap-6">
+        <div className="flex flex-col lg:flex-row gap-6">
           {/* Field palette - only for editors/owners */}
           {!isReadOnly && (
-            <div className="w-64 shrink-0">
+            <div className="w-full lg:w-64 shrink-0">
               <FieldPalette onDragStart={handleDragStart} onAddField={handleAddField} />
             </div>
           )}
@@ -481,7 +486,7 @@ const FormBuilder = () => {
 
           {/* Settings panel - only for editors/owners */}
           {!isReadOnly && (
-            <div className="w-72 shrink-0 space-y-4">
+            <div className="w-full lg:w-72 shrink-0 space-y-4">
               {selectedField ? (
                 <FieldSettings field={selectedField} onUpdate={handleUpdateField} />
               ) : (

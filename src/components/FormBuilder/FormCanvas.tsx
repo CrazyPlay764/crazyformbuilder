@@ -1,4 +1,5 @@
 import { useLanguage } from '@/i18n/Language';
+import RatingField from './RatingField';
 import { FormField } from '@/types/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -60,7 +61,7 @@ const FormCanvas = ({
 
   const hasGradient = formSettings.gradientDirection && formSettings.gradientDirection !== 'none';
   const backgroundStyle = hasGradient
-    ? { background: getGradientStyle(formSettings.gradientDirection!, formSettings.backgroundColor, formSettings.gradientEndColor || '#4a1d96') }
+    ? { background: getGradientStyle(formSettings.gradientDirection || 'to-b', formSettings.backgroundColor, formSettings.gradientEndColor || '#4a1d96') }
     : { backgroundColor: formSettings.backgroundColor };
 
   const handleFieldDragStart = (e: React.DragEvent, index: number, isGripHandle: boolean) => {
@@ -91,13 +92,15 @@ const FormCanvas = ({
     const baseInputClass = "bg-background/30 border-border/50 focus:border-primary";
     
     switch (field.type) {
+      case 'rating':
+        return <RatingField settings={field.settings} label={field.label} disabled />;
       case 'text':
       case 'email':
       case 'number':
         return (
           <Input
             type={field.type}
-            placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}`}
+            placeholder={field.placeholder || `${t('Enter')} ${field.label}`}
             className={baseInputClass}
             disabled
           />

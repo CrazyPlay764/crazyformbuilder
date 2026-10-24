@@ -9,6 +9,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, ArrowRight, Send, LogIn, CheckCircle, ChevronRight, ChevronLeft, Image, Link2, Upload, X } from 'lucide-react';
 import { toast } from 'sonner';
+import RatingField from '@/components/FormBuilder/RatingField';
+import { getRatingBounds, isValidRating } from '@/lib/rating';
 import { FormField, Form } from '@/types/form';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -152,7 +154,7 @@ const FormPreview = () => {
   const [formClosed, setFormClosed] = useState(false);
   const [closedMessage, setClosedMessage] = useState<string>('');
   const [submitted, setSubmitted] = useState(false);
-  const [formValues, setFormValues] = useState<Record<string, string | boolean | string[]>>({});
+  const [formValues, setFormValues] = useState<Record<string, string | number | boolean | string[]>>({});
   const [currentPage, setCurrentPage] = useState(0);
 
   const ensureBackendConfig = () => {
@@ -276,7 +278,7 @@ const FormPreview = () => {
 
     if (!formData.is_published) {
       setFormClosed(true);
-      setClosedMessage(settings.closedFormMessage || 'This form is currently closed.');
+      setClosedMessage(settings.closedFormMessage || '');
       setLoading(false);
       return;
     }
@@ -290,13 +292,15 @@ const FormPreview = () => {
       .order('position');
 
     if (!fieldsError && fieldsData) {
-      setFields(fieldsData as FormField[]);
+      const loadedFields = fieldsData as FormField[];
+      setFields(loadedFields);
+      setFormValues(Object.fromEntries(loadedFields.filter(field => field.type === 'rating').map(field => [field.id, getRatingBounds(field.settings).min])));
     }
 
     setLoading(false);
   };
 
-  const handleInputChange = (fieldId: string, value: string | boolean | string[]) => {
+  const handleInputChange = (fieldId: string, value: string | number | boolean | string[]) => {
     setFormValues((prev) => ({ ...prev, [fieldId]: value }));
   };
 
@@ -312,12 +316,15 @@ const FormPreview = () => {
   const validateCurrentPage = (): boolean => {
     if (pages.length === 0) return true;
     const currentFields = pages[currentPage]?.fields || [];
+    for (const field of currentFields.filter(f => f.type === 'rating')) {
+      if (!isValidRating(formValues[field.id], field.settings)) { toast.error(t('Please choose a rating within the allowed range.')); return false; }
+    }
     const requiredFields = currentFields.filter(f => f.required);
     
     for (const field of requiredFields) {
       const value = formValues[field.id];
       if (value === undefined || value === null || value === '' || (Array.isArray(value) && value.length === 0)) {
-        toast.error(`נא למלא את השדה: ${field.label}`);
+        toast.error(`${t('Please complete the field:')} ${field.label}`);
         return false;
       }
     }
@@ -388,13 +395,15 @@ const FormPreview = () => {
     const baseInputClass = "bg-background/30 border-border/50 focus:border-primary";
     
     switch (field.type) {
+      case 'rating':
+        return <RatingField settings={field.settings} label={field.label} value={typeof formValues[field.id] === 'number' ? Number(formValues[field.id]) : undefined} onChange={value => handleInputChange(field.id, value)} />;
       case 'text':
       case 'email':
       case 'number':
         return (
           <Input
             type={field.type}
-            placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}`}
+            placeholder={field.placeholder || `${t('Enter')} ${field.label}`}
             className={baseInputClass}
             value={(formValues[field.id] as string) || ''}
             onChange={(e) => handleInputChange(field.id, e.target.value)}
@@ -526,7 +535,7 @@ const FormPreview = () => {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center space-y-4">
           <h1 className="text-2xl font-orbitron font-bold text-foreground">{t("Form Closed")}</h1>
-          <p className="text-muted-foreground">{closedMessage}</p>
+          <p className="text-muted-foreground">{closedMessage || t('This form is currently closed.')}</p>
           <div className="flex gap-4 justify-center">
             <Button variant="outline" onClick={() => navigate('/')}>
               <ArrowLeft className="w-4 h-4 mr-2" />{t("Go Home")}</Button>
@@ -572,7 +581,7 @@ const FormPreview = () => {
 
   const hasGradient = form.settings.gradientDirection && form.settings.gradientDirection !== 'none';
   const backgroundStyle = hasGradient
-    ? { background: getGradientStyle(form.settings.gradientDirection!, form.settings.backgroundColor, form.settings.gradientEndColor || '#4a1d96') }
+    ? { background: getGradientStyle(form.settings.gradientDirection || 'to-b', form.settings.backgroundColor, form.settings.gradientEndColor || '#4a1d96') }
     : { backgroundColor: form.settings.backgroundColor };
 
   const currentPageData = pages[currentPage];

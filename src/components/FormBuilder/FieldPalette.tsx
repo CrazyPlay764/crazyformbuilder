@@ -13,7 +13,8 @@ import {
   ListChecks,
   LayoutList,
   Plus,
-  Image
+  Image,
+  SlidersHorizontal
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -24,6 +25,7 @@ interface FieldType {
 }
 
 const fieldTypes: FieldType[] = [
+  { type: 'rating', label: 'Rating Slider', icon: <SlidersHorizontal className="w-5 h-5" /> },
   { type: 'section', label: 'Section', icon: <LayoutList className="w-5 h-5" /> },
   { type: 'text', label: 'Text Input', icon: <Type className="w-5 h-5" /> },
   { type: 'email', label: 'Email', icon: <Mail className="w-5 h-5" /> },
@@ -53,7 +55,7 @@ const FieldPalette = ({ onDragStart, onAddField }: FieldPaletteProps) => {
 
   const handleAddClick = () => {
     if (selectedField && onAddField) {
-      onAddField(selectedField.type, selectedField.label);
+      onAddField(selectedField.type, t(selectedField.label));
       setSelectedField(null);
     }
   };
@@ -75,7 +77,7 @@ const FieldPalette = ({ onDragStart, onAddField }: FieldPaletteProps) => {
           <div
             key={field.type}
             draggable
-            onDragStart={() => onDragStart(field.type, field.label)}
+            onDragStart={() => onDragStart(field.type, t(field.label))}
             onClick={() => handleFieldClick(field)}
             className={`flex items-center gap-3 p-3 rounded-lg bg-background/50 border cursor-pointer transition-all duration-200 ${
               selectedField?.type === field.type
