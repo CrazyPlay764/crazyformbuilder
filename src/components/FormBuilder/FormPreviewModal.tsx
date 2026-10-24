@@ -1,3 +1,4 @@
+import { useLanguage } from '@/i18n/Language';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { X, ExternalLink } from 'lucide-react';
@@ -9,6 +10,7 @@ interface FormPreviewModalProps {
 }
 
 const FormPreviewModal = ({ formId, isOpen, onClose }: FormPreviewModalProps) => {
+  const { t, language } = useLanguage();
   const [isVisible, setIsVisible] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -53,16 +55,14 @@ const FormPreviewModal = ({ formId, isOpen, onClose }: FormPreviewModalProps) =>
           <div className="flex flex-col h-full">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-border/50">
-              <h3 className="text-lg font-orbitron font-semibold text-foreground">Form Preview</h3>
+              <h3 className="text-lg font-orbitron font-semibold text-foreground">{t("Form Preview")}</h3>
               <div className="flex items-center gap-2">
                 <Button 
                   variant="ghost" 
                   size="sm" 
                   onClick={() => window.open(`/form/${formId}`, '_blank')}
                 >
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  Open in New Tab
-                </Button>
+                  <ExternalLink className="w-4 h-4 mr-2" />{t("Open in New Tab")}</Button>
                 <Button variant="ghost" size="icon" onClick={onClose}>
                   <X className="w-5 h-5" />
                 </Button>
@@ -74,7 +74,7 @@ const FormPreviewModal = ({ formId, isOpen, onClose }: FormPreviewModalProps) =>
               <iframe
                 src={`/form/${formId}?embed=true`}
                 className="w-full h-full rounded-lg border border-border/30"
-                title="Form Preview"
+                title={t("Form Preview")}
               />
             </div>
           </div>

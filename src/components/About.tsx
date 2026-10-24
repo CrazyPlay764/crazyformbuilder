@@ -1,9 +1,11 @@
+import { useLanguage } from '@/i18n/Language';
 import { Users, Target, Zap } from 'lucide-react';
 import TiltCard from '@/components/ui/tilt-card';
 import { useParallax } from '@/hooks/useParallax';
 import { ScrollReveal } from '@/components/ScrollReveal';
 
 const About = () => {
+  const { t, language } = useLanguage();
   const { getParallaxStyle } = useParallax();
 
   return (
@@ -17,14 +19,10 @@ const About = () => {
         {/* Section Header */}
         <div className="text-center mb-16">
         <ScrollReveal animation="fade-up">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 gradient-text">
-            About FormFlow
-          </h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 gradient-text">{t("About FormFlow")}</h2>
         </ScrollReveal>
         <ScrollReveal animation="fade-up" delay={100}>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            We're on a mission to make form creation effortless and beautiful for everyone.
-          </p>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">{t("We're on a mission to make form creation effortless and beautiful for everyone.")}</p>
         </ScrollReveal>
         </div>
 
@@ -37,10 +35,8 @@ const About = () => {
                 <div className="w-16 h-16 mx-auto mb-6 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Target className="w-8 h-8 text-primary" />
                 </div>
-                <h3 className="text-xl font-semibold mb-4">Our Mission</h3>
-                <p className="text-muted-foreground">
-                  To empower creators with intuitive tools that transform ideas into stunning, functional forms in minutes.
-                </p>
+                <h3 className="text-xl font-semibold mb-4">{t("Our Mission")}</h3>
+                <p className="text-muted-foreground">{t("To empower creators with intuitive tools that transform ideas into stunning, functional forms in minutes.")}</p>
               </div>
             </TiltCard>
           </ScrollReveal>
@@ -52,10 +48,8 @@ const About = () => {
                 <div className="w-16 h-16 mx-auto mb-6 rounded-xl bg-accent/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Users className="w-8 h-8 text-accent" />
                 </div>
-                <h3 className="text-xl font-semibold mb-4">Our Team</h3>
-                <p className="text-muted-foreground">
-                  A passionate team of designers and developers dedicated to crafting the best form-building experience.
-                </p>
+                <h3 className="text-xl font-semibold mb-4">{t("Our Team")}</h3>
+                <p className="text-muted-foreground">{t("A passionate team of designers and developers dedicated to crafting the best form-building experience.")}</p>
               </div>
             </TiltCard>
           </ScrollReveal>
@@ -67,10 +61,8 @@ const About = () => {
                 <div className="w-16 h-16 mx-auto mb-6 rounded-xl bg-secondary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Zap className="w-8 h-8 text-secondary" />
                 </div>
-                <h3 className="text-xl font-semibold mb-4">Our Vision</h3>
-                <p className="text-muted-foreground">
-                  To become the go-to platform for anyone who needs beautiful, powerful forms without complexity.
-                </p>
+                <h3 className="text-xl font-semibold mb-4">{t("Our Vision")}</h3>
+                <p className="text-muted-foreground">{t("To become the go-to platform for anyone who needs beautiful, powerful forms without complexity.")}</p>
               </div>
             </TiltCard>
           </ScrollReveal>

@@ -1,3 +1,4 @@
+import { useLanguage } from '@/i18n/Language';
 import { useState } from 'react';
 import { 
   Type, 
@@ -43,6 +44,7 @@ interface FieldPaletteProps {
 }
 
 const FieldPalette = ({ onDragStart, onAddField }: FieldPaletteProps) => {
+  const { t, language } = useLanguage();
   const [selectedField, setSelectedField] = useState<FieldType | null>(null);
 
   const handleFieldClick = (field: FieldType) => {
@@ -59,16 +61,14 @@ const FieldPalette = ({ onDragStart, onAddField }: FieldPaletteProps) => {
   return (
     <div className="glass rounded-xl p-4 h-fit sticky top-24">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-orbitron font-semibold text-foreground">Fields</h3>
+        <h3 className="text-lg font-orbitron font-semibold text-foreground">{t("Fields")}</h3>
         <Button
           size="sm"
           onClick={handleAddClick}
           disabled={!selectedField}
           className="gap-1"
         >
-          <Plus className="w-4 h-4" />
-          Add
-        </Button>
+          <Plus className="w-4 h-4" />{t("Add")}</Button>
       </div>
       <div className="space-y-2">
         {fieldTypes.map((field) => (
@@ -84,7 +84,7 @@ const FieldPalette = ({ onDragStart, onAddField }: FieldPaletteProps) => {
             }`}
           >
             <span className="text-primary">{field.icon}</span>
-            <span className="text-sm font-inter text-foreground">{field.label}</span>
+            <span className="text-sm font-inter text-foreground">{t(field.label)}</span>
           </div>
         ))}
       </div>

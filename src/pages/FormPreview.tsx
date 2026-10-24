@@ -1,3 +1,4 @@
+import { useLanguage } from '@/i18n/Language';
 import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -12,6 +13,7 @@ import { FormField, Form } from '@/types/form';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const ImageFieldInput = ({ fieldId, value, onChange }: { fieldId: string; value: string; onChange: (id: string, val: string) => void }) => {
+  const { t, language } = useLanguage();
   const isMobile = useIsMobile();
   const [mode, setMode] = useState<'choose' | 'url' | 'file' | 'done'>(value ? 'done' : (isMobile ? 'file' : 'choose'));
   const [urlInput, setUrlInput] = useState(value || '');
@@ -20,11 +22,11 @@ const ImageFieldInput = ({ fieldId, value, onChange }: { fieldId: string; value:
 
   const handleFileUpload = async (file: File) => {
     if (!file.type.startsWith('image/')) {
-      toast.error('Please select an image file');
+      toast.error(t("Please select an image file"));
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('Image must be under 5MB');
+      toast.error(t("Image must be under 5MB"));
       return;
     }
     setUploading(true);
@@ -32,7 +34,7 @@ const ImageFieldInput = ({ fieldId, value, onChange }: { fieldId: string; value:
     const path = `${crypto.randomUUID()}.${ext}`;
     const { error } = await supabase.storage.from('form-images').upload(path, file);
     if (error) {
-      toast.error('Failed to upload image');
+      toast.error(t("Failed to upload image"));
       setUploading(false);
       return;
     }
@@ -57,7 +59,7 @@ const ImageFieldInput = ({ fieldId, value, onChange }: { fieldId: string; value:
   if (mode === 'done' && value) {
     return (
       <div className="relative rounded-lg overflow-hidden border border-border/50">
-        <img src={value} alt="Uploaded" className="w-full max-h-64 object-contain bg-background/30" />
+        <img src={value} alt={t("Uploaded")} className="w-full max-h-64 object-contain bg-background/30" />
         <Button
           type="button"
           variant="destructive"
@@ -81,13 +83,9 @@ const ImageFieldInput = ({ fieldId, value, onChange }: { fieldId: string; value:
             onChange={(e) => setUrlInput(e.target.value)}
             className="bg-background/30 border-border/50"
           />
-          <Button type="button" size="sm" onClick={handleUrlSubmit}>
-            אישור
-          </Button>
+          <Button type="button" size="sm" onClick={handleUrlSubmit}>{t("אישור")}</Button>
         </div>
-        <Button type="button" variant="ghost" size="sm" onClick={() => setMode('choose')}>
-          ← חזור
-        </Button>
+        <Button type="button" variant="ghost" size="sm" onClick={() => setMode('choose')}>{t("← חזור")}</Button>
       </div>
     );
   }
@@ -100,11 +98,11 @@ const ImageFieldInput = ({ fieldId, value, onChange }: { fieldId: string; value:
           onClick={() => document.getElementById(`img-file-${fieldId}`)?.click()}
         >
           {uploading ? (
-            <p className="text-muted-foreground text-sm">מעלה...</p>
+            <p className=t("text-muted-foreground text-sm")>{t("מעלה...")}</p>
           ) : (
             <>
-              <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-              <p className="text-muted-foreground text-sm">לחץ לבחירת תמונה</p>
+              <Upload className=t("w-8 h-8 text-muted-foreground mx-auto mb-2") />
+              <p className=t("text-muted-foreground text-sm")>{t("לחץ לבחירת תמונה")}</p>
             </>
           )}
         </div>
@@ -119,9 +117,7 @@ const ImageFieldInput = ({ fieldId, value, onChange }: { fieldId: string; value:
           }}
         />
         {!isMobile && (
-          <Button type="button" variant="ghost" size="sm" onClick={() => setMode('choose')}>
-            ← חזור
-          </Button>
+          <Button type=t("button") variant=t("ghost") size=t("sm") onClick={() => setMode(t("choose"))}>{t("← חזור")}</Button>
         )}
       </div>
     );
@@ -131,22 +127,19 @@ const ImageFieldInput = ({ fieldId, value, onChange }: { fieldId: string; value:
   return (
     <div className="border-2 border-dashed border-border/50 rounded-lg p-6">
       <Image className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
-      <p className="text-center text-sm text-muted-foreground mb-4">איך תרצה להוסיף תמונה?</p>
+      <p className="text-center text-sm text-muted-foreground mb-4">{t("איך תרצה להוסיף תמונה?")}</p>
       <div className="flex gap-3 justify-center">
         <Button type="button" variant="outline" size="sm" onClick={() => setMode('url')} className="gap-2">
-          <Link2 className="w-4 h-4" />
-          קישור URL
-        </Button>
+          <Link2 className="w-4 h-4" />{t("קישור URL")}</Button>
         <Button type="button" variant="outline" size="sm" onClick={() => setMode('file')} className="gap-2">
-          <Upload className="w-4 h-4" />
-          העלאת קובץ
-        </Button>
+          <Upload className="w-4 h-4" />{t("העלאת קובץ")}</Button>
       </div>
     </div>
   );
 };
 
 const FormPreview = () => {
+  const { t, language } = useLanguage();
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -165,7 +158,7 @@ const FormPreview = () => {
   const ensureBackendConfig = () => {
     if (import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY) return true;
     toast.error(
-      'כדי שהטופס יעבוד ב‑Vercel צריך להגדיר Environment Variables: VITE_SUPABASE_URL ו‑VITE_SUPABASE_PUBLISHABLE_KEY ואז לבצע Redeploy.'
+      t("כדי שהטופס יעבוד ב‑Vercel צריך להגדיר Environment Variables: VITE_SUPABASE_URL ו‑VITE_SUPABASE_PUBLISHABLE_KEY ואז לבצע Redeploy.")
     );
     return false;
   };
@@ -425,7 +418,7 @@ const FormPreview = () => {
               checked={(formValues[field.id] as boolean) || false}
               onCheckedChange={(checked) => handleInputChange(field.id, !!checked)}
             />
-            <span className="text-sm text-foreground">{field.placeholder || 'Check this option'}</span>
+            <span className="text-sm text-foreground">{field.placeholder || t("Check this option")}</span>
           </div>
         );
       case 'date':
@@ -448,7 +441,7 @@ const FormPreview = () => {
               onChange={(e) => handleInputChange(field.id, e.target.files?.[0]?.name || '')}
             />
             <label htmlFor={`file-${field.id}`} className="cursor-pointer">
-              <p className="text-muted-foreground text-sm">Drop files here or click to upload</p>
+              <p className="text-muted-foreground text-sm">{t("Drop files here or click to upload")}</p>
             </label>
           </div>
         );
@@ -460,7 +453,7 @@ const FormPreview = () => {
             onChange={(e) => handleInputChange(field.id, e.target.value)}
             required={field.required}
           >
-            <option value="">Select an option</option>
+            <option value="">{t("Select an option")}</option>
             {(Array.isArray(field.options) ? field.options : []).map((opt, i) => (
               <option key={i} value={String(opt)}>{String(opt)}</option>
             ))}
@@ -523,7 +516,7 @@ const FormPreview = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-foreground font-inter">Loading...</div>
+        <div className="text-foreground font-inter">{t("Loading...")}</div>
       </div>
     );
   }
@@ -532,13 +525,11 @@ const FormPreview = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center space-y-4">
-          <h1 className="text-2xl font-orbitron font-bold text-foreground">Form Closed</h1>
+          <h1 className="text-2xl font-orbitron font-bold text-foreground">{t("Form Closed")}</h1>
           <p className="text-muted-foreground">{closedMessage}</p>
           <div className="flex gap-4 justify-center">
             <Button variant="outline" onClick={() => navigate('/')}>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Go Home
-            </Button>
+              <ArrowLeft className="w-4 h-4 mr-2" />{t("Go Home")}</Button>
           </div>
         </div>
       </div>
@@ -549,18 +540,14 @@ const FormPreview = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center space-y-4">
-          <h1 className="text-2xl font-orbitron font-bold text-foreground">Form Not Found</h1>
-          <p className="text-muted-foreground">This form doesn't exist.</p>
+          <h1 className="text-2xl font-orbitron font-bold text-foreground">{t("Form Not Found")}</h1>
+          <p className="text-muted-foreground">{t("This form doesn't exist.")}</p>
           <div className="flex gap-4 justify-center">
             <Button variant="outline" onClick={() => navigate('/')}>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Go Home
-            </Button>
+              <ArrowLeft className="w-4 h-4 mr-2" />{t("Go Home")}</Button>
             <Link to="/auth">
               <Button variant="glow">
-                <LogIn className="w-4 h-4 mr-2" />
-                Login
-              </Button>
+                <LogIn className="w-4 h-4 mr-2" />{t("Login")}</Button>
             </Link>
           </div>
         </div>
@@ -607,63 +594,59 @@ const FormPreview = () => {
     >
       {/* Background Media Layer - Full Screen */}
       {bgMedia && (
-        <div className="fixed inset-0 z-0 w-screen h-screen overflow-hidden">
-          {bgMedia.type === 'image' && (
-            <img src={bgMedia.url} alt="" className="absolute inset-0 w-full h-full object-cover" />
+        <div className=t("fixed inset-0 z-0 w-screen h-screen overflow-hidden")>
+          {bgMedia.type === t("image")e") && (
+            <img src={bgMedia.url} alt="" className=t("absolute inset-0 w-full h-full object-cover")r") />
           )}
-          {bgMedia.type === 'video' && (
-            <video src={bgMedia.url} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover" />
+          {bgMedia.type === t("video")o") && (
+            <video src={bgMedia.url} autoPlay loop muted playsInline className=t("absolute inset-0 w-full h-full object-cover")r") />
           )}
-          {bgMedia.type === 'youtube' && (() => {
+          {bgMedia.type === t("youtube")e") && (() => {
             const ytId = extractYoutubeId(bgMedia.url);
             return ytId ? (
-              <div className="absolute inset-0 overflow-hidden">
+              <div className=t("absolute inset-0 overflow-hidden")n")>
                 <iframe
                   src={`https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=0&showinfo=0&modestbranding=1&rel=0&disablekb=1&iv_load_policy=3&fs=0&playsinline=1`}
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-0 pointer-events-none"
+                  className=t("absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-0 pointer-events-none")e")
                   style={{ 
-                    width: 'max(177.78vh, 100vw)', 
-                    height: 'max(56.25vw, 100vh)', 
-                    minWidth: '100vw', 
-                    minHeight: '100vh' 
+                    width: t("max(177.78vh, 100vw)"))"), 
+                    height: t("max(56.25vw, 100vh)"))"), 
+                    minWidth: t("100vw")w"), 
+                    minHeight: t("100vh")h") 
                   }}
-                  allow="autoplay; encrypted-media"
+                  allow=t("autoplay; encrypted-media")a")
                   allowFullScreen
                 />
               </div>
             ) : null;
           })()}
-          <div className="absolute inset-0 bg-black/40" />
+          <div className=t("absolute inset-0 bg-black/40") />
         </div>
       )}
       <div className="container mx-auto px-4 py-8 max-w-2xl relative z-10">
         {!isEmbed && (
-          <div className="mb-6 flex justify-between items-center">
+          <div className=t("mb-6 flex justify-between items-center")>
             <Button 
-              variant="ghost" 
-              size="sm" 
+              variant=t("ghost") 
+              size=t("sm") 
               onClick={() => navigate('/')}
-              className="text-foreground/70 hover:text-foreground"
+              className=t("text-foreground/70 hover:text-foreground")
             >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
-            </Button>
-            <Link to="/auth">
-              <Button variant="ghost" size="sm" className="text-foreground/70 hover:text-foreground">
-                <LogIn className="w-4 h-4 mr-2" />
-                Login
-              </Button>
+              <ArrowLeft className=t("w-4 h-4 mr-2") />{t("Back")}</Button>
+            <Link to=t("/auth")>
+              <Button variant=t("ghost") size=t("sm") className=t("text-foreground/70 hover:text-foreground")>
+                <LogIn className=t("w-4 h-4 mr-2") />{t("Login")}</Button>
             </Link>
           </div>
         )}
 
         <div className="bg-background/20 backdrop-blur-sm rounded-2xl p-8 border border-border/30">
           {form.settings.logoUrl && (
-            <div className="mb-6 flex justify-center">
+            <div className=t("mb-6 flex justify-center")>
               <img 
                 src={form.settings.logoUrl} 
-                alt="Form logo" 
-                className="max-h-20 object-contain"
+                alt={t("Form logo")}o") 
+                className=t("max-h-20 object-contain")
               />
             </div>
           )}
@@ -673,52 +656,51 @@ const FormPreview = () => {
               {form.title}
             </h1>
             {form.description && (
-              <p className="text-muted-foreground">{form.description}</p>
+              <p className=t("text-muted-foreground")>{form.description}</p>
             )}
           </div>
 
           {submitted ? (
-            <div className="text-center py-12 space-y-6">
-              <div className="flex justify-center">
-                <CheckCircle className="w-16 h-16 text-primary" />
+            <div className=t("text-center py-12 space-y-6")>
+              <div className=t("flex justify-center")>
+                <CheckCircle className=t("w-16 h-16 text-primary") />
               </div>
-              <h2 className="text-2xl font-orbitron font-bold text-foreground">
-                {form.settings.successMessage || 'Thank you! Your form has been submitted successfully.'}
+              <h2 className=t("text-2xl font-orbitron font-bold text-foreground")>
+                {form.settings.successMessage || t("Thank you! Your form has been submitted successfully.").")}
               </h2>
             </div>
           ) : fields.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">This form has no fields yet.</p>
+            <div className=t("text-center py-12")>
+              <p className=t("text-muted-foreground")>{t("This form has no fields yet.")}</p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className=t("space-y-6")>
               {/* Progress indicator */}
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Progress</span>
-                  <span className="text-foreground font-medium">
-                    {progressInfo.completed} / {progressInfo.total} completed
-                  </span>
+              <div className=t("space-y-2")>
+                <div className=t("flex justify-between text-sm")>
+                  <span className=t("text-muted-foreground")>{t("Progress")}</span>
+                  <span className=t("text-foreground font-medium")>
+                    {progressInfo.completed} / {progressInfo.total}{t("completed")}</span>
                 </div>
-                <Progress value={progressInfo.percentage} className="h-2" />
+                <Progress value={progressInfo.percentage} className=t("h-2") />
               </div>
 
               {/* Page indicator for multi-page forms */}
               {totalPages > 1 && (
-                <div className="flex items-center justify-center gap-2">
+                <div className=t("flex items-center justify-center gap-2")2")>
                   {pages.map((_, i) => (
                     <div
                       key={i}
                       className={`w-3 h-3 rounded-full transition-all duration-300 ${
                         i === currentPage
-                          ? 'bg-primary scale-125'
+                          ? t("bg-primary scale-125")5")
                           : i < currentPage
-                          ? 'bg-primary/50'
-                          : 'bg-muted-foreground/30'
+                          ? t("bg-primary/50")0")
+                          : t("bg-muted-foreground/30")0")
                       }`}
                     />
                   ))}
-                  <span className="text-sm text-muted-foreground mr-3">
+                  <span className=t("text-sm text-muted-foreground mr-3")3")>
                     {currentPage + 1} / {totalPages}
                   </span>
                 </div>
@@ -726,61 +708,57 @@ const FormPreview = () => {
 
               {/* Section title */}
               {currentPageData?.title && (
-                <div className="text-center py-2 border-b border-primary/30 mb-4">
-                  <h2 className="text-xl font-orbitron font-bold text-foreground">
+                <div className=t("text-center py-2 border-b border-primary/30 mb-4")4")>
+                  <h2 className=t("text-xl font-orbitron font-bold text-foreground")d")>
                     {currentPageData.title}
                   </h2>
                   {currentPageData.description && (
-                    <p className="text-sm text-muted-foreground mt-1">{currentPageData.description}</p>
+                    <p className=t("text-sm text-muted-foreground mt-1")1")1")>{currentPageData.description}</p>
                   )}
                 </div>
               )}
 
               {/* Current page fields */}
               {currentPageData?.fields.map((field) => (
-                <div key={field.id} className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">
+                <div key={field.id} className=t("space-y-2")>
+                  <label className=t("text-sm font-medium text-foreground")>
                     {field.label}
-                    {field.required && <span className="text-destructive ml-1">*</span>}
+                    {field.required && <span className=t("text-destructive ml-1")1")>*</span>}
                   </label>
                   {renderField(field)}
                 </div>
               ))}
 
               {/* Navigation buttons */}
-              <div className="flex items-center justify-between pt-4 gap-3">
+              <div className=t("flex items-center justify-between pt-4 gap-3")>
                 {!isFirstPage ? (
                   <Button
-                    type="button"
-                    variant="outline"
+                    type=t("button")n")
+                    variant=t("outline")e")
                     onClick={handlePrev}
-                    className="gap-2"
+                    className=t("gap-2")2")
                   >
-                    <ChevronLeft className="w-4 h-4" />
-                    הקודם
-                  </Button>
+                    <ChevronLeft className=t("w-4 h-4")4") />{t("הקודם")}</Button>
                 ) : (
                   <div />
                 )}
 
                 {isLastPage ? (
                   <Button 
-                    type="submit" 
-                    className="gap-2"
+                    type=t("submit")t") 
+                    className=t("gap-2")2")
                     style={{ backgroundColor: form.settings.primaryColor }}
                   >
-                    <Send className="w-4 h-4" />
-                    {form.settings.submitButtonText || 'Submit'}
+                    <Send className=t("w-4 h-4")4") />
+                    {form.settings.submitButtonText || t("Submit")t")t")}
                   </Button>
                 ) : (
                   <Button
-                    type="button"
+                    type=t("button")n")
                     onClick={handleNext}
-                    className="gap-2"
+                    className=t("gap-2")2")
                     style={{ backgroundColor: form.settings.primaryColor }}
-                  >
-                    הבא
-                    <ChevronRight className="w-4 h-4" />
+                  >{t("הבא")}<ChevronRight className=t("w-4 h-4")4") />
                   </Button>
                 )}
               </div>
@@ -789,7 +767,7 @@ const FormPreview = () => {
         </div>
 
         <div className="mt-4 text-center">
-          <p className="text-xs text-muted-foreground/50">Preview Mode</p>
+          <p className="text-xs text-muted-foreground/50">{t("Preview Mode")}</p>
         </div>
       </div>
     </div>

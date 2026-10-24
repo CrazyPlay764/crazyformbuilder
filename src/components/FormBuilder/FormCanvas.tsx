@@ -1,3 +1,4 @@
+import { useLanguage } from '@/i18n/Language';
 import { FormField } from '@/types/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -50,6 +51,7 @@ const FormCanvas = ({
   onReorderFields,
   previewDevice = 'desktop',
 }: FormCanvasProps) => {
+  const { t, language } = useLanguage();
   const deviceWidths = {
     desktop: 'w-full',
     tablet: 'max-w-[768px]',
@@ -112,7 +114,7 @@ const FormCanvas = ({
         return (
           <div className="flex items-center gap-2">
             <Checkbox disabled />
-            <span className="text-sm text-foreground">{field.placeholder || 'Check this option'}</span>
+            <span className="text-sm text-foreground">{field.placeholder || t("Check this option")}</span>
           </div>
         );
       case 'date':
@@ -122,20 +124,20 @@ const FormCanvas = ({
       case 'file':
         return (
           <div className="border-2 border-dashed border-border/50 rounded-lg p-6 text-center">
-            <p className="text-muted-foreground text-sm">Drop files here or click to upload</p>
+            <p className="text-muted-foreground text-sm">{t("Drop files here or click to upload")}</p>
           </div>
         );
       case 'image':
         return (
           <div className="border-2 border-dashed border-border/50 rounded-lg p-6 text-center">
             <Image className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-            <p className="text-muted-foreground text-sm">תמונה - קישור URL או העלאת קובץ</p>
+            <p className="text-muted-foreground text-sm">{t("תמונה - קישור URL או העלאת קובץ")}</p>
           </div>
         );
       case 'dropdown':
         return (
           <select className={`w-full p-2 rounded-md ${baseInputClass}`} disabled>
-            <option>Select an option</option>
+            <option>{t("Select an option")}</option>
             {(Array.isArray(field.options) ? field.options : []).map((opt, i) => (
               <option key={i}>{String(opt)}</option>
             ))}
@@ -211,20 +213,20 @@ const FormCanvas = ({
         onDragOver={onDragOver}
       >
       {formSettings.logoUrl && (
-        <div className="mb-6 flex justify-center">
+        <div className=t("mb-6 flex justify-center")>
           <img 
             src={formSettings.logoUrl} 
-            alt="Form logo" 
-            className="max-h-20 object-contain"
+            alt={t("Form logo")}o") 
+            className=t("max-h-20 object-contain")
           />
         </div>
       )}
       {fields.length === 0 ? (
-        <div className="h-full flex items-center justify-center border-2 border-dashed border-border/30 rounded-lg min-h-[400px]">
-          <p className="text-muted-foreground font-inter">Drag and drop fields here</p>
+        <div className=t("h-full flex items-center justify-center border-2 border-dashed border-border/30 rounded-lg min-h-[400px]")>
+          <p className=t("text-muted-foreground font-inter")>{t("Drag and drop fields here")}</p>
         </div>
       ) : (
-        <div className="space-y-4" dir="rtl">
+        <div className=t("space-y-4") dir=t("rtl")>
           {fields.map((field, index) => (
             <div
               key={field.id}
@@ -233,99 +235,99 @@ const FormCanvas = ({
               onDrop={(e) => handleFieldDrop(e, index)}
               onClick={() => onSelectField(field)}
               className={`${
-                field.type === 'section' 
-                  ? 'py-2' 
-                  : 'p-4 rounded-lg border bg-background/20'
+                field.type === t("section") 
+                  ? t("py-2") 
+                  : t("p-4 rounded-lg border bg-background/20")
               } transition-all duration-200 cursor-pointer ${
                 selectedFieldId === field.id
-                  ? field.type === 'section' ? 'bg-primary/10' : 'border-primary bg-primary/5'
-                  : field.type === 'section' ? '' : 'border-border/30 hover:border-border/50'
+                  ? field.type === t("section") ? t("bg-primary/10") : t("border-primary bg-primary/5")
+                  : field.type === t("section") ? '' : t("border-border/30 hover:border-border/50")
               }`}
             >
-              {field.type === 'section' ? (
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-1">
+              {field.type === t("section")n") ? (
+                <div className=t("flex items-center justify-between gap-3")3")>
+                  <div className=t("flex items-center gap-1")1")>
                     <ReorderButtons index={index} />
                     <div
                       draggable
                       onDragStart={(e) => handleFieldDragStart(e, index, true)}
-                      className="cursor-grab touch-none flex-shrink-0 hidden md:block"
+                      className=t("cursor-grab touch-none flex-shrink-0 hidden md:block")k")
                     >
-                      <GripVertical className="w-4 h-4 text-muted-foreground" />
+                      <GripVertical className=t("w-4 h-4 text-muted-foreground")d") />
                     </div>
                   </div>
-                  <div className="flex-1 border-b-2 border-primary/50 pb-2">
-                    <h3 className="text-lg font-orbitron font-bold text-foreground text-right">
+                  <div className=t("flex-1 border-b-2 border-primary/50 pb-2")2")>
+                    <h3 className=t("text-lg font-orbitron font-bold text-foreground text-right")t")>
                       {field.label}
                     </h3>
                     {field.placeholder && (
-                      <p className="text-sm text-muted-foreground mt-1 text-right">{field.placeholder}</p>
+                      <p className=t("text-sm text-muted-foreground mt-1 text-right")t")t")>{field.placeholder}</p>
                     )}
                   </div>
-                  <div className="flex gap-1 flex-shrink-0">
+                  <div className=t("flex gap-1 flex-shrink-0")0")>
                     <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8"
+                      variant=t("ghost")t")
+                      size=t("icon")n")
+                      className=t("h-8 w-8")8")
                       onClick={(e) => {
                         e.stopPropagation();
                         onSelectField(field);
                       }}
                     >
-                      <Settings className="w-4 h-4" />
+                      <Settings className=t("w-4 h-4")4") />
                     </Button>
                     <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8"
+                      variant=t("ghost")t")
+                      size=t("icon")n")
+                      className=t("h-8 w-8")8")
                       onClick={(e) => {
                         e.stopPropagation();
                         onDeleteField(field.id);
                       }}
                     >
-                      <Trash2 className="w-4 h-4 text-destructive" />
+                      <Trash2 className=t("w-4 h-4 text-destructive")e") />
                     </Button>
                   </div>
                 </div>
               ) : (
                 <>
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
+                  <div className=t("flex items-center justify-between mb-2")2")>
+                    <div className=t("flex items-center gap-2")2")>
                       <ReorderButtons index={index} />
                       <div
                         draggable
                         onDragStart={(e) => handleFieldDragStart(e, index, true)}
-                        className="cursor-grab touch-none hidden md:block"
+                        className=t("cursor-grab touch-none hidden md:block")k")
                       >
-                        <GripVertical className="w-4 h-4 text-muted-foreground" />
+                        <GripVertical className=t("w-4 h-4 text-muted-foreground")d") />
                       </div>
-                      <label className="text-sm font-medium text-foreground">
+                      <label className=t("text-sm font-medium text-foreground")d")>
                         {field.label}
-                        {field.required && <span className="text-destructive ml-1">*</span>}
+                        {field.required && <span className=t("text-destructive ml-1")1")1")>*</span>}
                       </label>
                     </div>
-                    <div className="flex gap-1">
+                    <div className=t("flex gap-1")1")>
                       <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8"
+                        variant=t("ghost")t")
+                        size=t("icon")n")
+                        className=t("h-8 w-8")8")
                         onClick={(e) => {
                           e.stopPropagation();
                           onSelectField(field);
                         }}
                       >
-                        <Settings className="w-4 h-4" />
+                        <Settings className=t("w-4 h-4")4") />
                       </Button>
                       <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8"
+                        variant=t("ghost")t")
+                        size=t("icon")n")
+                        className=t("h-8 w-8")8")
                         onClick={(e) => {
                           e.stopPropagation();
                           onDeleteField(field.id);
                         }}
                       >
-                        <Trash2 className="w-4 h-4 text-destructive" />
+                        <Trash2 className=t("w-4 h-4 text-destructive")e") />
                       </Button>
                     </div>
                   </div>

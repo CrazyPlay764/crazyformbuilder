@@ -1,3 +1,4 @@
+import { useLanguage } from '@/i18n/Language';
 import { FormField } from '@/types/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,6 +13,7 @@ interface FieldSettingsProps {
 }
 
 const FieldSettings = ({ field, onUpdate }: FieldSettingsProps) => {
+  const { t, language } = useLanguage();
   const [newOption, setNewOption] = useState('');
   const [localLabel, setLocalLabel] = useState(field.label);
   const [localPlaceholder, setLocalPlaceholder] = useState(field.placeholder || '');
@@ -65,11 +67,11 @@ const FieldSettings = ({ field, onUpdate }: FieldSettingsProps) => {
 
   return (
     <div className="glass rounded-xl p-4 h-fit sticky top-24">
-      <h3 className="text-lg font-orbitron font-semibold text-foreground mb-4">Field Settings</h3>
+      <h3 className="text-lg font-orbitron font-semibold text-foreground mb-4">{t("Field Settings")}</h3>
       
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label className="text-foreground">Label</Label>
+          <Label className="text-foreground">{t("Label")}</Label>
           <Input
             value={localLabel}
             onChange={(e) => setLocalLabel(e.target.value)}
@@ -79,7 +81,7 @@ const FieldSettings = ({ field, onUpdate }: FieldSettingsProps) => {
         </div>
 
         <div className="space-y-2">
-          <Label className="text-foreground">Placeholder</Label>
+          <Label className="text-foreground">{t("Placeholder")}</Label>
           <Input
             value={localPlaceholder}
             onChange={(e) => setLocalPlaceholder(e.target.value)}
@@ -89,45 +91,45 @@ const FieldSettings = ({ field, onUpdate }: FieldSettingsProps) => {
         </div>
 
         <div className="flex items-center justify-between">
-          <Label className="text-foreground">Required</Label>
+          <Label className="text-foreground">{t("Required")}</Label>
           <Switch
             checked={field.required}
             onCheckedChange={(checked) => onUpdate({ ...field, required: checked })}
           />
         </div>
 
-        {(field.type === 'dropdown' || field.type === 'radio' || field.type === 'multiplechoice') && (
-          <div className="space-y-2">
-            <Label className="text-foreground">Options</Label>
-            <div className="space-y-2">
+        {(field.type === t("dropdown") || field.type === t("radio") || field.type === t("multiplechoice")) && (
+          <div className=t("space-y-2")>
+            <Label className=t("text-foreground")>{t("Options")}</Label>
+            <div className=t("space-y-2")>
               {localOptions.map((option, index) => (
-                <div key={index} className="flex items-center gap-2">
+                <div key={index} className=t("flex items-center gap-2")>
                   <Input
                     value={option}
                     onChange={(e) => handleOptionChange(index, e.target.value)}
                     onBlur={() => handleOptionBlur(index)}
-                    className="bg-background/50 border-border/50"
+                    className=t("bg-background/50 border-border/50")
                   />
                   <Button
-                    variant="ghost"
-                    size="icon"
+                    variant=t("ghost")
+                    size=t("icon")
                     onClick={() => removeOption(index)}
                   >
-                    <X className="w-4 h-4" />
+                    <X className=t("w-4 h-4") />
                   </Button>
                 </div>
               ))}
             </div>
-            <div className="flex gap-2">
+            <div className=t("flex gap-2")>
               <Input
                 value={newOption}
                 onChange={(e) => setNewOption(e.target.value)}
-                placeholder="New option"
-                className="bg-background/50 border-border/50"
-                onKeyDown={(e) => e.key === 'Enter' && addOption()}
+                placeholder={t("New option")}n")
+                className=t("bg-background/50 border-border/50")
+                onKeyDown={(e) => e.key === t("Enter") && addOption()}
               />
-              <Button variant="glow" size="icon" onClick={addOption}>
-                <Plus className="w-4 h-4" />
+              <Button variant=t("glow") size=t("icon") onClick={addOption}>
+                <Plus className=t("w-4 h-4") />
               </Button>
             </div>
           </div>

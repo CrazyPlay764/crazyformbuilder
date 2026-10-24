@@ -1,3 +1,4 @@
+import { useLanguage } from '@/i18n/Language';
 import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -26,6 +27,7 @@ interface ShareDialogProps {
 const emailSchema = z.string().email('Invalid email address');
 
 const ShareDialog = ({ open, onOpenChange, formId, userId }: ShareDialogProps) => {
+  const { t, language } = useLanguage();
   const [email, setEmail] = useState('');
   const [role, setRole] = useState<'viewer' | 'editor'>('editor');
   const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
@@ -39,10 +41,10 @@ const ShareDialog = ({ open, onOpenChange, formId, userId }: ShareDialogProps) =
     try {
       await navigator.clipboard.writeText(formUrl);
       setCopied(true);
-      toast.success('Form link copied to clipboard!');
+      toast.success(t("Form link copied to clipboard!"));
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      toast.error('Failed to copy link');
+      toast.error(t("Failed to copy link"));
     }
   };
 
@@ -85,9 +87,9 @@ const ShareDialog = ({ open, onOpenChange, formId, userId }: ShareDialogProps) =
 
     if (error) {
       if (error.code === '23505') {
-        toast.error('This person has already been invited');
+        toast.error(t("This person has already been invited"));
       } else {
-        toast.error('Failed to send invitation');
+        toast.error(t("Failed to send invitation"));
       }
     } else {
       toast.success(`Invitation sent to ${email}`);
@@ -104,9 +106,9 @@ const ShareDialog = ({ open, onOpenChange, formId, userId }: ShareDialogProps) =
       .eq('id', id);
 
     if (error) {
-      toast.error('Failed to remove collaborator');
+      toast.error(t("Failed to remove collaborator"));
     } else {
-      toast.success('Collaborator removed');
+      toast.success(t("Collaborator removed"));
       setCollaborators(collaborators.filter((c) => c.id !== id));
     }
   };
@@ -115,16 +117,14 @@ const ShareDialog = ({ open, onOpenChange, formId, userId }: ShareDialogProps) =
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="glass-strong border-border/50 max-w-md">
         <DialogHeader>
-          <DialogTitle className="font-orbitron text-foreground">Share Form</DialogTitle>
+          <DialogTitle className="font-orbitron text-foreground">{t("Share Form")}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
           {/* Copy Link Section */}
           <div className="space-y-2">
             <Label className="text-foreground flex items-center gap-2">
-              <LinkIcon className="w-4 h-4" />
-              Form Link
-            </Label>
+              <LinkIcon className="w-4 h-4" />{t("Form Link")}</Label>
             <div className="flex gap-2">
               <Input
                 value={formUrl}
@@ -137,9 +137,9 @@ const ShareDialog = ({ open, onOpenChange, formId, userId }: ShareDialogProps) =
                 className="shrink-0"
               >
                 {copied ? (
-                  <Check className="w-4 h-4 text-primary" />
+                  <Check className=t("w-4 h-4 text-primary") />
                 ) : (
-                  <Copy className="w-4 h-4" />
+                  <Copy className=t("w-4 h-4") />
                 )}
               </Button>
             </div>
@@ -147,7 +147,7 @@ const ShareDialog = ({ open, onOpenChange, formId, userId }: ShareDialogProps) =
 
           <div className="border-t border-border/30 pt-4 space-y-4">
             <div className="space-y-2">
-              <Label className="text-foreground">Invite by email</Label>
+              <Label className="text-foreground">{t("Invite by email")}</Label>
               <div className="flex gap-2">
                 <div className="flex-1">
                   <Input
@@ -156,49 +156,47 @@ const ShareDialog = ({ open, onOpenChange, formId, userId }: ShareDialogProps) =
                     placeholder="colleague@example.com"
                     className="bg-background/50 border-border/50"
                   />
-                  {emailError && <p className="text-destructive text-sm mt-1">{emailError}</p>}
+                  {emailError && <p className=t("text-destructive text-sm mt-1")>{t(emailError)}</p>}
                 </div>
                 <Select value={role} onValueChange={(v) => setRole(v as 'viewer' | 'editor')}>
                   <SelectTrigger className="w-24 bg-background/50 border-border/50">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="editor">Editor</SelectItem>
-                    <SelectItem value="viewer">Viewer</SelectItem>
+                    <SelectItem value="editor">{t("Editor")}</SelectItem>
+                    <SelectItem value="viewer">{t("Viewer")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
             <Button variant="glow" onClick={inviteCollaborator} disabled={loading} className="w-full">
-              <UserPlus className="w-4 h-4 mr-2" />
-              Send Invitation
-            </Button>
+              <UserPlus className="w-4 h-4 mr-2" />{t("Send Invitation")}</Button>
           </div>
 
           {collaborators.length > 0 && (
-            <div className="space-y-2">
-              <Label className="text-foreground">Collaborators</Label>
-              <div className="space-y-2 max-h-48 overflow-y-auto">
+            <div className=t("space-y-2")>
+              <Label className=t("text-foreground")>{t("Collaborators")}</Label>
+              <div className=t("space-y-2 max-h-48 overflow-y-auto")>
                 {collaborators.map((collab) => (
                   <div
                     key={collab.id}
-                    className="flex items-center justify-between p-3 rounded-lg bg-background/30 border border-border/30"
+                    className=t("flex items-center justify-between p-3 rounded-lg bg-background/30 border border-border/30")
                   >
-                    <div className="flex items-center gap-3">
-                      <Mail className="w-4 h-4 text-muted-foreground" />
+                    <div className=t("flex items-center gap-3")>
+                      <Mail className=t("w-4 h-4 text-muted-foreground") />
                       <div>
-                        <p className="text-sm text-foreground">{collab.email}</p>
-                        <p className="text-xs text-muted-foreground capitalize">
-                          {collab.role} • {collab.status}
+                        <p className=t("text-sm text-foreground")>{collab.email}</p>
+                        <p className=t("text-xs text-muted-foreground capitalize")>
+                          {t(collab.role)} • {t(collab.status)}
                         </p>
                       </div>
                     </div>
                     <Button
-                      variant="ghost"
-                      size="icon"
+                      variant=t("ghost")
+                      size=t("icon")
                       onClick={() => removeCollaborator(collab.id)}
                     >
-                      <Trash2 className="w-4 h-4 text-destructive" />
+                      <Trash2 className=t("w-4 h-4 text-destructive") />
                     </Button>
                   </div>
                 ))}

@@ -1,3 +1,4 @@
+import { useLanguage } from '@/i18n/Language';
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -15,6 +16,7 @@ import ShareDialog from '@/components/FormBuilder/ShareDialog';
 import { FormField, Form } from '@/types/form';
 
 const FormBuilder = () => {
+  const { t, language } = useLanguage();
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -94,7 +96,7 @@ const FormBuilder = () => {
       .maybeSingle();
 
     if (error || !data) {
-      toast.error('Failed to load form');
+      toast.error(t("Failed to load form"));
       navigate('/dashboard');
     } else {
       const settings = typeof data.settings === 'object' && data.settings !== null
@@ -147,10 +149,10 @@ const FormBuilder = () => {
       .single();
 
     if (error) {
-      toast.error('Failed to add field');
+      toast.error(t("Failed to add field"));
     } else {
       setFields([...fields, data as FormField]);
-      toast.success('Field added');
+      toast.success(t("Field added"));
     }
   };
 
@@ -178,10 +180,10 @@ const FormBuilder = () => {
       .single();
 
     if (error) {
-      toast.error('Failed to add field');
+      toast.error(t("Failed to add field"));
     } else {
       setFields([...fields, data as FormField]);
-      toast.success('Field added');
+      toast.success(t("Field added"));
     }
     setDraggedFieldType(null);
   };
@@ -197,11 +199,11 @@ const FormBuilder = () => {
       .eq('id', fieldId);
 
     if (error) {
-      toast.error('Failed to delete field');
+      toast.error(t("Failed to delete field"));
     } else {
       setFields(fields.filter((f) => f.id !== fieldId));
       if (selectedField?.id === fieldId) setSelectedField(null);
-      toast.success('Field deleted');
+      toast.success(t("Field deleted"));
     }
   };
 
@@ -217,7 +219,7 @@ const FormBuilder = () => {
       .eq('id', updatedField.id);
 
     if (error) {
-      toast.error('Failed to update field');
+      toast.error(t("Failed to update field"));
     } else {
       setFields(fields.map((f) => (f.id === updatedField.id ? updatedField : f)));
       setSelectedField(updatedField);
@@ -255,9 +257,9 @@ const FormBuilder = () => {
       .eq('id', form.id);
 
     if (error) {
-      toast.error('Failed to save form');
+      toast.error(t("Failed to save form"));
     } else {
-      toast.success('Form saved');
+      toast.success(t("Form saved"));
       initialFormRef.current = JSON.stringify(form);
       setHasUnsavedChanges(false);
     }
@@ -309,7 +311,7 @@ const FormBuilder = () => {
   if (authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-foreground font-inter">Loading...</div>
+        <div className="text-foreground font-inter">{t("Loading...")}</div>
       </div>
     );
   }
@@ -320,10 +322,10 @@ const FormBuilder = () => {
     <div className="min-h-screen bg-background">
       {/* Read-only banner for viewers */}
       {isReadOnly && (
-        <div className="bg-amber-500/20 border-b border-amber-500/50 px-4 py-2">
-          <div className="container mx-auto flex items-center justify-center gap-2 text-amber-200">
-            <Lock className="w-4 h-4" />
-            <span className="text-sm font-inter">You have view-only access to this form</span>
+        <div className=t("bg-amber-500/20 border-b border-amber-500/50 px-4 py-2")>
+          <div className=t("container mx-auto flex items-center justify-center gap-2 text-amber-200")>
+            <Lock className=t("w-4 h-4") />
+            <span className=t("text-sm font-inter")>{t("You have view-only access to this form")}</span>
           </div>
         </div>
       )}
@@ -343,11 +345,11 @@ const FormBuilder = () => {
             </button>
             {!isOwner && (
               <span className={`text-xs px-2 py-1 rounded-full ${
-                userRole === 'editor' 
-                  ? 'bg-primary/20 text-primary' 
-                  : 'bg-amber-500/20 text-amber-200'
+                userRole === t("editor") 
+                  ? t("bg-primary/20 text-primary") 
+                  : t("bg-amber-500/20 text-amber-200")
               }`}>
-                {userRole === 'editor' ? 'Editor' : 'Viewer'}
+                {userRole === t("editor")r") ? t("Editor")r") : t("Viewer")r")}
               </span>
             )}
           </div>
@@ -355,36 +357,36 @@ const FormBuilder = () => {
             {/* Device Preview Toggle */}
             <div className="flex items-center border border-border/50 rounded-lg p-0.5 mr-2">
               <Button
-                variant={previewDevice === 'desktop' ? 'secondary' : 'ghost'}
+                variant={previewDevice === t("desktop") ? t("secondary") : t("ghost")}
                 size="icon"
                 className="h-7 w-7"
                 onClick={() => setPreviewDevice('desktop')}
-                title="Desktop view"
+                title={t("Desktop view")}
               >
                 <Monitor className="w-4 h-4" />
               </Button>
               <Button
-                variant={previewDevice === 'tablet' ? 'secondary' : 'ghost'}
+                variant={previewDevice === t("tablet") ? t("secondary") : t("ghost")}
                 size="icon"
                 className="h-7 w-7"
                 onClick={() => setPreviewDevice('tablet')}
-                title="Tablet view"
+                title={t("Tablet view")}
               >
                 <Tablet className="w-4 h-4" />
               </Button>
               <Button
-                variant={previewDevice === 'mobile' ? 'secondary' : 'ghost'}
+                variant={previewDevice === t("mobile") ? t("secondary") : t("ghost")}
                 size="icon"
                 className="h-7 w-7"
                 onClick={() => setPreviewDevice('mobile')}
-                title="Mobile view"
+                title={t("Mobile view")}
               >
                 <Smartphone className="w-4 h-4" />
               </Button>
             </div>
             
             <Button 
-              variant={showPreview ? 'glow' : 'ghost'} 
+              variant={showPreview ? t("glow") : t("ghost")} 
               size="sm"
               onClick={() => {
                 setShowPreview(!showPreview);
@@ -393,52 +395,42 @@ const FormBuilder = () => {
                 setSelectedField(null);
               }}
             >
-              <Play className="w-4 h-4 mr-2" />
-              Preview
-            </Button>
+              <Play className="w-4 h-4 mr-2" />{t("Preview")}</Button>
             
             {!isReadOnly && (
               <>
                 <Button 
-                  variant={showFormSettings ? 'glow' : 'ghost'} 
-                  size="sm"
+                  variant={showFormSettings ? t("glow")w") : t("ghost")t")} 
+                  size=t("sm")
                   onClick={() => {
                     setShowFormSettings(!showFormSettings);
                     setShowResponses(false);
                     setSelectedField(null);
                   }}
                 >
-                  <Palette className="w-4 h-4 mr-2" />
-                  Design
-                </Button>
+                  <Palette className=t("w-4 h-4 mr-2") />{t("Design")}</Button>
                 <Button 
-                  variant={showResponses ? 'glow' : 'ghost'} 
-                  size="sm"
+                  variant={showResponses ? t("glow")w") : t("ghost")t")} 
+                  size=t("sm")
                   onClick={() => {
                     setShowResponses(!showResponses);
                     setShowFormSettings(false);
                     setSelectedField(null);
                   }}
                 >
-                  <MessageSquare className="w-4 h-4 mr-2" />
-                  Responses
-                </Button>
+                  <MessageSquare className=t("w-4 h-4 mr-2") />{t("Responses")}</Button>
                 <Button 
-                  variant={form.is_published ? 'default' : 'outline'} 
-                  size="sm"
+                  variant={form.is_published ? t("default")t") : t("outline")e")} 
+                  size=t("sm")
                   onClick={togglePublish}
-                  className={form.is_published ? 'bg-green-600 hover:bg-green-700' : ''}
+                  className={form.is_published ? t("bg-green-600 hover:bg-green-700")0") : ''}
                 >
                   {form.is_published ? (
                     <>
-                      <Eye className="w-4 h-4 mr-2" />
-                      Open
-                    </>
+                      <Eye className=t("w-4 h-4 mr-2")2") />{t("Open")}</>
                   ) : (
                     <>
-                      <EyeOff className="w-4 h-4 mr-2" />
-                      Closed
-                    </>
+                      <EyeOff className=t("w-4 h-4 mr-2")2") />{t("Closed")}</>
                   )}
                 </Button>
               </>
@@ -448,15 +440,15 @@ const FormBuilder = () => {
             
             {!isReadOnly && (
               <Button 
-                variant="glow" 
-                size="sm" 
+                variant=t("glow") 
+                size=t("sm") 
                 onClick={handleSave} 
                 disabled={saving}
-                className={hasUnsavedChanges ? 'ring-2 ring-amber-500 ring-offset-2 ring-offset-background' : ''}
+                className={hasUnsavedChanges ? t("ring-2 ring-amber-500 ring-offset-2 ring-offset-background")d") : ''}
               >
-                {hasUnsavedChanges && <AlertCircle className="w-4 h-4 mr-2 text-amber-500" />}
-                <Save className="w-4 h-4 mr-2" />
-                {saving ? 'Saving...' : hasUnsavedChanges ? 'Save*' : 'Save'}
+                {hasUnsavedChanges && <AlertCircle className=t("w-4 h-4 mr-2 text-amber-500")0") />}
+                <Save className=t("w-4 h-4 mr-2") />
+                {saving ? t("Saving...").") : hasUnsavedChanges ? t("Save*")*") : t("Save")e")}
               </Button>
             )}
           </div>
@@ -467,7 +459,7 @@ const FormBuilder = () => {
         <div className="flex gap-6">
           {/* Field palette - only for editors/owners */}
           {!isReadOnly && (
-            <div className="w-64 shrink-0">
+            <div className=t("w-64 shrink-0")>
               <FieldPalette onDragStart={handleDragStart} onAddField={handleAddField} />
             </div>
           )}
@@ -489,25 +481,21 @@ const FormBuilder = () => {
 
           {/* Settings panel - only for editors/owners */}
           {!isReadOnly && (
-            <div className="w-72 shrink-0 space-y-4">
+            <div className=t("w-72 shrink-0 space-y-4")>
               {selectedField ? (
                 <FieldSettings field={selectedField} onUpdate={handleUpdateField} />
               ) : (
-                <div className="glass rounded-xl p-4">
-                  <div className="flex flex-col items-center gap-3 text-center">
-                    <Share2 className="w-8 h-8 text-muted-foreground" />
-                    <p className="text-muted-foreground text-sm font-inter">
-                      Share your form with others
-                    </p>
+                <div className=t("glass rounded-xl p-4")4")>
+                  <div className=t("flex flex-col items-center gap-3 text-center")r")>
+                    <Share2 className=t("w-8 h-8 text-muted-foreground")d") />
+                    <p className=t("text-muted-foreground text-sm font-inter")r")>{t("Share your form with others")}</p>
                     <Button 
-                      variant="outline" 
-                      size="sm" 
+                      variant=t("outline")e") 
+                      size=t("sm")m") 
                       onClick={() => setShareOpen(true)}
-                      className="w-full"
+                      className=t("w-full")l")
                     >
-                      <Share2 className="w-4 h-4 mr-2" />
-                      Share Form
-                    </Button>
+                      <Share2 className=t("w-4 h-4 mr-2")2") />{t("Share Form")}</Button>
                   </div>
                 </div>
               )}

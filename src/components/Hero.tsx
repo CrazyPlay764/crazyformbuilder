@@ -1,9 +1,11 @@
+import { useLanguage } from '@/i18n/Language';
 import { ArrowRight, Play } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useParallax } from '@/hooks/useParallax';
 
 const Hero = () => {
+  const { t, language } = useLanguage();
   const { getParallaxStyle } = useParallax();
 
   return (
@@ -22,30 +24,23 @@ const Hero = () => {
           {/* Badge */}
           <div className="animate-fade-up">
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border-primary/30 text-sm font-inter text-muted-foreground mb-8">
-              <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-              Drag & Drop Form Builder
-            </span>
+              <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />{t("Drag & Drop Form Builder")}</span>
           </div>
 
           {/* Main Headline */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-orbitron font-bold leading-tight mb-6 animate-fade-up-delayed">
-            <span className="text-foreground">Build Beautiful</span>
+            <span className="text-foreground">{t("Build Beautiful")}</span>
             <br />
-            <span className="gradient-text glow-text">Forms Easily</span>
+            <span className="gradient-text glow-text">{t("Forms Easily")}</span>
           </h1>
 
           {/* Subheadline */}
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 font-inter font-light animate-fade-up-delayed-2">
-            Create stunning forms with our drag & drop builder. 
-            Customize designs, add fields, and share with your team in seconds.
-          </p>
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 font-inter font-light animate-fade-up-delayed-2">{t("Create stunning forms with our drag & drop builder. Customize designs, add fields, and share with your team in seconds.")}</p>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up-delayed-2">
             <Button variant="glow" size="xl" className="w-full sm:w-auto" asChild>
-              <Link to="/auth">
-                Start Building Free
-                <ArrowRight className="w-5 h-5" />
+              <Link to="/auth">{t("Start Building Free")}<ArrowRight className="w-5 h-5" />
               </Link>
             </Button>
             <Button 
@@ -56,9 +51,7 @@ const Hero = () => {
                 document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
               }}
             >
-              <Play className="w-5 h-5" />
-              See Features
-            </Button>
+              <Play className="w-5 h-5" />{t("See Features")}</Button>
           </div>
 
           {/* Stats */}
@@ -71,10 +64,10 @@ const Hero = () => {
             ].map((stat, index) => (
               <div key={index} className="text-center">
                 <div className="text-2xl sm:text-3xl font-orbitron font-bold text-foreground mb-1">
-                  {stat.value}
+                  {t(stat.value)}
                 </div>
                 <div className="text-sm text-muted-foreground font-inter">
-                  {stat.label}
+                  {t(stat.label)}
                 </div>
               </div>
             ))}
