@@ -1,5 +1,4 @@
 import { useLanguage } from '@/i18n/Language';
-import { useLanguage } from '@/i18n/Language';
 import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -28,7 +27,6 @@ interface ShareDialogProps {
 const emailSchema = z.string().email('Invalid email address');
 
 const ShareDialog = ({ open, onOpenChange, formId, userId }: ShareDialogProps) => {
-  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const [email, setEmail] = useState('');
   const [role, setRole] = useState<'viewer' | 'editor'>('editor');
@@ -139,9 +137,11 @@ const ShareDialog = ({ open, onOpenChange, formId, userId }: ShareDialogProps) =
                 className="shrink-0"
               >
                 {copied ? (
-                  <Check className=t("w-4 h-4 text-primary") />
+                  <Check className="w-4 h-4 text-primary" />
                 ) : (
-                  <Copy className=t{t("(\"w-4 h-4\") /> )}")}</Button>
+                  <Copy className="w-4 h-4" />
+                )}
+              </Button>
             </div>
           </div>
 
@@ -156,7 +156,7 @@ const ShareDialog = ({ open, onOpenChange, formId, userId }: ShareDialogProps) =
                     placeholder="colleague@example.com"
                     className="bg-background/50 border-border/50"
                   />
-                  {emailError && <p className=t{t("(\"text-destructive text-sm mt-1\")>")}{t(emailError)}</p>}
+                  {emailError && <p className="text-destructive text-sm mt-1">{t(emailError)}</p>}
                 </div>
                 <Select value={role} onValueChange={(v) => setRole(v as 'viewer' | 'editor')}>
                   <SelectTrigger className="w-24 bg-background/50 border-border/50">
@@ -174,28 +174,29 @@ const ShareDialog = ({ open, onOpenChange, formId, userId }: ShareDialogProps) =
           </div>
 
           {collaborators.length > 0 && (
-            <div className=t("space-y-2")>
-              <Label className=t{t("(\"text-foreground\")>")}{t("Collaborators")}</Label>
-              <div className=t{t("(\"space-y-2 max-h-48 overflow-y-auto\")>")}{collaborators.map((collab) => (
+            <div className="space-y-2">
+              <Label className="text-foreground">{t("Collaborators")}</Label>
+              <div className="space-y-2 max-h-48 overflow-y-auto">
+                {collaborators.map((collab) => (
                   <div
                     key={collab.id}
-                    className=t("flex items-center justify-between p-3 rounded-lg bg-background/30 border border-border/30")
+                    className="flex items-center justify-between p-3 rounded-lg bg-background/30 border border-border/30"
                   >
-                    <div className=t("flex items-center gap-3")>
-                      <Mail className=t("w-4 h-4 text-muted-foreground") />
+                    <div className="flex items-center gap-3">
+                      <Mail className="w-4 h-4 text-muted-foreground" />
                       <div>
-                        <p className=t{t("(\"text-sm text-foreground\")>")}{collab.email}</p>
-                        <p className=t("text-xs text-muted-foreground capitalize")>
+                        <p className="text-sm text-foreground">{collab.email}</p>
+                        <p className="text-xs text-muted-foreground capitalize">
                           {t(collab.role)} • {t(collab.status)}
                         </p>
                       </div>
                     </div>
                     <Button
-                      variant=t("ghost")
-                      size=t("icon")
+                      variant="ghost"
+                      size="icon"
                       onClick={() => removeCollaborator(collab.id)}
                     >
-                      <Trash2 className=t("w-4 h-4 text-destructive") />
+                      <Trash2 className="w-4 h-4 text-destructive" />
                     </Button>
                   </div>
                 ))}

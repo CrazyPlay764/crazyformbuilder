@@ -1,5 +1,4 @@
 import { useLanguage } from '@/i18n/Language';
-import { useLanguage } from '@/i18n/Language';
 import { FormField } from '@/types/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,7 +13,6 @@ interface FieldSettingsProps {
 }
 
 const FieldSettings = ({ field, onUpdate }: FieldSettingsProps) => {
-  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const [newOption, setNewOption] = useState('');
   const [localLabel, setLocalLabel] = useState(field.label);
@@ -101,33 +99,37 @@ const FieldSettings = ({ field, onUpdate }: FieldSettingsProps) => {
         </div>
 
         {(field.type === t("dropdown") || field.type === t("radio") || field.type === t("multiplechoice")) && (
-          <div className=t("space-y-2")>
-            <Label className=t{t("(\"text-foreground\")>")}{t("Options")}</Label>
-            <div className=t{t("(\"space-y-2\")>")}{localOptions.map((option, index) => (
-                <div key={index} className=t("flex items-center gap-2")>
+          <div className="space-y-2">
+            <Label className="text-foreground">{t("Options")}</Label>
+            <div className="space-y-2">
+              {localOptions.map((option, index) => (
+                <div key={index} className="flex items-center gap-2">
                   <Input
                     value={option}
                     onChange={(e) => handleOptionChange(index, e.target.value)}
                     onBlur={() => handleOptionBlur(index)}
-                    className=t("bg-background/50 border-border/50")
+                    className="bg-background/50 border-border/50"
                   />
                   <Button
-                    variant=t("ghost")
-                    size=t("icon")
-                    onClick={(){t("=> removeOption(index)} >")}<X className=t{t("(\"w-4 h-4\") />")}</Button>
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeOption(index)}
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
                 </div>
               ))}
             </div>
-            <div className=t("flex gap-2")>
+            <div className="flex gap-2">
               <Input
                 value={newOption}
                 onChange={(e) => setNewOption(e.target.value)}
-                placeholder={t("New option")}n")
-                className=t("bg-background/50 border-border/50")
-                onKeyDown={(e) => e.key === t("Enter") && addOption()}
+                placeholder={t("New option")}
+                className="bg-background/50 border-border/50"
+                onKeyDown={(e) => e.key === 'Enter' && addOption()}
               />
-              <Button variant=t("glow") size=t("icon") onClick={addOption}>
-                <Plus className=t("w-4 h-4") />
+              <Button variant="glow" size="icon" onClick={addOption}>
+                <Plus className="w-4 h-4" />
               </Button>
             </div>
           </div>

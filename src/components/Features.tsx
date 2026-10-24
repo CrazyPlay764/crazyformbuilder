@@ -1,5 +1,4 @@
 import { useLanguage } from '@/i18n/Language';
-import { useLanguage } from '@/i18n/Language';
 import { MousePointer2, Palette, Type, Calendar, Upload, Users } from 'lucide-react';
 import TiltCard from '@/components/ui/tilt-card';
 import { useParallax } from '@/hooks/useParallax';
@@ -39,7 +38,6 @@ const features = [
 ];
 
 const Features = () => {
-  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const { getParallaxStyle } = useParallax();
 

@@ -1,5 +1,4 @@
 import { useLanguage } from '@/i18n/Language';
-import { useLanguage } from '@/i18n/Language';
 import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { formatDistanceToNow } from 'date-fns';
@@ -28,7 +27,6 @@ interface SiteUpdate {
 const ADMIN_EMAIL = 'danieletigon@gmail.com';
 
 const SiteUpdates = () => {
-  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const [updates, setUpdates] = useState<SiteUpdate[]>([]);
   const [loading, setLoading] = useState(true);
@@ -152,28 +150,35 @@ const SiteUpdates = () => {
         </ScrollReveal>
 
         {isAdmin && (
-          <div className=t("mb-8 flex justify-center")>
-            {!{t("showForm ? (")}<Button variant=t{t("(\"glow\")w\") onClick=")}{() => setShowForm(true)}{t("className=t(\"gap-2\")2\")>")}<Plus className=t{t("(\"w-4 h-4\")4\") />")}{t("פרסם עדכון חדש")}</Button>
+          <div className="mb-8 flex justify-center">
+            {!showForm ? (
+              <Button variant="glow" onClick={() => setShowForm(true)} className="gap-2">
+                <Plus className="w-4 h-4" />{t("פרסם עדכון חדש")}</Button>
             ) : (
-              <div className=t{t("(\"w-full max-w-xl glass-card rounded-xl p-6 space-y-4\")4\")>")}<div className=t{t("(\"flex items-center justify-between\")n\")>")}<h3 className=t{t("(\"text-lg font-orbitron font-bold text-foreground\")d\")>")}{editingId ? t("ערוך עדכון"){t("ן\")ן\") : t(\"עדכון חדש\")ש\")ש\")}")}</h3>
+              <div className="w-full max-w-xl glass-card rounded-xl p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-orbitron font-bold text-foreground">
+                    {editingId ? t("ערוך עדכון") : t("עדכון חדש")}
+                  </h3>
                   <button onClick={() => { setShowForm(false); setEditingId(null); setTitle(''); setContent(''); setMedia([]); }}>
-                    <X className=t{t("(\"w-5 h-5 text-muted-foreground hover:text-foreground transition-colors\")s\") />")}</button>
+                    <X className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
+                  </button>
                 </div>
-                <Input placeholder={t("כותרת העדכון")}ן")ן") value={title} onChange={(e) => setTitle(e.target.value)} className=t("text-right")t") dir=t("rtl")l") />
-                <Textarea placeholder={t("תוכן העדכון...")}.").") value={content} onChange={(e) => setContent(e.target.value)} className=t("text-right min-h-[100px]")]") dir=t("rtl")l") />
+                <Input placeholder={t("כותרת העדכון")} value={title} onChange={(e) => setTitle(e.target.value)} className="text-right" dir="rtl" />
+                <Textarea placeholder={t("תוכן העדכון...")} value={content} onChange={(e) => setContent(e.target.value)} className="text-right min-h-[100px]" dir="rtl" />
 
                 {/* Media preview */}
                 {media.length > 0 && (
-                  <div className=t("grid grid-cols-2 gap-2")2")2")>
+                  <div className="grid grid-cols-2 gap-2">
                     {media.map((item, i) => (
-                      <div key={i} className=t("relative rounded-lg overflow-hidden border border-border")r")r")>
-                        {item.type === t("image")e")e")e") ? (
-                          <img src={item.url} alt="" className=t("w-full h-32 object-cover")r")r")r") />
+                      <div key={i} className="relative rounded-lg overflow-hidden border border-border">
+                        {item.type === t("image") ? (
+                          <img src={item.url} alt="" className="w-full h-32 object-cover" />
                         ) : (
-                          <video src={item.url} className=t("w-full h-32 object-cover")r")r")r") />
+                          <video src={item.url} className="w-full h-32 object-cover" />
                         )}
-                        <button onClick={() => removeMedia(i)} className=t("absolute top-1 right-1 bg-background/80 rounded-full p-1 hover:bg-destructive/20 transition-colors")s")s")>
-                          <X className=t("w-3 h-3")3")3") />
+                        <button onClick={() => removeMedia(i)} className="absolute top-1 right-1 bg-background/80 rounded-full p-1 hover:bg-destructive/20 transition-colors">
+                          <X className="w-3 h-3" />
                         </button>
                       </div>
                     ))}
@@ -181,17 +186,17 @@ const SiteUpdates = () => {
                 )}
 
                 {/* Upload button */}
-                <div className=t("flex gap-2")2")>
-                  <input ref={fileInputRef} type=t("file")e") accept=t("image/*,video/*")*") multiple onChange={handleFileUpload} className=t("hidden")n") />
-                  <Button type=t("button")n") variant=t("outline")e") size=t("sm")m") onClick={() => fileInputRef.current?.click()} disabled={uploading} className=t("gap-2")2")>
-                    <Upload className=t("w-4 h-4")4") />
-                    {uploading ? t("מעלה...").").") : t("הוסף תמונה/סרטון")ן")ן")}
+                <div className="flex gap-2">
+                  <input ref={fileInputRef} type="file" accept="image/*,video/*" multiple onChange={handleFileUpload} className="hidden" />
+                  <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} disabled={uploading} className="gap-2">
+                    <Upload className="w-4 h-4" />
+                    {uploading ? t("מעלה...") : t("הוסף תמונה/סרטון")}
                   </Button>
                 </div>
 
-                <Button variant=t("glow")w") onClick={handleSubmit} className=t("w-full gap-2")2") disabled={!title.trim() || !content.trim() || uploading}>
-                  <Check className=t("w-4 h-4")4") />
-                  {editingId ? t("שמור שינויים")ם")ם") : t("פרסם")ם")ם")}
+                <Button variant="glow" onClick={handleSubmit} className="w-full gap-2" disabled={!title.trim() || !content.trim() || uploading}>
+                  <Check className="w-4 h-4" />
+                  {editingId ? t("שמור שינויים") : t("פרסם")}
                 </Button>
               </div>
             )}
@@ -213,13 +218,13 @@ const SiteUpdates = () => {
 
                     {/* Display media */}
                     {update.media && update.media.length > 0 && (
-                      <div className=t("mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3")>
+                      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {update.media.map((item, i) => (
-                          <div key={i} className=t("rounded-lg overflow-hidden border border-border")>
-                            {item.type === t("image")e") ? (
-                              <img src={item.url} alt="" className=t("w-full h-48 object-cover")r") />
+                          <div key={i} className="rounded-lg overflow-hidden border border-border">
+                            {item.type === t("image") ? (
+                              <img src={item.url} alt="" className="w-full h-48 object-cover" />
                             ) : (
-                              <video src={item.url} controls className=t("w-full h-48 object-cover")r") />
+                              <video src={item.url} controls className="w-full h-48 object-cover" />
                             )}
                           </div>
                         ))}
@@ -231,12 +236,12 @@ const SiteUpdates = () => {
                     </span>
                   </div>
                   {isAdmin && (
-                    <div className=t("flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity")>
-                      <button onClick={() => handleEdit(update)} className=t("p-2 hover:bg-primary/10 rounded-lg transition-colors")>
-                        <Pencil className=t("w-4 h-4 text-muted-foreground hover:text-primary") />
+                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button onClick={() => handleEdit(update)} className="p-2 hover:bg-primary/10 rounded-lg transition-colors">
+                        <Pencil className="w-4 h-4 text-muted-foreground hover:text-primary" />
                       </button>
-                      <button onClick={() => handleDelete(update.id)} className=t("p-2 hover:bg-destructive/10 rounded-lg transition-colors")>
-                        <Trash2 className=t("w-4 h-4 text-muted-foreground hover:text-destructive") />
+                      <button onClick={() => handleDelete(update.id)} className="p-2 hover:bg-destructive/10 rounded-lg transition-colors">
+                        <Trash2 className="w-4 h-4 text-muted-foreground hover:text-destructive" />
                       </button>
                     </div>
                   )}
@@ -246,7 +251,7 @@ const SiteUpdates = () => {
           ))}
 
           {updates.length === 0 && isAdmin && (
-            <p className=t("text-center text-muted-foreground font-inter")>{t("אין עדכונים עדיין. פרסם את העדכון הראשון!")}</p>
+            <p className="text-center text-muted-foreground font-inter">{t("אין עדכונים עדיין. פרסם את העדכון הראשון!")}</p>
           )}
         </div>
       </div>

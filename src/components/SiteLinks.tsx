@@ -1,5 +1,4 @@
 import { useLanguage } from '@/i18n/Language';
-import { useLanguage } from '@/i18n/Language';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Link2, Plus, Trash2, Pencil, X, Check, ExternalLink } from 'lucide-react';
@@ -19,7 +18,6 @@ interface SiteLink {
 const ADMIN_EMAIL = 'danieletigon@gmail.com';
 
 const SiteLinks = () => {
-  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const [links, setLinks] = useState<SiteLink[]>([]);
   const [loading, setLoading] = useState(true);
@@ -101,18 +99,25 @@ const SiteLinks = () => {
         </ScrollReveal>
 
         {isAdmin && (
-          <div className=t("mb-8 flex justify-center")>
-            {!{t("showForm ? (")}<Button variant=t{t("(\"glow\")w\") onClick=")}{() => setShowForm(true)}{t("className=t(\"gap-2\")2\")>")}<Plus className=t{t("(\"w-4 h-4\")4\") />")}{t("הוסף קישור")}</Button>
+          <div className="mb-8 flex justify-center">
+            {!showForm ? (
+              <Button variant="glow" onClick={() => setShowForm(true)} className="gap-2">
+                <Plus className="w-4 h-4" />{t("הוסף קישור")}</Button>
             ) : (
-              <div className=t{t("(\"w-full max-w-md glass-card rounded-xl p-6 space-y-4\")4\")>")}<div className=t{t("(\"flex items-center justify-between\")n\")>")}<h3 className=t{t("(\"text-lg font-orbitron font-bold text-foreground\")d\")>")}{editingId ? t("ערוך קישור"){t("ר\")ר\") : t(\"קישור חדש\")ש\")ש\")}")}</h3>
+              <div className="w-full max-w-md glass-card rounded-xl p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-orbitron font-bold text-foreground">
+                    {editingId ? t("ערוך קישור") : t("קישור חדש")}
+                  </h3>
                   <button onClick={resetForm}>
-                    <X className=t{t("(\"w-5 h-5 text-muted-foreground hover:text-foreground transition-colors\")s\") />")}</button>
+                    <X className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
+                  </button>
                 </div>
-                <Input placeholder={t("שם הקישור")}ר")ר") value={title} onChange={(e) => setTitle(e.target.value)} className=t("text-right")t") dir=t("rtl")l") />
-                <Input placeholder="https://example.com" value={url} onChange={(e) => setUrl(e.target.value)} dir=t("ltr")r") />
-                <Button variant=t("glow")w") onClick={handleSubmit} className=t("w-full gap-2")2") disabled={!title.trim() || !url.trim()}>
-                  <Check className=t("w-4 h-4")4") />
-                  {editingId ? t("שמור")ר")ר") : t("הוסף")ף")ף")}
+                <Input placeholder={t("שם הקישור")} value={title} onChange={(e) => setTitle(e.target.value)} className="text-right" dir="rtl" />
+                <Input placeholder="https://example.com" value={url} onChange={(e) => setUrl(e.target.value)} dir="ltr" />
+                <Button variant="glow" onClick={handleSubmit} className="w-full gap-2" disabled={!title.trim() || !url.trim()}>
+                  <Check className="w-4 h-4" />
+                  {editingId ? t("שמור") : t("הוסף")}
                 </Button>
               </div>
             )}
@@ -130,9 +135,13 @@ const SiteLinks = () => {
                   </span>
                 </a>
                 {isAdmin && (
-                  <div className=t("flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0")>
-                    <button onClick={() => handleEdit(link)} className=t{t("(\"p-1.5 hover:bg-primary/10 rounded-lg transition-colors\")>")}<Pencil className=t{t("(\"w-3.5 h-3.5 text-muted-foreground hover:text-primary\") />")}</button>
-                    <button onClick={() => handleDelete(link.id)} className=t{t("(\"p-1.5 hover:bg-destructive/10 rounded-lg transition-colors\")>")}<Trash2 className=t{t("(\"w-3.5 h-3.5 text-muted-foreground hover:text-destructive\") />")}</button>
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                    <button onClick={() => handleEdit(link)} className="p-1.5 hover:bg-primary/10 rounded-lg transition-colors">
+                      <Pencil className="w-3.5 h-3.5 text-muted-foreground hover:text-primary" />
+                    </button>
+                    <button onClick={() => handleDelete(link.id)} className="p-1.5 hover:bg-destructive/10 rounded-lg transition-colors">
+                      <Trash2 className="w-3.5 h-3.5 text-muted-foreground hover:text-destructive" />
+                    </button>
                   </div>
                 )}
               </div>
@@ -140,7 +149,7 @@ const SiteLinks = () => {
           ))}
 
           {links.length === 0 && isAdmin && (
-            <p className=t("text-center text-muted-foreground font-inter col-span-full")>{t("אין קישורים עדיין. הוסף את הקישור הראשון!")}</p>
+            <p className="text-center text-muted-foreground font-inter col-span-full">{t("אין קישורים עדיין. הוסף את הקישור הראשון!")}</p>
           )}
         </div>
       </div>

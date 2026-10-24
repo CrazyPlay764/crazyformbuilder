@@ -1,5 +1,4 @@
 import { useLanguage } from '@/i18n/Language';
-import { useLanguage } from '@/i18n/Language';
 import { useState, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -58,7 +57,6 @@ const extractYoutubeId = (url: string): string | null => {
 };
 
 const FormSettings = ({ settings, onUpdate, title, onTitleChange, description, onDescriptionChange }: FormSettingsProps) => {
-  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const [bgMediaMode, setBgMediaMode] = useState<'none' | 'url' | 'file' | 'youtube'>(
     settings.backgroundMedia ? (settings.backgroundMedia.type === 'youtube' ? 'youtube' : 'url') : 'none'
@@ -130,43 +128,54 @@ const FormSettings = ({ settings, onUpdate, title, onTitleChange, description, o
         <div className="space-y-2">
           <Label className="text-foreground">{t("Background Media")}</Label>
           {settings.backgroundMedia ? (
-            <div className=t("space-y-2")>
-              <div className=t{t("(\"relative rounded-lg overflow-hidden border border-border/50 bg-background/30\")>")}{settings.backgroundMedia.type === t("image"){t("e\") && (")}<img src={settings.backgroundMedia.url} alt={t("Background")}d{t("\")d\") className=t(\"w-full h-24 object-cover\")r\") /> )}")}{settings.backgroundMedia.type === t("video"){t("o\") && (")}<video src={settings.backgroundMedia.url} className=t{t("(\"w-full h-24 object-cover\")r\") muted /> )}")}{settings.backgroundMedia.type === t("youtube"){t("e\") && (")}<div className=t{t("(\"w-full h-24 flex items-center justify-center bg-background/50\")0\")>")}<Video className=t{t("(\"w-6 h-6 text-primary\")y\") />")}<span className=t{t("(\"text-xs text-muted-foreground ml-2\")2\")>")}{t("YouTube Video")}</span>
+            <div className="space-y-2">
+              <div className="relative rounded-lg overflow-hidden border border-border/50 bg-background/30">
+                {settings.backgroundMedia.type === t("image") && (
+                  <img src={settings.backgroundMedia.url} alt={t("Background")} className="w-full h-24 object-cover" />
+                )}
+                {settings.backgroundMedia.type === t("video") && (
+                  <video src={settings.backgroundMedia.url} className="w-full h-24 object-cover" muted />
+                )}
+                {settings.backgroundMedia.type === t("youtube") && (
+                  <div className="w-full h-24 flex items-center justify-center bg-background/50">
+                    <Video className="w-6 h-6 text-primary" />
+                    <span className="text-xs text-muted-foreground ml-2">{t("YouTube Video")}</span>
                   </div>
                 )}
-                <Button variant=t{t("(\"ghost\") size=t(\"icon\") className=t(\"absolute top-1 right-1 h-6 w-6 bg-background/80\") onClick=")}{removeBgMedia}>
-                  <X className=t{t("(\"w-4 h-4\") />")}</Button>
+                <Button variant="ghost" size="icon" className="absolute top-1 right-1 h-6 w-6 bg-background/80" onClick={removeBgMedia}>
+                  <X className="w-4 h-4" />
+                </Button>
               </div>
             </div>
           ) : (
-            <div className=t("space-y-2")>
-              {bgMediaMode === t("none")e") && (
-                <div className=t("flex gap-2")2")>
-                  <Button type=t("button")n") variant=t("outline")e") size=t("sm")m") className=t("flex-1 gap-1 text-xs")s") onClick={() => setBgMediaMode(t("url")l"))}>
-                    <Video className=t("w-3 h-3")3") />{t("URL / YouTube")}</Button>
-                  <Button type=t("button")n") variant=t("outline")e") size=t("sm")m") className=t("flex-1 gap-1 text-xs")s") onClick={() => fileRef.current?.click()}>
-                    <Upload className=t("w-3 h-3")3") />{t("Upload File")}</Button>
+            <div className="space-y-2">
+              {bgMediaMode === t("none") && (
+                <div className="flex gap-2">
+                  <Button type="button" variant="outline" size="sm" className="flex-1 gap-1 text-xs" onClick={() => setBgMediaMode('url')}>
+                    <Video className="w-3 h-3" />{t("URL / YouTube")}</Button>
+                  <Button type="button" variant="outline" size="sm" className="flex-1 gap-1 text-xs" onClick={() => fileRef.current?.click()}>
+                    <Upload className="w-3 h-3" />{t("Upload File")}</Button>
                 </div>
               )}
-              {bgMediaMode === t("url")l") && (
-                <div className=t("space-y-2")2")>
-                  <Input placeholder={t("YouTube URL or image/video URL")}L")L") value={bgUrl} onChange={(e) => setBgUrl(e.target.value)} className=t("bg-background/50 border-border/50 text-sm")m") />
-                  <div className=t("flex gap-2")2")>
-                    <Button type=t("button")n") variant=t("glow")w") size=t("sm")m") className=t("flex-1")1") onClick={handleBgUrlSubmit} disabled={!bgUrl.trim()}>{t("Apply")}</Button>
-                    <Button type=t("button")n") variant=t("outline")e") size=t("sm")m") onClick={() => { setBgMediaMode(t("none")e")); setBgUrl(''); }}>{t("Cancel")}</Button>
+              {bgMediaMode === t("url") && (
+                <div className="space-y-2">
+                  <Input placeholder={t("YouTube URL or image/video URL")} value={bgUrl} onChange={(e) => setBgUrl(e.target.value)} className="bg-background/50 border-border/50 text-sm" />
+                  <div className="flex gap-2">
+                    <Button type="button" variant="glow" size="sm" className="flex-1" onClick={handleBgUrlSubmit} disabled={!bgUrl.trim()}>{t("Apply")}</Button>
+                    <Button type="button" variant="outline" size="sm" onClick={() => { setBgMediaMode('none'); setBgUrl(''); }}>{t("Cancel")}</Button>
                   </div>
                 </div>
               )}
-              <input ref={fileRef} type=t("file") accept=t("image/*,video/*") onChange={handleBgFileUpload} className=t("hidden") />
-              {uploading && <p className=t("text-xs text-muted-foreground")d")>{t("Uploading...")}</p>}
-              <p className=t("text-xs text-muted-foreground")>{t("Add a background image, video, or YouTube video")}</p>
+              <input ref={fileRef} type="file" accept="image/*,video/*" onChange={handleBgFileUpload} className="hidden" />
+              {uploading && <p className="text-xs text-muted-foreground">{t("Uploading...")}</p>}
+              <p className="text-xs text-muted-foreground">{t("Add a background image, video, or YouTube video")}</p>
             </div>
           )}
         </div>
 
         <div className="space-y-2">
           <Label className="text-foreground">{t("Gradient Direction")}</Label>
-          <Select value={settings.gradientDirection || t("none")} onValueChange={(value) => onUpdate({ ...settings, gradientDirection: value })}>
+          <Select value={settings.gradientDirection || 'none'} onValueChange={(value) => onUpdate({ ...settings, gradientDirection: value })}>
             <SelectTrigger className="bg-background/50 border-border/50"><SelectValue /></SelectTrigger>
             <SelectContent>
               {gradientDirections.map((dir) => (
@@ -178,11 +187,11 @@ const FormSettings = ({ settings, onUpdate, title, onTitleChange, description, o
         </div>
 
         {settings.gradientDirection && settings.gradientDirection !== t("none") && (
-          <div className=t("space-y-2")>
-            <Label className=t("text-foreground")>{t("Gradient End Color")}</Label>
-            <div className=t("flex gap-2")>
-              <Input type=t("color") value={settings.gradientEndColor || t("#4a1d96")6")} onChange={(e) => onUpdate({ ...settings, gradientEndColor: e.target.value })} className=t("w-12 h-10 p-1 cursor-pointer") />
-              <Input value={settings.gradientEndColor || t("#4a1d96")6")} onChange={(e) => onUpdate({ ...settings, gradientEndColor: e.target.value })} className=t("bg-background/50 border-border/50") />
+          <div className="space-y-2">
+            <Label className="text-foreground">{t("Gradient End Color")}</Label>
+            <div className="flex gap-2">
+              <Input type="color" value={settings.gradientEndColor || '#4a1d96'} onChange={(e) => onUpdate({ ...settings, gradientEndColor: e.target.value })} className="w-12 h-10 p-1 cursor-pointer" />
+              <Input value={settings.gradientEndColor || '#4a1d96'} onChange={(e) => onUpdate({ ...settings, gradientEndColor: e.target.value })} className="bg-background/50 border-border/50" />
             </div>
           </div>
         )}
@@ -212,15 +221,17 @@ const FormSettings = ({ settings, onUpdate, title, onTitleChange, description, o
         <div className="space-y-2">
           <Label className="text-foreground">{t("Form Logo")}</Label>
           {settings.logoUrl ? (
-            <div className=t("relative")>
-              <img src={settings.logoUrl} alt={t("Form logo")}o{t("\") className=t(\"w-full h-24 object-contain rounded-lg border border-border/50 bg-background/30\") />")}<Button variant=t{t("(\"ghost\") size=t(\"icon\") className=t(\"absolute top-1 right-1 h-6 w-6 bg-background/80\") onClick=")}{() => onUpdate({ ...settings, logoUrl: undefined })}>
-                <X className=t{t("(\"w-4 h-4\") />")}</Button>
+            <div className="relative">
+              <img src={settings.logoUrl} alt={t("Form logo")} className="w-full h-24 object-contain rounded-lg border border-border/50 bg-background/30" />
+              <Button variant="ghost" size="icon" className="absolute top-1 right-1 h-6 w-6 bg-background/80" onClick={() => onUpdate({ ...settings, logoUrl: undefined })}>
+                <X className="w-4 h-4" />
+              </Button>
             </div>
           ) : (
-            <div className=t("space-y-2")>
-              <Input placeholder={t("Enter logo URL")}L") className=t("bg-background/50 border-border/50") onChange={(e) => { if (e.target.value) onUpdate({ ...settings, logoUrl: e.target.value }); }} />
-              <div className=t("flex items-center gap-2 text-xs text-muted-foreground")>
-                <ImageIcon className=t("w-4 h-4") />
+            <div className="space-y-2">
+              <Input placeholder={t("Enter logo URL")} className="bg-background/50 border-border/50" onChange={(e) => { if (e.target.value) onUpdate({ ...settings, logoUrl: e.target.value }); }} />
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <ImageIcon className="w-4 h-4" />
                 <span>{t("Paste a URL to your logo image")}</span>
               </div>
             </div>

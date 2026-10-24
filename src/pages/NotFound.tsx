@@ -1,10 +1,8 @@
 import { useLanguage } from '@/i18n/Language';
-import { useLanguage } from '@/i18n/Language';
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 
 const NotFound = () => {
-  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const location = useLocation();
 

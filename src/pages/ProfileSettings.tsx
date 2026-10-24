@@ -1,5 +1,4 @@
 import { useLanguage } from '@/i18n/Language';
-import { useLanguage } from '@/i18n/Language';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -22,7 +21,6 @@ import {
 } from '@/components/ui/alert-dialog';
 
 const ProfileSettings = () => {
-  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const { user, profile, loading, updateDisplayName, updatePassword, checkDisplayNameAvailable, deleteAccount } = useAuth();
   const navigate = useNavigate();
@@ -207,26 +205,35 @@ const ProfileSettings = () => {
                     maxLength={50}
                   />
                   {displayName.length >= 3 && profile?.display_name?.toLowerCase() !== displayName.toLowerCase() && (
-                    <div className=t("absolute right-3 top-1/2 -translate-y-1/2")>
-                      {nameStatus === t("checking"){t("g\") && (")}<Loader2 className=t{t("(\"h-4 w-4 animate-spin text-muted-foreground\")d\") /> )}")}{nameStatus === t("available"){t("e\") && (")}<Check className=t{t("(\"h-4 w-4 text-green-500\")0\") /> )}")}{nameStatus === t("taken"){t("n\") && (")}<X className=t{t("(\"h-4 w-4 text-destructive\")e\") /> )}")}</div>
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      {nameStatus === t("checking") && (
+                        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                      )}
+                      {nameStatus === t("available") && (
+                        <Check className="h-4 w-4 text-green-500" />
+                      )}
+                      {nameStatus === t("taken") && (
+                        <X className="h-4 w-4 text-destructive" />
+                      )}
+                    </div>
                   )}
                 </div>
                 {nameStatus === t("available") && (
-                  <p className=t("text-sm text-green-500")>{t("This name is available!")}</p>
+                  <p className="text-sm text-green-500">{t("This name is available!")}</p>
                 )}
                 {nameStatus === t("taken") && (
-                  <p className=t("text-sm text-destructive")>{t("This name is already taken.")}</p>
+                  <p className="text-sm text-destructive">{t("This name is already taken.")}</p>
                 )}
               </div>
 
               <Button
                 type="submit"
-                disabled={isSubmittingName || nameStatus === t("taken") || nameStatus === t("checking")}
+                disabled={isSubmittingName || nameStatus === 'taken' || nameStatus === 'checking'}
                 className="w-full"
               >
                 {isSubmittingName ? (
                   <>
-                    <Loader2 className=t{t("(\"h-4 w-4 mr-2 animate-spin\") />")}{t("Saving...")}</>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />{t("Saving...")}</>
                 ) : (
                   t("Save Display Name")
                 )}
@@ -247,7 +254,7 @@ const ProfileSettings = () => {
                 <div className="relative">
                   <Input
                     id="newPassword"
-                    type={showNewPassword ? t("text") : t("password")}
+                    type={showNewPassword ? 'text' : 'password'}
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     placeholder={t("Enter new password")}
@@ -261,9 +268,11 @@ const ProfileSettings = () => {
                     onClick={() => setShowNewPassword(!showNewPassword)}
                   >
                     {showNewPassword ? (
-                      <EyeOff className=t("h-4 w-4 text-muted-foreground") />
+                      <EyeOff className="h-4 w-4 text-muted-foreground" />
                     ) : (
-                      <Eye className=t{t("(\"h-4 w-4 text-muted-foreground\") /> )}")}</Button>
+                      <Eye className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </Button>
                 </div>
               </div>
 
@@ -272,7 +281,7 @@ const ProfileSettings = () => {
                 <div className="relative">
                   <Input
                     id="confirmPassword"
-                    type={showConfirmPassword ? t("text") : t("password")}
+                    type={showConfirmPassword ? 'text' : 'password'}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder={t("Confirm new password")}
@@ -286,12 +295,14 @@ const ProfileSettings = () => {
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
                     {showConfirmPassword ? (
-                      <EyeOff className=t("h-4 w-4 text-muted-foreground") />
+                      <EyeOff className="h-4 w-4 text-muted-foreground" />
                     ) : (
-                      <Eye className=t{t("(\"h-4 w-4 text-muted-foreground\") /> )}")}</Button>
+                      <Eye className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </Button>
                 </div>
                 {confirmPassword && newPassword !== confirmPassword && (
-                  <p className=t("text-sm text-destructive")>{t("Passwords don't match")}</p>
+                  <p className="text-sm text-destructive">{t("Passwords don't match")}</p>
                 )}
               </div>
 
@@ -302,7 +313,7 @@ const ProfileSettings = () => {
               >
                 {isSubmittingPassword ? (
                   <>
-                    <Loader2 className=t{t("(\"h-4 w-4 mr-2 animate-spin\") />")}{t("Updating...")}</>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />{t("Updating...")}</>
                 ) : (
                   t("Update Password")
                 )}
@@ -372,7 +383,7 @@ const ProfileSettings = () => {
                   >
                     {isDeleting ? (
                       <>
-                        <Loader2 className=t{t("(\"h-4 w-4 mr-2 animate-spin\") />")}{t("Deleting...")}</>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />{t("Deleting...")}</>
                     ) : (
                       t("Delete Account")
                     )}

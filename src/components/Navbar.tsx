@@ -1,5 +1,4 @@
 import { useLanguage } from '@/i18n/Language';
-import { useLanguage } from '@/i18n/Language';
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, Sparkles } from 'lucide-react';
@@ -7,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 
 const Navbar = () => {
-  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -83,12 +81,17 @@ const Navbar = () => {
             <div className="hidden md:flex items-center gap-4">
               {!loading && user ? (
                 <>
-                  <Button variant=t{t("(\"glow\") size=t(\"sm\") asChild>")}<Link to=t{t("(\"/dashboard\")>")}{t("Forms Area")}</{t("Link>")}</Button>
+                  <Button variant="glow" size="sm" asChild>
+                    <Link to="/dashboard">{t("Forms Area")}</Link>
+                  </Button>
                 </>
               ) : (
                 <>
-                  <Button variant=t{t("(\"ghost\") size=t(\"sm\") asChild>")}<Link to=t{t("(\"/auth\")>")}{t("Sign In")}</{t("Link>")}</Button>
-                  <Button variant=t{t("(\"glow\") size=t(\"sm\") asChild>")}<Link to=t{t("(\"/auth\")>")}{t("Get Started")}</Link>
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link to="/auth">{t("Sign In")}</Link>
+                  </Button>
+                  <Button variant="glow" size="sm" asChild>
+                    <Link to="/auth">{t("Get Started")}</Link>
                   </Button>
                 </>
               )}
@@ -108,7 +111,7 @@ const Navbar = () => {
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div
-          className=t("fixed inset-0 bg-background/80 backdrop-blur-sm z-50 md:hidden")
+          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 md:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
@@ -149,13 +152,16 @@ const Navbar = () => {
 
           <div className="mt-auto flex flex-col gap-3">
             {!loading && user ? (
-              <Button variant=t("glow"){t("className=t(\"w-full justify-center\") asChild>")}<Link to=t{t("(\"/dashboard\") onClick=")}{() => setIsMobileMenuOpen(false)}>{t("Forms Area")}</Link>
+              <Button variant="glow" className="w-full justify-center" asChild>
+                <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>{t("Forms Area")}</Link>
               </Button>
             ) : (
               <>
-                <Button variant=t{t("(\"ghost\") className=t(\"w-full justify-center\") asChild>")}<Link to=t{t("(\"/auth\") onClick=")}{() => setIsMobileMenuOpen(false)}>{t("Sign In")}</{t("Link>")}</Button>
-                <Button variant=t("glow") className=t("w-full justify-center") asChild>
-                  <Link to=t("/auth") onClick={() => setIsMobileMenuOpen(false)}>{t("Get Started")}</Link>
+                <Button variant="ghost" className="w-full justify-center" asChild>
+                  <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>{t("Sign In")}</Link>
+                </Button>
+                <Button variant="glow" className="w-full justify-center" asChild>
+                  <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>{t("Get Started")}</Link>
                 </Button>
               </>
             )}

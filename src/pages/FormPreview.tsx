@@ -1,5 +1,4 @@
 import { useLanguage } from '@/i18n/Language';
-import { useLanguage } from '@/i18n/Language';
 import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -14,7 +13,6 @@ import { FormField, Form } from '@/types/form';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const ImageFieldInput = ({ fieldId, value, onChange }: { fieldId: string; value: string; onChange: (id: string, val: string) => void }) => {
-  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const isMobile = useIsMobile();
   const [mode, setMode] = useState<'choose' | 'url' | 'file' | 'done'>(value ? 'done' : (isMobile ? 'file' : 'choose'));
@@ -100,10 +98,12 @@ const ImageFieldInput = ({ fieldId, value, onChange }: { fieldId: string; value:
           onClick={() => document.getElementById(`img-file-${fieldId}`)?.click()}
         >
           {uploading ? (
-            <p className=t("text-muted-foreground text-sm")>{t("מעלה...")}</p>
+            <p className="text-muted-foreground text-sm">{t("מעלה...")}</p>
           ) : (
             <>
-              <Upload className=t{t("(\"w-8 h-8 text-muted-foreground mx-auto mb-2\") />")}<p className=t{t("(\"text-muted-foreground text-sm\")>")}{t("לחץ לבחירת תמונה")}</{t("p>")}</>
+              <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+              <p className="text-muted-foreground text-sm">{t("לחץ לבחירת תמונה")}</p>
+            </>
           )}
         </div>
         <input
@@ -117,7 +117,7 @@ const ImageFieldInput = ({ fieldId, value, onChange }: { fieldId: string; value:
           }}
         />
         {!isMobile && (
-          <Button type=t("button") variant=t("ghost") size=t("sm") onClick={() => setMode(t("choose"))}>{t("← חזור")}</Button>
+          <Button type="button" variant="ghost" size="sm" onClick={() => setMode('choose')}>{t("← חזור")}</Button>
         )}
       </div>
     );
@@ -139,7 +139,6 @@ const ImageFieldInput = ({ fieldId, value, onChange }: { fieldId: string; value:
 };
 
 const FormPreview = () => {
-  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
@@ -595,35 +594,61 @@ const FormPreview = () => {
     >
       {/* Background Media Layer - Full Screen */}
       {bgMedia && (
-        <div className=t("fixed inset-0 z-0 w-screen h-screen overflow-hidden")>
-          {bgMedia.type === t("image")e") && (
-            <img src={bgMedia.url}{t("alt=\"\" className=t(\"absolute inset-0 w-full h-full object-cover\")r\") /> )}")}{bgMedia.type === t("video"){t("o\") && (")}<video src={bgMedia.url} autoPlay loop muted playsInline className=t{t("(\"absolute inset-0 w-full h-full object-cover\")r\") /> )}")}{bgMedia.type === t("youtube"){t("e\") && (() =>")}{{t("const ytId = extractYoutubeId(bgMedia.url); return ytId ? (")}<div className=t{t("(\"absolute inset-0 overflow-hidden\")n\")>")}<iframe
+        <div className="fixed inset-0 z-0 w-screen h-screen overflow-hidden">
+          {bgMedia.type === t("image") && (
+            <img src={bgMedia.url} alt="" className="absolute inset-0 w-full h-full object-cover" />
+          )}
+          {bgMedia.type === t("video") && (
+            <video src={bgMedia.url} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover" />
+          )}
+          {bgMedia.type === t("youtube") && (() => {
+            const ytId = extractYoutubeId(bgMedia.url);
+            return ytId ? (
+              <div className="absolute inset-0 overflow-hidden">
+                <iframe
                   src={`https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=0&showinfo=0&modestbranding=1&rel=0&disablekb=1&iv_load_policy=3&fs=0&playsinline=1`}
-                  className=t{t("(\"absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-0 pointer-events-none\")e\") style=")}{{ 
-                    width: t("max(177.78vh, 100vw)"){t(")\"), height: t(\"max(56.25vw, 100vh)\"))\"), minWidth: t(\"100vw\")w\"), minHeight: t(\"100vh\")h\") }} allow=t(\"autoplay; encrypted-media\")a\") allowFullScreen />")}</div>
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-0 pointer-events-none"
+                  style={{ 
+                    width: 'max(177.78vh, 100vw)', 
+                    height: 'max(56.25vw, 100vh)', 
+                    minWidth: '100vw', 
+                    minHeight: '100vh' 
+                  }}
+                  allow="autoplay; encrypted-media"
+                  allowFullScreen
+                />
+              </div>
             ) : null;
           })()}
-          <div className=t("absolute inset-0 bg-black/40") />
+          <div className="absolute inset-0 bg-black/40" />
         </div>
       )}
       <div className="container mx-auto px-4 py-8 max-w-2xl relative z-10">
         {!isEmbed && (
-          <div className=t("mb-6 flex justify-between items-center")>
+          <div className="mb-6 flex justify-between items-center">
             <Button 
-              variant=t{t("(\"ghost\") size=t(\"sm\") onClick=")}{() => navigate('/')}{t("className=t(\"text-foreground/70 hover:text-foreground\") >")}<ArrowLeft className=t{t("(\"w-4 h-4 mr-2\") />")}{t("Back")}</Button>
-            <Link to=t("/auth")>
-              <Button variant=t("ghost") size=t("sm") className=t("text-foreground/70 hover:text-foreground")>
-                <LogIn className=t("w-4 h-4 mr-2") />{t("Login")}</Button>
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate('/')}
+              className="text-foreground/70 hover:text-foreground"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />{t("Back")}</Button>
+            <Link to="/auth">
+              <Button variant="ghost" size="sm" className="text-foreground/70 hover:text-foreground">
+                <LogIn className="w-4 h-4 mr-2" />{t("Login")}</Button>
             </Link>
           </div>
         )}
 
         <div className="bg-background/20 backdrop-blur-sm rounded-2xl p-8 border border-border/30">
           {form.settings.logoUrl && (
-            <div className=t("mb-6 flex justify-center")>
+            <div className="mb-6 flex justify-center">
               <img 
                 src={form.settings.logoUrl} 
-                alt={t("Form logo")}o{t("\") className=t(\"max-h-20 object-contain\") />")}</div>
+                alt={t("Form logo")} 
+                className="max-h-20 object-contain"
+              />
+            </div>
           )}
 
           <div className="mb-8 text-center">
@@ -631,51 +656,51 @@ const FormPreview = () => {
               {form.title}
             </h1>
             {form.description && (
-              <p className=t("text-muted-foreground")>{form.description}</p>
+              <p className="text-muted-foreground">{form.description}</p>
             )}
           </div>
 
           {submitted ? (
-            <div className=t("text-center py-12 space-y-6")>
-              <div className=t("flex justify-center")>
-                <CheckCircle className=t("w-16 h-16 text-primary") />
+            <div className="text-center py-12 space-y-6">
+              <div className="flex justify-center">
+                <CheckCircle className="w-16 h-16 text-primary" />
               </div>
-              <h2 className=t("text-2xl font-orbitron font-bold text-foreground")>
-                {form.settings.successMessage || t("Thank you! Your form has been submitted successfully.").")}
+              <h2 className="text-2xl font-orbitron font-bold text-foreground">
+                {form.settings.successMessage || t("Thank you! Your form has been submitted successfully.")}
               </h2>
             </div>
           ) : fields.length === 0 ? (
-            <div className=t("text-center py-12")>
-              <p className=t("text-muted-foreground")>{t("This form has no fields yet.")}</p>
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">{t("This form has no fields yet.")}</p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className=t("space-y-6")>
+            <form onSubmit={handleSubmit} className="space-y-6">
               {/* Progress indicator */}
-              <div className=t("space-y-2")>
-                <div className=t("flex justify-between text-sm")>
-                  <span className=t("text-muted-foreground")>{t("Progress")}</span>
-                  <span className=t("text-foreground font-medium")>
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">{t("Progress")}</span>
+                  <span className="text-foreground font-medium">
                     {progressInfo.completed} / {progressInfo.total}{t("completed")}</span>
                 </div>
-                <Progress value={progressInfo.percentage} className=t("h-2") />
+                <Progress value={progressInfo.percentage} className="h-2" />
               </div>
 
               {/* Page indicator for multi-page forms */}
               {totalPages > 1 && (
-                <div className=t("flex items-center justify-center gap-2")2")>
+                <div className="flex items-center justify-center gap-2">
                   {pages.map((_, i) => (
                     <div
                       key={i}
                       className={`w-3 h-3 rounded-full transition-all duration-300 ${
                         i === currentPage
-                          ? t("bg-primary scale-125")5")
+                          ? 'bg-primary scale-125'
                           : i < currentPage
-                          ? t("bg-primary/50")0")
-                          : t("bg-muted-foreground/30")0")
+                          ? 'bg-primary/50'
+                          : 'bg-muted-foreground/30'
                       }`}
                     />
                   ))}
-                  <span className=t("text-sm text-muted-foreground mr-3")3")>
+                  <span className="text-sm text-muted-foreground mr-3">
                     {currentPage + 1} / {totalPages}
                   </span>
                 </div>
@@ -683,57 +708,57 @@ const FormPreview = () => {
 
               {/* Section title */}
               {currentPageData?.title && (
-                <div className=t("text-center py-2 border-b border-primary/30 mb-4")4")>
-                  <h2 className=t("text-xl font-orbitron font-bold text-foreground")d")>
+                <div className="text-center py-2 border-b border-primary/30 mb-4">
+                  <h2 className="text-xl font-orbitron font-bold text-foreground">
                     {currentPageData.title}
                   </h2>
                   {currentPageData.description && (
-                    <p className=t("text-sm text-muted-foreground mt-1")1")1")>{currentPageData.description}</p>
+                    <p className="text-sm text-muted-foreground mt-1">{currentPageData.description}</p>
                   )}
                 </div>
               )}
 
               {/* Current page fields */}
               {currentPageData?.fields.map((field) => (
-                <div key={field.id} className=t("space-y-2")>
-                  <label className=t("text-sm font-medium text-foreground")>
+                <div key={field.id} className="space-y-2">
+                  <label className="text-sm font-medium text-foreground">
                     {field.label}
-                    {field.required && <span className=t("text-destructive ml-1")1")>*</span>}
+                    {field.required && <span className="text-destructive ml-1">*</span>}
                   </label>
                   {renderField(field)}
                 </div>
               ))}
 
               {/* Navigation buttons */}
-              <div className=t("flex items-center justify-between pt-4 gap-3")>
+              <div className="flex items-center justify-between pt-4 gap-3">
                 {!isFirstPage ? (
                   <Button
-                    type=t("button")n")
-                    variant=t("outline")e")
+                    type="button"
+                    variant="outline"
                     onClick={handlePrev}
-                    className=t("gap-2")2")
+                    className="gap-2"
                   >
-                    <ChevronLeft className=t("w-4 h-4")4") />{t("הקודם")}</Button>
+                    <ChevronLeft className="w-4 h-4" />{t("הקודם")}</Button>
                 ) : (
                   <div />
                 )}
 
                 {isLastPage ? (
                   <Button 
-                    type=t("submit")t") 
-                    className=t("gap-2")2")
+                    type="submit" 
+                    className="gap-2"
                     style={{ backgroundColor: form.settings.primaryColor }}
                   >
-                    <Send className=t("w-4 h-4")4") />
-                    {form.settings.submitButtonText || t("Submit")t")t")}
+                    <Send className="w-4 h-4" />
+                    {form.settings.submitButtonText || t("Submit")}
                   </Button>
                 ) : (
                   <Button
-                    type=t("button")n")
+                    type="button"
                     onClick={handleNext}
-                    className=t("gap-2")2")
+                    className="gap-2"
                     style={{ backgroundColor: form.settings.primaryColor }}
-                  >{t("הבא")}<ChevronRight className=t("w-4 h-4")4") />
+                  >{t("הבא")}<ChevronRight className="w-4 h-4" />
                   </Button>
                 )}
               </div>

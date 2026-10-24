@@ -1,5 +1,4 @@
 import { useLanguage } from '@/i18n/Language';
-import { useLanguage } from '@/i18n/Language';
 import { useState, useEffect } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -55,7 +54,6 @@ const resetSchema = z
 type AuthMode = 'login' | 'signup' | 'forgot' | 'reset';
 
 const Auth = () => {
-  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const [searchParams] = useSearchParams();
   const [mode, setMode] = useState<AuthMode>('login');
@@ -290,90 +288,105 @@ const Auth = () => {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {mode === t("signup") && (
-              <div className=t("space-y-2")>
-                <Label htmlFor=t{t("(\"displayName\") className=t(\"text-foreground\")>")}{t("Your Name")}</Label>
-                <div className=t{t("(\"relative\")>")}<User className=t{t("(\"absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground\") />")}<Input
-                    id=t{t("(\"displayName\") type=t(\"text\") placeholder=\"crazyplay\" value=")}{displayName}{t("onChange=")}{(e) => setDisplayName(e.target.value)}{t("className=t(\"pl-10 pr-10 bg-background/50 border-border/50 focus:border-primary\") />")}{displayName.length >= 2 && (
-                    <div className=t("absolute right-3 top-1/2 -translate-y-1/2")2")>
+              <div className="space-y-2">
+                <Label htmlFor="displayName" className="text-foreground">{t("Your Name")}</Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Input
+                    id="displayName"
+                    type="text"
+                    placeholder="crazyplay"
+                    value={displayName}
+                    onChange={(e) => setDisplayName(e.target.value)}
+                    className="pl-10 pr-10 bg-background/50 border-border/50 focus:border-primary"
+                  />
+                  {displayName.length >= 2 && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
                       {checkingName ? (
-                        <Loader2 className=t("w-5 h-5 text-muted-foreground animate-spin"){t("n\")n\") /> ) : displayNameAvailable === true ? (")}<Check className=t{t("(\"w-5 h-5 text-green-500\")0\")0\") /> ) : displayNameAvailable === false ? (")}<X className=t{t("(\"w-5 h-5 text-destructive\")e\")e\") /> ) : null}")}</div>
+                        <Loader2 className="w-5 h-5 text-muted-foreground animate-spin" />
+                      ) : displayNameAvailable === true ? (
+                        <Check className="w-5 h-5 text-green-500" />
+                      ) : displayNameAvailable === false ? (
+                        <X className="w-5 h-5 text-destructive" />
+                      ) : null}
+                    </div>
                   )}
                 </div>
-                {errors.displayName && <p className=t{t("(\"text-destructive text-sm\")m\")>")}{t(errors.displayName)}</p>}
+                {errors.displayName && <p className="text-destructive text-sm">{t(errors.displayName)}</p>}
                 {displayNameAvailable === false && !errors.displayName && (
-                  <p className=t("text-destructive text-sm")m")>{t("This name is already taken")}</p>
+                  <p className="text-destructive text-sm">{t("This name is already taken")}</p>
                 )}
                 {displayNameAvailable === true && (
-                  <p className=t("text-green-500 text-sm")m")>{t("This name is available!")}</p>
+                  <p className="text-green-500 text-sm">{t("This name is available!")}</p>
                 )}
               </div>
             )}
 
             {(mode === t("login") || mode === t("signup") || mode === t("forgot")) && (
-              <div className=t("space-y-2")>
-                <Label htmlFor=t("email") className=t("text-foreground")>{t("Email")}</Label>
-                <div className=t("relative")>
-                  <Mail className=t("absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground") />
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-foreground">{t("Email")}</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
-                    id=t("email")
-                    type=t("email")
+                    id="email"
+                    type="email"
                     placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className=t("pl-10 bg-background/50 border-border/50 focus:border-primary")
+                    className="pl-10 bg-background/50 border-border/50 focus:border-primary"
                   />
                 </div>
-                {errors.email && <p className=t("text-destructive text-sm")m")>{t(errors.email)}</p>}
+                {errors.email && <p className="text-destructive text-sm">{t(errors.email)}</p>}
               </div>
             )}
 
             {(mode === t("login") || mode === t("signup") || mode === t("reset")) && (
-              <div className=t("space-y-2")>
-                <Label htmlFor=t("password") className=t("text-foreground")>
-                  {mode === t("reset")t") ? t("New Password")d") : t("Password")d")}
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-foreground">
+                  {mode === t("reset") ? t("New Password") : t("Password")}
                 </Label>
-                <div className=t("relative")>
-                  <Lock className=t("absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground") />
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
-                    id=t("password")
-                    type=t("password")
+                    id="password"
+                    type="password"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className=t("pl-10 bg-background/50 border-border/50 focus:border-primary")
+                    className="pl-10 bg-background/50 border-border/50 focus:border-primary"
                   />
                 </div>
-                {errors.password && <p className=t("text-destructive text-sm")m")>{t(errors.password)}</p>}
+                {errors.password && <p className="text-destructive text-sm">{t(errors.password)}</p>}
               </div>
             )}
 
             {mode === t("reset") && (
-              <div className=t("space-y-2")>
-                <Label htmlFor=t("confirmPassword") className=t("text-foreground")>{t("Confirm Password")}</Label>
-                <div className=t("relative")>
-                  <Lock className=t("absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground") />
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword" className="text-foreground">{t("Confirm Password")}</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
-                    id=t("confirmPassword")
-                    type=t("password")
+                    id="confirmPassword"
+                    type="password"
                     placeholder="••••••••"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className=t("pl-10 bg-background/50 border-border/50 focus:border-primary")
+                    className="pl-10 bg-background/50 border-border/50 focus:border-primary"
                   />
                 </div>
-                {errors.confirmPassword && <p className=t("text-destructive text-sm")m")>{t(errors.confirmPassword)}</p>}
+                {errors.confirmPassword && <p className="text-destructive text-sm">{t(errors.confirmPassword)}</p>}
               </div>
             )}
 
             {mode === t("login") && (
-              <div className=t("text-right")>
+              <div className="text-right">
                 <button
-                  type=t("button")
+                  type="button"
                   onClick={() => {
-                    setMode(t("forgot"));
+                    setMode('forgot');
                     setErrors({});
                   }}
-                  className=t("text-sm text-primary hover:underline")
+                  className="text-sm text-primary hover:underline"
                 >{t("Forgot password?")}</button>
               </div>
             )}
@@ -389,28 +402,28 @@ const Auth = () => {
           </form>
 
           {mode === t("forgot") && (
-            <p className=t("text-center text-muted-foreground mt-6 font-inter")>{t("Remember your password?")}{' '}
+            <p className="text-center text-muted-foreground mt-6 font-inter">{t("Remember your password?")}{' '}
               <button
                 onClick={() => {
-                  setMode(t("login"));
+                  setMode('login');
                   setErrors({});
                 }}
-                className=t("text-primary hover:underline font-medium")
+                className="text-primary hover:underline font-medium"
               >{t("Sign In")}</button>
             </p>
           )}
 
           {(mode === t("login") || mode === t("signup")) && (
-            <p className=t("text-center text-muted-foreground mt-6 font-inter")>
-              {mode === t("login")n") ? t("Don't have an account? ") ") : t("Already have an account? ") ")}
+            <p className="text-center text-muted-foreground mt-6 font-inter">
+              {mode === t("login") ? t("Don't have an account? ") : t("Already have an account? ")}
               <button
                 onClick={() => {
-                  setMode(mode === t("login") ? t("signup") : t("login"));
+                  setMode(mode === 'login' ? 'signup' : 'login');
                   setErrors({});
                 }}
-                className=t("text-primary hover:underline font-medium")
+                className="text-primary hover:underline font-medium"
               >
-                {mode === t("login")n") ? t("Sign Up")p") : t("Sign In")n")}
+                {mode === t("login") ? t("Sign Up") : t("Sign In")}
               </button>
             </p>
           )}

@@ -1,5 +1,4 @@
 import { useLanguage } from '@/i18n/Language';
-import { useLanguage } from '@/i18n/Language';
 import { FormField } from '@/types/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -52,7 +51,6 @@ const FormCanvas = ({
   onReorderFields,
   previewDevice = 'desktop',
 }: FormCanvasProps) => {
-  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const deviceWidths = {
     desktop: 'w-full',
@@ -215,17 +213,20 @@ const FormCanvas = ({
         onDragOver={onDragOver}
       >
       {formSettings.logoUrl && (
-        <div className=t("mb-6 flex justify-center")>
+        <div className="mb-6 flex justify-center">
           <img 
             src={formSettings.logoUrl} 
-            alt={t("Form logo")}o{t("\") className=t(\"max-h-20 object-contain\") />")}</div>
+            alt={t("Form logo")} 
+            className="max-h-20 object-contain"
+          />
+        </div>
       )}
       {fields.length === 0 ? (
-        <div className=t("h-full flex items-center justify-center border-2 border-dashed border-border/30 rounded-lg min-h-[400px]")>
-          <p className=t{t("(\"text-muted-foreground font-inter\")>")}{t("Drag and drop fields here")}</p>
+        <div className="h-full flex items-center justify-center border-2 border-dashed border-border/30 rounded-lg min-h-[400px]">
+          <p className="text-muted-foreground font-inter">{t("Drag and drop fields here")}</p>
         </div>
       ) : (
-        <div className=t("space-y-4") dir=t("rtl")>
+        <div className="space-y-4" dir="rtl">
           {fields.map((field, index) => (
             <div
               key={field.id}
@@ -234,88 +235,99 @@ const FormCanvas = ({
               onDrop={(e) => handleFieldDrop(e, index)}
               onClick={() => onSelectField(field)}
               className={`${
-                field.type === t("section") 
-                  ? t("py-2") 
-                  : t("p-4 rounded-lg border bg-background/20")
+                field.type === 'section' 
+                  ? 'py-2' 
+                  : 'p-4 rounded-lg border bg-background/20'
               } transition-all duration-200 cursor-pointer ${
                 selectedFieldId === field.id
-                  ? field.type === t("section") ? t("bg-primary/10") : t("border-primary bg-primary/5")
-                  : field.type === t("section") ? '' : t("border-border/30 hover:border-border/50")
+                  ? field.type === 'section' ? 'bg-primary/10' : 'border-primary bg-primary/5'
+                  : field.type === 'section' ? '' : 'border-border/30 hover:border-border/50'
               }`}
             >
-              {field.type === t("section"){t("n\") ? (")}<div className=t{t("(\"flex items-center justify-between gap-3\")3\")>")}<div className=t{t("(\"flex items-center gap-1\")1\")>")}<ReorderButtons index={index} />
+              {field.type === t("section") ? (
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-1">
+                    <ReorderButtons index={index} />
                     <div
                       draggable
                       onDragStart={(e) => handleFieldDragStart(e, index, true)}
-                      className=t{t("(\"cursor-grab touch-none flex-shrink-0 hidden md:block\")k\") >")}<GripVertical className=t{t("(\"w-4 h-4 text-muted-foreground\")d\") />")}</div>
+                      className="cursor-grab touch-none flex-shrink-0 hidden md:block"
+                    >
+                      <GripVertical className="w-4 h-4 text-muted-foreground" />
+                    </div>
                   </div>
-                  <div className=t("flex-1 border-b-2 border-primary/50 pb-2")2")>
-                    <h3 className=t("text-lg font-orbitron font-bold text-foreground text-right")t")>
+                  <div className="flex-1 border-b-2 border-primary/50 pb-2">
+                    <h3 className="text-lg font-orbitron font-bold text-foreground text-right">
                       {field.label}
                     </h3>
                     {field.placeholder && (
-                      <p className=t("text-sm text-muted-foreground mt-1 text-right")t")t")>{field.placeholder}</p>
+                      <p className="text-sm text-muted-foreground mt-1 text-right">{field.placeholder}</p>
                     )}
                   </div>
-                  <div className=t("flex gap-1 flex-shrink-0")0")>
+                  <div className="flex gap-1 flex-shrink-0">
                     <Button
-                      variant=t("ghost")t")
-                      size=t("icon")n")
-                      className=t("h-8 w-8")8")
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
                       onClick={(e) => {
                         e.stopPropagation();
                         onSelectField(field);
                       }}
                     >
-                      <Settings className=t("w-4 h-4")4") />
+                      <Settings className="w-4 h-4" />
                     </Button>
                     <Button
-                      variant=t("ghost")t")
-                      size=t("icon")n")
-                      className=t("h-8 w-8")8")
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
                       onClick={(e) => {
                         e.stopPropagation();
                         onDeleteField(field.id);
                       }}
                     >
-                      <Trash2 className=t("w-4 h-4 text-destructive")e") />
+                      <Trash2 className="w-4 h-4 text-destructive" />
                     </Button>
                   </div>
                 </div>
               ) : (
                 <>
-                  <div className=t{t("(\"flex items-center justify-between mb-2\")2\")>")}<div className=t{t("(\"flex items-center gap-2\")2\")>")}<ReorderButtons index={index} />
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <ReorderButtons index={index} />
                       <div
                         draggable
                         onDragStart={(e) => handleFieldDragStart(e, index, true)}
-                        className=t{t("(\"cursor-grab touch-none hidden md:block\")k\") >")}<GripVertical className=t{t("(\"w-4 h-4 text-muted-foreground\")d\") />")}</div>
-                      <label className=t("text-sm font-medium text-foreground")d")>
+                        className="cursor-grab touch-none hidden md:block"
+                      >
+                        <GripVertical className="w-4 h-4 text-muted-foreground" />
+                      </div>
+                      <label className="text-sm font-medium text-foreground">
                         {field.label}
-                        {field.required && <span className=t("text-destructive ml-1")1")1")>*</span>}
+                        {field.required && <span className="text-destructive ml-1">*</span>}
                       </label>
                     </div>
-                    <div className=t("flex gap-1")1")>
+                    <div className="flex gap-1">
                       <Button
-                        variant=t("ghost")t")
-                        size=t("icon")n")
-                        className=t("h-8 w-8")8")
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
                         onClick={(e) => {
                           e.stopPropagation();
                           onSelectField(field);
                         }}
                       >
-                        <Settings className=t("w-4 h-4")4") />
+                        <Settings className="w-4 h-4" />
                       </Button>
                       <Button
-                        variant=t("ghost")t")
-                        size=t("icon")n")
-                        className=t("h-8 w-8")8")
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
                         onClick={(e) => {
                           e.stopPropagation();
                           onDeleteField(field.id);
                         }}
                       >
-                        <Trash2 className=t("w-4 h-4 text-destructive")e") />
+                        <Trash2 className="w-4 h-4 text-destructive" />
                       </Button>
                     </div>
                   </div>

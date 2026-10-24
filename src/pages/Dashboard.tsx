@@ -1,5 +1,4 @@
 import { useLanguage } from '@/i18n/Language';
-import { useLanguage } from '@/i18n/Language';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -33,7 +32,6 @@ interface PendingInvite {
 }
 
 const Dashboard = () => {
-  const { t, language } = useLanguage();
   const { t, language } = useLanguage();
   const { user, profile, signOut, updateDisplayName, loading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -252,20 +250,25 @@ const Dashboard = () => {
           </button>
           <div className="flex items-center gap-4">
             {editingName ? (
-              <div className=t("flex items-center gap-2")>
+              <div className="flex items-center gap-2">
                 <Input
                   value={newDisplayName}
                   onChange={(e) => setNewDisplayName(e.target.value)}
-                  className=t{t("(\"w-40 h-8 text-sm bg-background/50 border-border/50\") autoFocus />")}<Button variant=t{t("(\"ghost\") size=t(\"icon\") className=t(\"h-8 w-8\") onClick=")}{handleSaveDisplayName}>
-                  <Check className=t{t("(\"w-4 h-4 text-green-500\") />")}</Button>
-                <Button variant=t{t("(\"ghost\") size=t(\"icon\") className=t(\"h-8 w-8\") onClick=")}{() => setEditingName(false)}>
-                  <X className=t{t("(\"w-4 h-4 text-destructive\") />")}</Button>
+                  className="w-40 h-8 text-sm bg-background/50 border-border/50"
+                  autoFocus
+                />
+                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleSaveDisplayName}>
+                  <Check className="w-4 h-4 text-green-500" />
+                </Button>
+                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setEditingName(false)}>
+                  <X className="w-4 h-4 text-destructive" />
+                </Button>
               </div>
             ) : (
-              <div className=t("flex items-center gap-2")>
-                <span className=t("text-sm text-muted-foreground font-inter")>{displayName}</span>
-                <Button variant=t("ghost") size=t("icon") className=t("h-6 w-6") onClick={() => setEditingName(true)}>
-                  <Pencil className=t("w-3 h-3 text-muted-foreground") />
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground font-inter">{displayName}</span>
+                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setEditingName(true)}>
+                  <Pencil className="w-3 h-3 text-muted-foreground" />
                 </Button>
               </div>
             )}
@@ -285,55 +288,56 @@ const Dashboard = () => {
         </div>
 
         {forms.length === 0 ? (
-          <div className=t("glass glow-border rounded-2xl p-12 text-center")>
-            <FileText className=t{t("(\"w-16 h-16 text-muted-foreground mx-auto mb-4\") />")}<h2 className=t{t("(\"text-xl font-orbitron font-semibold text-foreground mb-2\")>")}{t("No forms yet")}</h2>
-            <p className=t("text-muted-foreground font-inter mb-6")>{t("Create your first form to get started")}</p>
-            <Button variant=t("glow") onClick={() => createForm()}>
-              <Plus className=t("w-5 h-5 mr-2") />{t("Create Your First Form")}</Button>
+          <div className="glass glow-border rounded-2xl p-12 text-center">
+            <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <h2 className="text-xl font-orbitron font-semibold text-foreground mb-2">{t("No forms yet")}</h2>
+            <p className="text-muted-foreground font-inter mb-6">{t("Create your first form to get started")}</p>
+            <Button variant="glow" onClick={() => createForm()}>
+              <Plus className="w-5 h-5 mr-2" />{t("Create Your First Form")}</Button>
           </div>
         ) : (
-          <div className=t("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6")>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {forms.map((form) => (
               <div
                 key={form.id}
-                className=t("glass glow-border rounded-xl p-6 hover:bg-card/80 transition-all duration-300 group")
+                className="glass glow-border rounded-xl p-6 hover:bg-card/80 transition-all duration-300 group"
               >
-                <div className=t("flex items-start justify-between mb-4")>
-                  <FileText className=t("w-10 h-10 text-primary") />
-                  <div className=t("flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity")>
+                <div className="flex items-start justify-between mb-4">
+                  <FileText className="w-10 h-10 text-primary" />
+                  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Button
-                      variant=t("ghost")
-                      size=t("icon")
+                      variant="ghost"
+                      size="icon"
                       onClick={() => navigate(`/builder/${form.id}`)}
                     >
-                      <Edit className=t("w-4 h-4") />
+                      <Edit className="w-4 h-4" />
                     </Button>
                     <Button
-                      variant=t("ghost")
-                      size=t("icon")
+                      variant="ghost"
+                      size="icon"
                       onClick={() => deleteForm(form.id)}
                     >
-                      <Trash2 className=t("w-4 h-4 text-destructive") />
+                      <Trash2 className="w-4 h-4 text-destructive" />
                     </Button>
                   </div>
                 </div>
-                <h3 className=t("text-lg font-orbitron font-semibold text-foreground mb-2")>
+                <h3 className="text-lg font-orbitron font-semibold text-foreground mb-2">
                   {form.title}
                 </h3>
-                <p className=t("text-sm text-muted-foreground font-inter mb-3")>
-                  {form.description || t("No description")n")}
+                <p className="text-sm text-muted-foreground font-inter mb-3">
+                  {form.description || t("No description")}
                 </p>
-                <div className=t("flex items-center justify-between")>
-                  <div className=t("flex items-center gap-1.5")>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
                     {form.is_published ? (
-                      <span className=t("flex items-center gap-1 text-xs text-green-500")0")>
-                        <Eye className=t("w-3 h-3")3") />{t("Open")}</span>
+                      <span className="flex items-center gap-1 text-xs text-green-500">
+                        <Eye className="w-3 h-3" />{t("Open")}</span>
                     ) : (
-                      <span className=t("flex items-center gap-1 text-xs text-muted-foreground")d")>
-                        <EyeOff className=t("w-3 h-3")3") />{t("Closed")}</span>
+                      <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <EyeOff className="w-3 h-3" />{t("Closed")}</span>
                     )}
                   </div>
-                  <p className=t("text-xs text-muted-foreground font-inter")>
+                  <p className="text-xs text-muted-foreground font-inter">
                     {new Date(form.updated_at).toLocaleDateString()}
                   </p>
                 </div>
@@ -345,36 +349,38 @@ const Dashboard = () => {
         {/* Pending Invites Section */}
         {pendingInvites.length > 0 && (
           <>
-            <div className=t{t("(\"flex items-center gap-3 mt-12 mb-6\")>")}<Mail className=t{t("(\"w-6 h-6 text-amber-500\") />")}<h2 className=t{t("(\"text-2xl font-orbitron font-bold text-foreground\")>")}{t("Pending Invites")}</h2>
+            <div className="flex items-center gap-3 mt-12 mb-6">
+              <Mail className="w-6 h-6 text-amber-500" />
+              <h2 className="text-2xl font-orbitron font-bold text-foreground">{t("Pending Invites")}</h2>
             </div>
-            <div className=t("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6")>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {pendingInvites.map((invite) => (
                 <div
                   key={invite.id}
-                  className=t("glass glow-border rounded-xl p-6 border-l-4 border-l-amber-500/50")
+                  className="glass glow-border rounded-xl p-6 border-l-4 border-l-amber-500/50"
                 >
-                  <div className=t("flex items-start justify-between mb-4")>
-                    <FileText className=t("w-10 h-10 text-amber-500/70") />
+                  <div className="flex items-start justify-between mb-4">
+                    <FileText className="w-10 h-10 text-amber-500/70" />
                   </div>
-                  <h3 className=t("text-lg font-orbitron font-semibold text-foreground mb-2")>
+                  <h3 className="text-lg font-orbitron font-semibold text-foreground mb-2">
                     {invite.form_title}
                   </h3>
-                  <p className=t("text-sm text-muted-foreground font-inter mb-4")>{t("You've been invited as")}{invite.role === t("editor")r") ? t("an Editor")r") : t("a Viewer")r")}
+                  <p className="text-sm text-muted-foreground font-inter mb-4">{t("You've been invited as")}{invite.role === t("editor") ? t("an Editor") : t("a Viewer")}
                   </p>
-                  <div className=t("flex gap-2")>
+                  <div className="flex gap-2">
                     <Button 
-                      variant=t("glow") 
-                      size=t("sm") 
-                      className=t("flex-1")
+                      variant="glow" 
+                      size="sm" 
+                      className="flex-1"
                       onClick={() => acceptInvite(invite.form_id)}
                     >
-                      <Check className=t("w-4 h-4 mr-1") />{t("Accept")}</Button>
+                      <Check className="w-4 h-4 mr-1" />{t("Accept")}</Button>
                     <Button 
-                      variant=t("ghost") 
-                      size=t("sm")
+                      variant="ghost" 
+                      size="sm"
                       onClick={() => declineInvite(invite.id)}
                     >
-                      <X className=t("w-4 h-4") />
+                      <X className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
@@ -386,45 +392,48 @@ const Dashboard = () => {
         {/* Shared Forms Section */}
         {sharedForms.length > 0 && (
           <>
-            <div className=t{t("(\"flex items-center gap-3 mt-12 mb-6\")>")}<Users className=t{t("(\"w-6 h-6 text-primary\") />")}<h2 className=t{t("(\"text-2xl font-orbitron font-bold text-foreground\")>")}{t("Shared With Me")}</h2>
+            <div className="flex items-center gap-3 mt-12 mb-6">
+              <Users className="w-6 h-6 text-primary" />
+              <h2 className="text-2xl font-orbitron font-bold text-foreground">{t("Shared With Me")}</h2>
             </div>
-            <div className=t("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6")>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {sharedForms.map((form) => (
                 <div
                   key={form.id}
-                  className=t("glass glow-border rounded-xl p-6 hover:bg-card/80 transition-all duration-300 group border-l-4 border-l-primary/50")
+                  className="glass glow-border rounded-xl p-6 hover:bg-card/80 transition-all duration-300 group border-l-4 border-l-primary/50"
                 >
-                  <div className=t("flex items-start justify-between mb-4")>
-                    <FileText className=t("w-10 h-10 text-primary/70") />
-                    <div className=t("flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity")>
+                  <div className="flex items-start justify-between mb-4">
+                    <FileText className="w-10 h-10 text-primary/70" />
+                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <Button
-                        variant=t("ghost")
-                        size=t("icon")
+                        variant="ghost"
+                        size="icon"
                         onClick={() => navigate(`/builder/${form.id}?role=${form.role}`)}
-                        title={form.role === t("editor")r") ? t("Edit form")m") : t("View form")m")}
+                        title={form.role === 'editor' ? 'Edit form' : 'View form'}
                       >
-                        {form.role === t("editor")r") ? (
-                          <Edit className=t("w-4 h-4")4") />
+                        {form.role === t("editor") ? (
+                          <Edit className="w-4 h-4" />
                         ) : (
-                          <Eye className=t("w-4 h-4")4") />
+                          <Eye className="w-4 h-4" />
                         )}
                       </Button>
                     </div>
                   </div>
-                  <h3 className=t("text-lg font-orbitron font-semibold text-foreground mb-2")>
+                  <h3 className="text-lg font-orbitron font-semibold text-foreground mb-2">
                     {form.title}
                   </h3>
-                  <p className=t("text-sm text-muted-foreground font-inter mb-3")>
-                    {form.description || t("No description")n")}
+                  <p className="text-sm text-muted-foreground font-inter mb-3">
+                    {form.description || t("No description")}
                   </p>
-                  <div className=t("flex items-center justify-between")>
+                  <div className="flex items-center justify-between">
                     <span className={`text-xs px-2 py-1 rounded-full ${
-                      form.role === t("editor") 
-                        ? t("bg-primary/20 text-primary") 
-                        : t("bg-muted text-muted-foreground")
+                      form.role === 'editor' 
+                        ? 'bg-primary/20 text-primary' 
+                        : 'bg-muted text-muted-foreground'
                     }`}>
-                      {form.role === t("editor"){t("r\") ? t(\"Editor\")r\") : t(\"Viewer\")r\")}")}</span>
-                    <p className=t("text-xs text-muted-foreground font-inter")>
+                      {form.role === t("editor") ? t("Editor") : t("Viewer")}
+                    </span>
+                    <p className="text-xs text-muted-foreground font-inter">
                       {new Date(form.updated_at).toLocaleDateString()}
                     </p>
                   </div>
